@@ -201,7 +201,12 @@ export default function NavBar() {
         </HStack>
       </Flex>{" "}
       {/* Mobile menu */}
-      <Drawer.Root open={open} closeOnEscape closeOnInteractOutside>
+      <Drawer.Root
+        open={open}
+        onOpenChange={(e) => (e.open ? onOpen() : onClose())}
+        closeOnEscape
+        closeOnInteractOutside
+      >
         <Drawer.Backdrop bg="blackAlpha.600" backdropFilter="blur(5px)" />
         <Drawer.Positioner>
           <Drawer.Content
