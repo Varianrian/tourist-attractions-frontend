@@ -65,7 +65,7 @@ export default function NavBar() {
             bgClip="text"
             bgGradient={logoGradient}
           >
-            Java Tourism GIS
+            Attractions GIS
           </Text>
         </Box>
 
@@ -229,7 +229,7 @@ export default function NavBar() {
                 bgClip="text"
                 bgGradient={logoGradient}
               >
-                Java Tourism GIS
+                Attractions GIS
               </Drawer.Title>
               <Drawer.CloseTrigger
                 _hover={{
