@@ -21,6 +21,16 @@ export interface BufferAnalysis {
         };
       },
     ];
+    metadata: {
+      totalAttractions: number;
+      reachableAttractions: number;
+      unreachableAttractions: number;
+      bufferRadiusMeters: number;
+      filters: {
+        transportationType: string;
+        provinceName: string;
+      };
+    };
   };
   count: number;
 }

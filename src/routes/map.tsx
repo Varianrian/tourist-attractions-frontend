@@ -21,6 +21,7 @@ import NavBar from "../components/NavBar";
 import { GetAllTransportationWithFilter } from "@/api/transportation";
 import { GetProvinceByName } from "@/api/province";
 import { GetBufferAnalysis } from "@/api/buffer-analysis";
+import { BufferAnalysisSummary } from "@/components/map/BufferAnalysisSummary";
 
 // Fixes the default icon path issues in Leaflet
 L.Icon.Default.mergeOptions({
@@ -36,10 +37,10 @@ export const Route = createFileRoute("/map")({
 
 // Main Component
 function MapPage() {
-  const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
+  const [selectedProvince, setSelectedProvince] = useState<string | null>("JAWA TENGAH");
   const { data } = GetAllTransportationWithFilter(selectedProvince || "JAWA TENGAH");
   const { data: provinceData } = GetProvinceByName(selectedProvince || "JAWA TENGAH");
-  const { data: bufferData } = GetBufferAnalysis(3000, selectedProvince || "JAWA TENGAH");
+  const { data: bufferData } = GetBufferAnalysis(5000, selectedProvince || "JAWA TENGAH");
 
   const [selectedLocation, setSelectedLocation] = useState<{
     name: string;
@@ -251,6 +252,16 @@ function MapPage() {
         toggleFilter={toggleFilter}
         selectedProvince={selectedProvince!}
         setSelectedProvince={setSelectedProvince}
+      />
+
+      <BufferAnalysisSummary
+        data={bufferData?.data}
+        cardBgColor={cardBgColor}
+        borderColor={borderColor}
+        textColor={textColor}
+        subtleTextColor={subtleTextColor}
+        filterColors={filterColors}
+        isOpen={true}
       />
 
       {/* Mobile Controls */}

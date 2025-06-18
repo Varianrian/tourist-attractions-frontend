@@ -34,10 +34,7 @@ export function LocationInfoBox({
   bgColor,
   borderColor,
 }: LocationDetailProps) {
-  console.log("LocationInfoBox rendered with location:", location);
   if (!location) return null;
-
-  const { filterColors } = useMapColors();
 
   return (
     <Box
