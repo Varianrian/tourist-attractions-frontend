@@ -14,6 +14,7 @@ import { useColorModeValue } from "../components/ui/color-mode";
 import { ColorModeButton } from "./ui/theme-toggle";
 import { Icon } from "@iconify/react";
 import { customColors, customGradients } from "../theme/custom-color";
+import { Link as Route } from "@tanstack/react-router";
 
 export default function NavBar() {
   const { open, onOpen, onClose } = useDisclosure();
@@ -70,106 +71,48 @@ export default function NavBar() {
         </Box>
 
         <HStack gap={6} display={{ base: "none", md: "flex" }}>
-          <Link
-            href="#"
-            color={textColor}
-            fontWeight="medium"
-            position="relative"
-            _hover={{
-              textDecoration: "none",
-              _after: {
-                content: '""',
-                position: "absolute",
-                bottom: "-4px",
-                left: "0",
-                width: "100%",
-                height: "2px",
-                bgGradient: gradientBg,
-              },
-            }}
-          >
-            Home
-          </Link>
-          <Link
-            href="#about"
-            color={textColor}
-            fontWeight="medium"
-            position="relative"
-            _hover={{
-              textDecoration: "none",
-              _after: {
-                content: '""',
-                position: "absolute",
-                bottom: "-4px",
-                left: "0",
-                width: "100%",
-                height: "2px",
-                bgGradient: gradientBg,
-              },
-            }}
-          >
-            About
-          </Link>
-          <Link
-            href="#features"
-            color={textColor}
-            fontWeight="medium"
-            position="relative"
-            _hover={{
-              textDecoration: "none",
-              _after: {
-                content: '""',
-                position: "absolute",
-                bottom: "-4px",
-                left: "0",
-                width: "100%",
-                height: "2px",
-                bgGradient: gradientBg,
-              },
-            }}
-          >
-            Features
-          </Link>
-          <Link
-            href="#transport"
-            color={textColor}
-            fontWeight="medium"
-            position="relative"
-            _hover={{
-              textDecoration: "none",
-              _after: {
-                content: '""',
-                position: "absolute",
-                bottom: "-4px",
-                left: "0",
-                width: "100%",
-                height: "2px",
-                bgGradient: gradientBg,
-              },
-            }}
-          >
-            Transportation
-          </Link>
-          <Link
-            href="#contact"
-            color={textColor}
-            fontWeight="medium"
-            position="relative"
-            _hover={{
-              textDecoration: "none",
-              _after: {
-                content: '""',
-                position: "absolute",
-                bottom: "-4px",
-                left: "0",
-                width: "100%",
-                height: "2px",
-                bgGradient: gradientBg,
-              },
-            }}
-          >
-            Contact
-          </Link>
+          <Route to="/">
+            <Link
+              color={textColor}
+              fontWeight="medium"
+              position="relative"
+              _hover={{
+                textDecoration: "none",
+                _after: {
+                  content: '""',
+                  position: "absolute",
+                  bottom: "-4px",
+                  left: "0",
+                  width: "100%",
+                  height: "2px",
+                  bgGradient: gradientBg,
+                },
+              }}
+            >
+              Home
+            </Link>
+          </Route>
+          <Route to="/map">
+            <Link
+              color={textColor}
+              fontWeight="medium"
+              position="relative"
+              _hover={{
+                textDecoration: "none",
+                _after: {
+                  content: '""',
+                  position: "absolute",
+                  bottom: "-4px",
+                  left: "0",
+                  width: "100%",
+                  height: "2px",
+                  bgGradient: gradientBg,
+                },
+              }}
+            >
+              Map
+            </Link>
+          </Route>
         </HStack>
 
         <HStack gap={3}>
@@ -243,101 +186,48 @@ export default function NavBar() {
             </Drawer.Header>
             <Drawer.Body>
               <Stack gap={6} pt={4}>
-                <Link
-                  href="#"
-                  color={textColor}
-                  fontWeight="medium"
-                  onClick={onClose}
-                  px={4}
-                  py={2}
-                  borderRadius="md"
-                  _hover={{
-                    bg: useColorModeValue("gray.50", "gray.700"),
-                    color: useColorModeValue(
-                      customColors.blue,
-                      customColors.purple
-                    ),
-                  }}
-                  transition="all 0.2s"
-                >
-                  Home
-                </Link>
-                <Link
-                  href="#about"
-                  color={textColor}
-                  fontWeight="medium"
-                  onClick={onClose}
-                  px={4}
-                  py={2}
-                  borderRadius="md"
-                  _hover={{
-                    bg: useColorModeValue("gray.50", "gray.700"),
-                    color: useColorModeValue(
-                      customColors.blue,
-                      customColors.purple
-                    ),
-                  }}
-                  transition="all 0.2s"
-                >
-                  About
-                </Link>
-                <Link
-                  href="#features"
-                  color={textColor}
-                  fontWeight="medium"
-                  onClick={onClose}
-                  px={4}
-                  py={2}
-                  borderRadius="md"
-                  _hover={{
-                    bg: useColorModeValue("gray.50", "gray.700"),
-                    color: useColorModeValue(
-                      customColors.blue,
-                      customColors.purple
-                    ),
-                  }}
-                  transition="all 0.2s"
-                >
-                  Features
-                </Link>
-                <Link
-                  href="#transport"
-                  color={textColor}
-                  fontWeight="medium"
-                  onClick={onClose}
-                  px={4}
-                  py={2}
-                  borderRadius="md"
-                  _hover={{
-                    bg: useColorModeValue("gray.50", "gray.700"),
-                    color: useColorModeValue(
-                      customColors.blue,
-                      customColors.purple
-                    ),
-                  }}
-                  transition="all 0.2s"
-                >
-                  Transportation
-                </Link>
-                <Link
-                  href="#contact"
-                  color={textColor}
-                  fontWeight="medium"
-                  onClick={onClose}
-                  px={4}
-                  py={2}
-                  borderRadius="md"
-                  _hover={{
-                    bg: useColorModeValue("gray.50", "gray.700"),
-                    color: useColorModeValue(
-                      customColors.blue,
-                      customColors.purple
-                    ),
-                  }}
-                  transition="all 0.2s"
-                >
-                  Contact
-                </Link>
+                <Route to="/">
+                  <Link
+                    href="#"
+                    color={textColor}
+                    fontWeight="medium"
+                    onClick={onClose}
+                    px={4}
+                    py={2}
+                    borderRadius="md"
+                    _hover={{
+                      bg: useColorModeValue("gray.50", "gray.700"),
+                      color: useColorModeValue(
+                        customColors.blue,
+                        customColors.purple
+                      ),
+                    }}
+                    transition="all 0.2s"
+                  >
+                    Home
+                  </Link>
+                </Route>
+                <Route to="/map">
+                  <Link
+                    href="#about"
+                    color={textColor}
+                    fontWeight="medium"
+                    onClick={onClose}
+                    px={4}
+                    py={2}
+                    borderRadius="md"
+                    _hover={{
+                      bg: useColorModeValue("gray.50", "gray.700"),
+                      color: useColorModeValue(
+                        customColors.blue,
+                        customColors.purple
+                      ),
+                    }}
+                    transition="all 0.2s"
+                  >
+                    Map
+                  </Link>
+                </Route>
                 <Box pt={6}>
                   <HStack gap={3} mb={4} justifyContent="space-between">
                     <Text fontSize="sm" fontWeight="medium">

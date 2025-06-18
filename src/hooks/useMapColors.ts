@@ -1,5 +1,6 @@
 import { useColorModeValue } from "../components/ui/color-mode";
 import { customShades } from "../theme/custom-color";
+import { type TransportationType } from "@/types/transportation";
 
 export const useMapColors = () => {
   const bgColor = useColorModeValue("white", "gray.900");
@@ -13,19 +14,32 @@ export const useMapColors = () => {
   );
 
   // Filter colors for each transportation type
-  const filterColors = {
-    airport: useColorModeValue(
-      customShades.orange[500],
-      customShades.orange[400]
-    ),
-    bus: useColorModeValue(customShades.purple[500], customShades.purple[400]),
-    train: useColorModeValue(customShades.blue[500], customShades.blue[400]),
-    harbor: useColorModeValue(customShades.teal[500], customShades.teal[400]),
-    attraction: useColorModeValue(
-      customShades.green[500],
-      customShades.green[400]
-    ),
-  };
+//   const filterColors = {
+//     airport: useColorModeValue(
+//       customShades.orange[500],
+//       customShades.orange[400]
+//     ),
+//     bus: useColorModeValue(customShades.purple[500], customShades.purple[400]),
+//     train: useColorModeValue(customShades.blue[500], customShades.blue[400]),
+//     harbor: useColorModeValue(customShades.teal[500], customShades.teal[400]),
+//     attraction: useColorModeValue(
+//       customShades.green[500],
+//       customShades.green[400]
+//     ),
+//   };
+    const filterColors: Record<TransportationType, string> = {
+        AIRPORT: useColorModeValue(
+        customShades.orange[500],
+        customShades.orange[400]
+        ),
+        BUS_STATION: useColorModeValue(customShades.purple[500], customShades.purple[400]),
+        TRAIN_STATION: useColorModeValue(customShades.blue[500], customShades.blue[400]),
+        HARBOR: useColorModeValue(customShades.teal[500], customShades.teal[400]),
+        ATTRACTION: useColorModeValue(
+        customShades.green[500],
+        customShades.green[400]
+        ),
+    };
 
   return {
     bgColor,

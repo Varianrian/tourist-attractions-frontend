@@ -17,13 +17,13 @@ export const getTransportIcon = (type: string) => {
       return FaMapMarkerAlt;
     case "attraction_buffer":
       return FaHome;
-    case "airport":
+    case "AIRPORT":
       return FaPlane;
-    case "bus":
+    case "BUS_STATION":
       return FaBus;
-    case "train":
+    case "TRAIN_STATION":
       return FaTrain;
-    case "harbor":
+    case "HARBOR":
       return FaShip;
     default:
       return FaMapMarkerAlt;

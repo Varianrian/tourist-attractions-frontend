@@ -8,6 +8,7 @@ import {
   CloseButton,
 } from "@chakra-ui/react";
 import { getTransportIcon } from "../../utils/mapIcons";
+import { useMapColors } from "@/hooks/useMapColors";
 
 interface LocationDetailProps {
   location: {
@@ -33,7 +34,10 @@ export function LocationInfoBox({
   bgColor,
   borderColor,
 }: LocationDetailProps) {
+  console.log("LocationInfoBox rendered with location:", location);
   if (!location) return null;
+
+  const { filterColors } = useMapColors();
 
   return (
     <Box
@@ -100,23 +104,21 @@ export function LocationInfoBox({
       {location.isHub && (
         <Box>
           <Badge
-            colorScheme={
-              location.type === "airport"
-                ? "orange"
-                : location.type === "bus"
-                  ? "purple"
-                  : location.type === "train"
-                    ? "blue"
-                    : "teal"
-            }
             borderRadius="full"
             py={1}
             px={2}
-            display="flex"
             alignItems="center"
           >
             <Icon as={getTransportIcon(location.type)} mr={1} />
-            {location.type.charAt(0).toUpperCase() + location.type.slice(1)}
+            {location.type === "AIRPORT"
+              ? "Airport"
+              : location.type === "BUS_STATION"
+                ? "Bus Station"
+                : location.type === "TRAIN_STATION"
+                  ? "Train Station"
+                  : location.type === "HARBOR"
+                    ? "Harbor"
+                    : "Unknown"}
           </Badge>
         </Box>
       )}

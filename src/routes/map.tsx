@@ -7,10 +7,10 @@ import {
   LayerGroup,
   CircleMarker,
   Popup,
+  Polygon,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { SAMPLE_DATA } from "../data/sampleData";
 import { useMapColors } from "../hooks/useMapColors";
 import { SetMapView } from "../components/map/SetMapView";
 import { SidebarFilters } from "../components/map/SidebarFilters";
@@ -18,6 +18,9 @@ import { MobileControls } from "../components/map/MobileControls";
 import { FilterDrawer } from "../components/map/FilterDrawer";
 import { LocationInfoBox } from "../components/map/LocationInfoBox";
 import NavBar from "../components/NavBar";
+import { GetAllTransportationWithFilter } from "@/api/transportation";
+import { GetProvinceByName } from "@/api/province";
+import { GetBufferAnalysis } from "@/api/buffer-analysis";
 
 // Fixes the default icon path issues in Leaflet
 L.Icon.Default.mergeOptions({
@@ -33,6 +36,11 @@ export const Route = createFileRoute("/map")({
 
 // Main Component
 function MapPage() {
+  const [selectedProvince, setSelectedProvince] = useState<string | null>(null);
+  const { data } = GetAllTransportationWithFilter(selectedProvince || "JAWA TENGAH");
+  const { data: provinceData } = GetProvinceByName(selectedProvince || "JAWA TENGAH");
+  const { data: bufferData } = GetBufferAnalysis(3000, selectedProvince || "JAWA TENGAH");
+
   const [selectedLocation, setSelectedLocation] = useState<{
     name: string;
     description?: string;
@@ -43,10 +51,10 @@ function MapPage() {
   } | null>(null);
 
   const [activeFilters, setActiveFilters] = useState({
-    airport: true,
-    bus: true,
-    train: true,
-    harbor: true,
+    AIRPORT: true,
+    BUS_STATION: true,
+    TRAIN_STATION: true,
+    HARBOR: true,
   });
 
   const { open, onOpen, onClose } = useDisclosure();
@@ -72,120 +80,160 @@ function MapPage() {
       <NavBar />
 
       {/* Map Container */}
-      <Box position="relative" height="calc(100vh - 64px)" width="100%">
+      <Box position="relative" height="calc(100vh)" width="100%">
         <MapContainer
           center={[-1.6037, 117.4158]} // Indonesia center
           zoom={5}
           style={{ height: "100%", width: "100%", zIndex: 1 }}
           zoomControl={false}
+          attributionControl={false}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url={mapStyle}
           />
-          {/* Attractions Layer */}
-          <LayerGroup>
-            {SAMPLE_DATA.attractions.map((attraction) => (
-              <CircleMarker
-                key={`attraction-${attraction.properties.id}`}
-                center={[
-                  attraction.properties.latitude,
-                  attraction.properties.longitude,
-                ]}
-                radius={6}
-                pathOptions={{
-                  fillColor: filterColors.attraction,
-                  fillOpacity: 1,
-                  color: "white",
-                  weight: 2,
-                }}
-                eventHandlers={{
-                  click: () => {
-                    setSelectedLocation({
-                      name: attraction.properties.attraction_name,
-                      description: `${attraction.properties.city}, ${attraction.properties.province}`,
-                      type: "attraction",
-                      nearbyTransport:
-                        attraction.properties.transportation_names || [],
-                      position: [
-                        attraction.properties.latitude,
-                        attraction.properties.longitude,
-                      ],
-                    });
-                  },
-                }}
-              >
-                <Popup
-                  closeButton={false}
-                  autoClose={false}
-                  className="custom-popup"
-                >
-                  <Box p={1}>
-                    <Heading size="xs">
-                      {attraction.properties.attraction_name}
-                    </Heading>
-                    <Text fontSize="xs" mt={1}>
-                      {attraction.properties.city},{" "}
-                      {attraction.properties.province}
-                    </Text>
-                    {attraction.properties.transportation_count > 0 && (
-                      <Badge colorScheme="green" mt={1} size="xs">
-                        {attraction.properties.transportation_count} transport
-                        options
-                      </Badge>
-                    )}
-                  </Box>
-                </Popup>
-              </CircleMarker>
-            ))}
-          </LayerGroup>
-          {/* Transportation Hubs Layers */}
-          {SAMPLE_DATA.transportHubs.map(
-            (hub) =>
-              activeFilters[hub.type as keyof typeof activeFilters] && (
-                <LayerGroup key={`hub-${hub.id}`}>
-                  <CircleMarker
-                    center={
-                      [hub.location[0], hub.location[1]] as [number, number]
-                    }
-                    radius={8}
-                    pathOptions={{
-                      fillColor:
-                        filterColors[hub.type as keyof typeof filterColors],
-                      fillOpacity: 1,
-                      color: "white",
-                      weight: 2,
-                    }}
-                    eventHandlers={{
-                      click: () => {
-                        setSelectedLocation({
-                          name: hub.name,
-                          type: hub.type,
-                          isHub: true,
-                          position: [hub.location[0], hub.location[1]] as [
-                            number,
-                            number,
-                          ],
-                        });
-                      },
-                    }}
-                  >
-                    <Popup
-                      closeButton={false}
-                      autoClose={false}
-                      className="custom-popup"
-                    >
-                      <Box p={1}>
-                        <Heading size="xs">{hub.name}</Heading>
-                        <Text fontSize="xs" mt={1}>
-                          {hub.type.charAt(0).toUpperCase() + hub.type.slice(1)}
-                        </Text>
-                      </Box>
-                    </Popup>
-                  </CircleMarker>
-                </LayerGroup>
-              )
+
+          {/* Province Layer */}
+          {provinceData && (
+            <LayerGroup>
+              {provinceData.geometry.coordinates.map((polygon, index) => (
+                <Polygon
+                  key={`province-polygon-${index}`}
+                  // @ts-expect-error
+                  positions={polygon[0].map((coord: number[]) => [
+                    coord[1],
+                    coord[0],
+                  ])}
+                  pathOptions={{
+                    fillOpacity: 0.05,
+                    color: filterColors.ATTRACTION,
+                    weight: 1,
+                  }}
+                />
+              ))}
+            </LayerGroup>
           )}
+
+          {/* Transportation Hubs Layers */}
+          {data?.data?.transportations && (
+            <LayerGroup>
+              {data.data.transportations.map((hub) => (
+                <CircleMarker
+                  key={`hub-${hub.latitude}-${hub.longitude}`}
+                  center={[hub.latitude, hub.longitude]}
+                  radius={3}
+                  pathOptions={{
+                    fillColor:
+                      filterColors[hub.type as keyof typeof filterColors],
+                    fillOpacity: 1,
+                    color: "white",
+                    weight: 2,
+                  }}
+                  eventHandlers={{
+                    click: () => {
+                      setSelectedLocation({
+                        name: hub.name,
+                        type: hub.type,
+                        description: hub.province,
+                        isHub: true,
+                        position: [hub.latitude, hub.longitude],
+                      });
+                    },
+                  }}
+                >
+                  <Popup
+                    closeButton={false}
+                    autoClose={false}
+                    className="custom-popup"
+                  >
+                    <Box p={1}>
+                      <Heading size="xs">{hub.name}</Heading>
+                      <Text fontSize="xs" mt={1}>
+                        {hub.type.charAt(0).toUpperCase() + hub.type.slice(1)}
+                      </Text>
+                    </Box>
+                  </Popup>
+                </CircleMarker>
+              ))}
+            </LayerGroup>
+          )}
+
+          {/* Attractions Layer */}
+          {bufferData?.data && (
+            <LayerGroup>
+              {bufferData.data.data.features.map((attraction) => (
+                <>
+                <Polygon
+                  key={`attraction-${attraction.properties.id}`}
+                  positions={attraction.geometry.coordinates[0].map(
+                    (coord: number[]) => [coord[1], coord[0]]
+                  )}
+                  pathOptions={{
+                    fillColor: attraction.properties.is_reachable
+                      ? "#00FF00" // Green for reachable
+                      : "#FF0000", // Red for not reachable
+                    fillOpacity: 0.3,
+                    color: "white",
+                    weight: 0.5,
+                  }}
+                  eventHandlers={{
+                    click: () => {
+                      setSelectedLocation({
+                        name: attraction.properties.attraction_name,
+                        description: `${attraction.properties.city}, ${attraction.properties.province}`,
+                        type: "attraction",
+                        nearbyTransport:
+                          attraction.properties.transportation_names || [],
+                        position: [
+                          attraction.properties.latitude,
+                          attraction.properties.longitude,
+                        ],
+                      });
+                    },
+                  }}
+                >
+                  <Popup
+                    closeButton={false}
+                    autoClose={false}
+                    className="custom-popup"
+                  >
+                    <Box p={1}>
+                      <Heading size="xs">
+                        {attraction.properties.attraction_name}
+                      </Heading>
+                      <Text fontSize="xs" mt={1}>
+                        {attraction.properties.city},{" "}
+                        {attraction.properties.province}
+                      </Text>
+                      {attraction.properties.transportation_count > 0 && (
+                        <Badge colorScheme="green" mt={1} size="xs">
+                          {attraction.properties.transportation_count} transport
+                          options
+                        </Badge>
+                      )}
+                    </Box>
+                  </Popup>
+                </Polygon>
+                <CircleMarker
+                  center={[
+                    attraction.properties.latitude,
+                    attraction.properties.longitude,
+                  ]}
+                  pathOptions={{
+                    fillColor: attraction.properties.is_reachable
+                      ? "#00FF00" // Green for reachable
+                      : "#FF0000", // Red for not reachable
+                    fillOpacity: 0.3,
+                    color: "white",
+                    weight: 0.5,
+                  }}
+                  radius={3}
+                ></CircleMarker>
+                </>
+              ))}
+            </LayerGroup>
+          )}
+
           {selectedLocation?.position && (
             <SetMapView center={selectedLocation.position} zoom={10} />
           )}
@@ -201,6 +249,8 @@ function MapPage() {
         filterColors={filterColors}
         subtleTextColor={subtleTextColor}
         toggleFilter={toggleFilter}
+        selectedProvince={selectedProvince!}
+        setSelectedProvince={setSelectedProvince}
       />
 
       {/* Mobile Controls */}

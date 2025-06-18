@@ -1,6 +1,7 @@
 import { Button, Icon } from "@chakra-ui/react";
 import { useColorModeValue } from "../../components/ui/color-mode";
 import { getTransportIcon } from "../../utils/mapIcons";
+import { type TransportationType } from "@/types/transportation";
 
 // Custom button component for filters
 export const FilterButton = ({
@@ -18,13 +19,13 @@ export const FilterButton = ({
   borderColor: string;
   subtleTextColor: string;
   filterColors: Record<string, string>;
-  onToggle: (type: string) => void;
+  onToggle: (type: TransportationType) => void;
 }) => (
   <Button
     variant="outline"
     borderRadius="full"
     size="sm"
-    onClick={() => onToggle(type)}
+    onClick={() => onToggle(type as string as TransportationType)}
     borderColor={isActive ? filterColors[type] : borderColor}
     color={isActive ? filterColors[type] : subtleTextColor}
     _hover={{

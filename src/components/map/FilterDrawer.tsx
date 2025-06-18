@@ -1,15 +1,16 @@
 import { Box, CloseButton, Drawer, Heading, Stack } from "@chakra-ui/react";
 import { FilterButton } from "./FilterButton";
+import { type TransportationType } from "@/types/transportation";
 
 interface FilterDrawerProps {
   open: boolean;
   onOpen: () => void;
   onClose: () => void;
-  activeFilters: Record<string, boolean>;
+  activeFilters: Record<TransportationType, boolean>;
   borderColor: string;
   subtleTextColor: string;
-  filterColors: Record<string, string>;
-  toggleFilter: (type: string) => void;
+  filterColors: Record<TransportationType, string>;
+  toggleFilter: (type: TransportationType) => void;
 }
 
 export function FilterDrawer({
@@ -25,7 +26,9 @@ export function FilterDrawer({
   return (
     <Drawer.Root
       open={open}
-      onOpenChange={(e) => {e.open ? onOpen() : onClose()}}
+      onOpenChange={(e) => {
+        e.open ? onOpen() : onClose();
+      }}
       closeOnEscape
       closeOnInteractOutside
     >
@@ -49,7 +52,7 @@ export function FilterDrawer({
                   <FilterButton
                     type="airport"
                     label="Airports"
-                    isActive={activeFilters.airport}
+                    isActive={activeFilters.AIRPORT}
                     borderColor={borderColor}
                     subtleTextColor={subtleTextColor}
                     filterColors={filterColors}
@@ -58,7 +61,7 @@ export function FilterDrawer({
                   <FilterButton
                     type="bus"
                     label="Bus Stations"
-                    isActive={activeFilters.bus}
+                    isActive={activeFilters.BUS_STATION}
                     borderColor={borderColor}
                     subtleTextColor={subtleTextColor}
                     filterColors={filterColors}
@@ -67,7 +70,7 @@ export function FilterDrawer({
                   <FilterButton
                     type="train"
                     label="Railway Stations"
-                    isActive={activeFilters.train}
+                    isActive={activeFilters.TRAIN_STATION}
                     borderColor={borderColor}
                     subtleTextColor={subtleTextColor}
                     filterColors={filterColors}
@@ -76,7 +79,7 @@ export function FilterDrawer({
                   <FilterButton
                     type="harbor"
                     label="Harbors"
-                    isActive={activeFilters.harbor}
+                    isActive={activeFilters.HARBOR}
                     borderColor={borderColor}
                     subtleTextColor={subtleTextColor}
                     filterColors={filterColors}
