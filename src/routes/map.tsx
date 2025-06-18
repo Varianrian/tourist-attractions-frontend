@@ -5,7 +5,6 @@ import {
   MapContainer,
   TileLayer,
   LayerGroup,
-  CircleMarker,
   Popup,
   Polygon,
   Marker,
@@ -22,9 +21,6 @@ import NavBar from "../components/NavBar";
 import { GetAllTransportationWithFilter } from "@/api/transportation";
 import { GetProvinceByName } from "@/api/province";
 import { GetBufferAnalysis } from "@/api/buffer-analysis";
-import { BufferAnalysisSummary } from "@/components/map/BufferAnalysisSummary";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { FaMapMarkedAlt } from "react-icons/fa";
 
 // Fixes the default icon path issues in Leaflet
 // L.Icon.Default.mergeOptions({
