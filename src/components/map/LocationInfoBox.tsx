@@ -73,7 +73,8 @@ export function LocationInfoBox({
               Nearby Transportation:
             </Text>{" "}
             <HStack gap={2} flexWrap="wrap">
-              {location.nearbyTransport.map((transport) => (
+              {/* Limit to 10 items */}
+              {location.nearbyTransport.slice(0, 10).map((transport) => (
                 <Badge
                   key={transport}
                   colorScheme={
@@ -95,17 +96,17 @@ export function LocationInfoBox({
                   {transport.charAt(0).toUpperCase() + transport.slice(1)}
                 </Badge>
               ))}
+              {location.nearbyTransport.length > 10 && (
+                <Badge colorScheme="gray" borderRadius="full" py={1} px={2}>
+                  +{location.nearbyTransport.length - 10} more
+                </Badge>
+              )}
             </HStack>
           </Box>
         )}
       {location.isHub && (
         <Box>
-          <Badge
-            borderRadius="full"
-            py={1}
-            px={2}
-            alignItems="center"
-          >
+          <Badge borderRadius="full" py={1} px={2} alignItems="center">
             <Icon as={getTransportIcon(location.type)} mr={1} />
             {location.type === "AIRPORT"
               ? "Airport"
