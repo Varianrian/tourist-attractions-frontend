@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useColorModeValue } from "../../components/ui/color-mode";
 import { FilterButton } from "./FilterButton";
-import { provinces } from "../../data/sampleData";
+import { bufferRadiusOptions, provinces } from "../../data/sampleData";
 import { type TransportationType } from "@/types/transportation";
 import { useState } from "react";
 import {
@@ -36,6 +36,8 @@ interface SidebarFiltersProps {
   toggleFilter: (type: TransportationType) => void;
   selectedProvince: string;
   setSelectedProvince: (province: string) => void;
+  selectedBufferRadius: number;
+  setSelectedBufferRadius: (radius: number) => void;
   data: BufferAnalysis | undefined;
 }
 
@@ -49,6 +51,8 @@ export function SidebarFilters({
   toggleFilter,
   selectedProvince,
   setSelectedProvince,
+  selectedBufferRadius,
+  setSelectedBufferRadius,
   data,
 }: SidebarFiltersProps) {
   if (!data) {
@@ -59,7 +63,6 @@ export function SidebarFilters({
     reachableAttractions,
     unreachableAttractions,
     bufferRadiusMeters,
-    filters,
   } = data.data.metadata;
 
   const reachablePercentage = Math.round(
@@ -98,11 +101,17 @@ export function SidebarFilters({
       </IconButton>
 
       {/* Sidebar with filters */}
-      <VStack gap={6}>
+      <VStack
+        gap={6}
+        position="absolute"
+        top="80px"
+        left={isOpen ? "16px" : "-350px"}
+        transition="left 0.3s ease"
+        maxH="calc(100vh - 80px)"
+        overflowY="auto"
+        paddingBottom="16px"
+      >
         <Box
-          position="absolute"
-          top="80px"
-          left={isOpen ? "16px" : "-350px"} // Move offscreen when closed
           zIndex="2"
           bg={cardBgColor}
           borderRadius="xl"
@@ -149,6 +158,79 @@ export function SidebarFilters({
               />
             </HStack>
           </Stack> */}
+
+            <Stack gap={3}>
+              <Heading size="sm" mb={0} color={textColor}>
+                Buffer Radius
+              </Heading>
+              <Select.Root
+                collection={bufferRadiusOptions}
+                size="sm"
+                width="100%"
+                onValueChange={(value) =>
+                  setSelectedBufferRadius(value.value[0] as unknown as number)
+                }
+                value={[selectedBufferRadius as unknown as string]}
+              >
+                <Select.HiddenSelect />
+                <Select.Control
+                  bg={cardBgColor}
+                  borderColor={borderColor}
+                  borderWidth="1px"
+                  borderRadius="md"
+                  _hover={{ borderColor: filterColors.ATTRACTION }}
+                  _focus={{ boxShadow: `0 0 0 1px ${filterColors.ATTRACTION}` }}
+                >
+                  <Select.Trigger px={3} py={2} color={textColor}>
+                    <Select.ValueText
+                      placeholder="Buffer Radius"
+                      fontWeight="medium"
+                    />
+                  </Select.Trigger>
+                  <Select.IndicatorGroup>
+                    <Select.Indicator color={filterColors.ATTRACTION} />
+                  </Select.IndicatorGroup>
+                </Select.Control>
+                <Portal>
+                  <Select.Positioner>
+                    <Select.Content
+                      bg={cardBgColor}
+                      borderColor={borderColor}
+                      borderWidth="1px"
+                      borderRadius="md"
+                      boxShadow="lg"
+                      py={1}
+                      maxH="300px"
+                      overflow="auto"
+                    >
+                      {bufferRadiusOptions.items.map((radius) => (
+                        <Select.Item
+                          item={radius}
+                          key={radius.value}
+                          px={3}
+                          py={2}
+                          borderRadius="sm"
+                          _hover={{
+                            bg: useColorModeValue("gray.100", "gray.700"),
+                          }}
+                          _selected={{
+                            bg: useColorModeValue("gray.200", "gray.600"),
+                          }}
+                          _focus={{
+                            bg: useColorModeValue("gray.100", "gray.700"),
+                          }}
+                        >
+                          {radius.label}
+                          <Select.ItemIndicator
+                            color={filterColors.ATTRACTION}
+                          />
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select.Positioner>
+                </Portal>
+              </Select.Root>
+            </Stack>
 
             <Stack gap={3}>
               <Heading size="sm" mb={0} color={textColor}>
@@ -268,8 +350,6 @@ export function SidebarFilters({
         </Box>
 
         <Box
-          position="absolute"
-          top="430px"
           left={isOpen ? "16px" : "-350px"}
           zIndex="2"
           bg={cardBgColor}
@@ -311,15 +391,15 @@ export function SidebarFilters({
 
               <Box position="relative" width="70px" height="70px">
                 <AbsoluteCenter>
-                <ProgressCircle.Root size="lg" value={reachablePercentage}>
-                  <ProgressCircle.Circle>
-                    <ProgressCircle.Track />
-                    <ProgressCircle.Range />
-                  </ProgressCircle.Circle>
-                  <AbsoluteCenter>
-                    <ProgressCircle.ValueText />
-                  </AbsoluteCenter>
-                </ProgressCircle.Root>
+                  <ProgressCircle.Root size="lg" value={reachablePercentage}>
+                    <ProgressCircle.Circle>
+                      <ProgressCircle.Track />
+                      <ProgressCircle.Range />
+                    </ProgressCircle.Circle>
+                    <AbsoluteCenter>
+                      <ProgressCircle.ValueText />
+                    </AbsoluteCenter>
+                  </ProgressCircle.Root>
                 </AbsoluteCenter>
               </Box>
             </Flex>

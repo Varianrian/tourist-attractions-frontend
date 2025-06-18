@@ -39,15 +39,25 @@ function MapPage() {
   const [selectedProvince, setSelectedProvince] = useState<string | null>(
     "JAWA TENGAH"
   );
+  const [bufferRadius, setBufferRadius] = useState<number>(500);
+  
+  const [activeFilters, setActiveFilters] = useState({
+    AIRPORT: true,
+    BUS_STATION: true,
+    TRAIN_STATION: true,
+    HARBOR: true,
+  });
   const { data } = GetAllTransportationWithFilter(
-    selectedProvince || "JAWA TENGAH"
+    selectedProvince || "JAWA TENGAH",
+    activeFilters
   );
   const { data: provinceData } = GetProvinceByName(
     selectedProvince || "JAWA TENGAH"
   );
   const { data: bufferData } = GetBufferAnalysis(
-    5000,
-    selectedProvince || "JAWA TENGAH"
+    bufferRadius,
+    selectedProvince || "JAWA TENGAH",
+    activeFilters
   );
 
   const [selectedLocation, setSelectedLocation] = useState<{
@@ -59,12 +69,6 @@ function MapPage() {
     position?: [number, number];
   } | null>(null);
 
-  const [activeFilters, setActiveFilters] = useState({
-    AIRPORT: true,
-    BUS_STATION: true,
-    TRAIN_STATION: true,
-    HARBOR: true,
-  });
 
   const { open, onOpen, onClose } = useDisclosure();
   const {
@@ -127,76 +131,30 @@ function MapPage() {
           {data?.data?.transportations && (
             <LayerGroup>
               {data.data.transportations.map((hub) => (
-                // <CircleMarker
-                //   key={`hub-${hub.latitude}-${hub.longitude}`}
-                //   center={[hub.latitude, hub.longitude]}
-                //   radius={10}
-                //   pathOptions={{
-                //     fillColor:
-                //       filterColors[hub.type as keyof typeof filterColors],
-                //     fillOpacity: 1,
-                //     color: filterColors[hub.type as keyof typeof filterColors],
-                //     weight: 0,
-                //   }}
-                //   eventHandlers={{
-                //     click: () => {
-                //       setSelectedLocation({
-                //         name: hub.name,
-                //         type: hub.type,
-                //         description: hub.province,
-                //         isHub: true,
-                //         position: [hub.latitude, hub.longitude],
-                //       });
-                //     },
-                //   }}
-                // >
-                //   <Popup
-                //     closeButton={false}
-                //     autoClose={false}
-                //     className="custom-popup"
-                //   >
-                //     <Box p={1}>
-                //       <Heading size="xs">{hub.name}</Heading>
-                //       <Text fontSize="xs" mt={1}>
-                //         {hub.type === "HARBOR"
-                //           ? "Harbor"
-                //           : hub.type === "AIRPORT"
-                //             ? "Airport"
-                //             : hub.type === "TRAIN_STATION"
-                //               ? "Train Station"
-                //               : "Bus Station"}
-                //       </Text>
-                //     </Box>
-                //   </Popup>
-                // </CircleMarker>
                 <Marker
                   key={`hub-${hub.latitude}-${hub.longitude}`}
                   position={[hub.latitude, hub.longitude]}
                   icon={
                     new L.Icon({
-                      // train: https://img.icons8.com/?size=100&id=9361&format=png&color=000000
-                      // bus: https://img.icons8.com/?size=100&id=9351&format=png&color=000000
-                      // harbor: https://img.icons8.com/?size=100&id=9580&format=png&color=000000
-                      // airport: https://img.icons8.com/?size=100&id=12665&format=png&color=000000
                       iconUrl: `https://img.icons8.com/?size=20&id=${
                         hub.type === "HARBOR"
                           ? "9580"
                           : hub.type === "AIRPORT"
-                          ? "12665"
-                          : hub.type === "TRAIN_STATION"
-                          ? "9361"
-                          : "9351"
+                            ? "12665"
+                            : hub.type === "TRAIN_STATION"
+                              ? "9361"
+                              : "9351"
                       }&format=png&color=${(filterColors[hub.type as keyof typeof filterColors] as string).split("#")[1]}`,
                       iconRetinaUrl: `https://img.icons8.com/?size=100&id=${
                         hub.type === "HARBOR"
                           ? "9580"
                           : hub.type === "AIRPORT"
-                          ? "12665"
-                          : hub.type === "TRAIN_STATION"
-                          ? "9361"
-                          : "9351"
+                            ? "12665"
+                            : hub.type === "TRAIN_STATION"
+                              ? "9361"
+                              : "9351"
                       }&format=png&color=${(filterColors[hub.type as keyof typeof filterColors] as string).split("#")[1]}`,
-                      
+
                       iconSize: [25, 25],
                       iconAnchor: [12, 41],
                       popupAnchor: [0, -41],
@@ -243,72 +201,6 @@ function MapPage() {
             <LayerGroup>
               {bufferData.data.data.features.map((attraction) => (
                 <>
-                  {/* <Polygon
-                  key={`attraction-${attraction.properties.id}`}
-                  positions={attraction.geometry.coordinates[0].map(
-                    (coord: number[]) => [coord[1], coord[0]]
-                  )}
-                  pathOptions={{
-                    fillColor: attraction.properties.is_reachable
-                      ? "#00FF00" // Green for reachable
-                      : "#FF0000", // Red for not reachable
-                    fillOpacity: 0.3,
-                    color: "white",
-                    weight: 0.5,
-                  }}
-                  eventHandlers={{
-                    click: () => {
-                      setSelectedLocation({
-                        name: attraction.properties.attraction_name,
-                        description: `${attraction.properties.city}, ${attraction.properties.province}`,
-                        type: "attraction",
-                        nearbyTransport:
-                          attraction.properties.transportation_names || [],
-                        position: [
-                          attraction.properties.latitude,
-                          attraction.properties.longitude,
-                        ],
-                      });
-                    },
-                  }}
-                >
-                  <Popup
-                    closeButton={false}
-                    autoClose={false}
-                    className="custom-popup"
-                  >
-                    <Box p={1}>
-                      <Heading size="xs">
-                        {attraction.properties.attraction_name}
-                      </Heading>
-                      <Text fontSize="xs" mt={1}>
-                        {attraction.properties.city},{" "}
-                        {attraction.properties.province}
-                      </Text>
-                      {attraction.properties.transportation_count > 0 && (
-                        <Badge colorScheme="green" mt={1} size="xs">
-                          {attraction.properties.transportation_count} transport
-                          options
-                        </Badge>
-                      )}
-                    </Box>
-                  </Popup>
-                </Polygon> */}
-                  {/* <CircleMarker
-                    center={[
-                      attraction.properties.latitude,
-                      attraction.properties.longitude,
-                    ]}
-                    pathOptions={{
-                      fillColor: attraction.properties.is_reachable
-                        ? "#00FF00" // Green for reachable
-                        : "#FF0000", // Red for not reachable
-                      fillOpacity: 0.3,
-                      color: "white",
-                      weight: 0.5,
-                    }}
-                    radius={3}
-                  ></CircleMarker> */}
                   <Marker
                     key={`attraction-${attraction.properties.id}`}
                     position={[
@@ -403,6 +295,8 @@ function MapPage() {
         selectedProvince={selectedProvince!}
         setSelectedProvince={setSelectedProvince}
         data={bufferData?.data}
+        selectedBufferRadius={bufferRadius}
+        setSelectedBufferRadius={setBufferRadius}
       />
 
       {/* Mobile Controls */}
@@ -415,9 +309,13 @@ function MapPage() {
         onClose={onClose}
         activeFilters={activeFilters}
         borderColor={borderColor}
+        textColor={textColor}
         subtleTextColor={subtleTextColor}
         filterColors={filterColors}
         toggleFilter={toggleFilter}
+        selectedProvince={selectedProvince!}
+        setSelectedProvince={setSelectedProvince}
+        data={bufferData?.data}
       />
 
       {/* Location Info Popup */}

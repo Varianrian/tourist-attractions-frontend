@@ -1,6 +1,4 @@
 import { useFetch } from "@/utils/reactQuery";
-import { api } from "@/utils/api";
-import { type Response } from "@/types/response";
 import { type Province } from "@/types/province";
 
 export const apiRoutes = {

@@ -8,7 +8,6 @@ import {
   CloseButton,
 } from "@chakra-ui/react";
 import { getTransportIcon } from "../../utils/mapIcons";
-import { useMapColors } from "@/hooks/useMapColors";
 
 interface LocationDetailProps {
   location: {

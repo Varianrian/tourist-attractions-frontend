@@ -3,8 +3,6 @@ import { type Response } from "@/types/response";
 import type { BufferAnalysis } from "@/types/bufferAnalysis";
 
 export const apiRoutes = {
-// {{api_url}}/analysis/reachable-attractions?bufferRadius=3000&provinceName=Jawa Barat
-
   getBufferAnalysis: "/analysis/reachable-attractions",
 };
 
@@ -24,13 +22,29 @@ export const apiRoutes = {
 
 export const GetBufferAnalysis = (
   bufferRadius: number = 3000,
-  provinceName: string = "JAWA TENGAH"
+  provinceName: string = "JAWA TENGAH",
+  transportationType: {
+    AIRPORT: boolean;
+    BUS_STATION: boolean;
+    TRAIN_STATION: boolean;
+    HARBOR: boolean;
+  } = {
+    AIRPORT: true,
+    BUS_STATION: true,
+    TRAIN_STATION: true,
+    HARBOR: true,
+  }
 ) => {
+  const typeCommaSeparated = Object.entries(transportationType)
+    .filter(([_, value]) => value)
+    .map(([key]) => key)
+    .join(",");
   return useFetch<Response<BufferAnalysis>>(
     apiRoutes.getBufferAnalysis,
     {
       bufferRadius,
       provinceName,
+      transportationType: typeCommaSeparated,
     },
     {
       enabled: !!provinceName,
