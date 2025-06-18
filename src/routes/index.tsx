@@ -77,7 +77,7 @@ function LandingPage() {
             fontWeight="bold"
             letterSpacing="tight"
           >
-            Java Tourism GIS Platform
+            Platform GIS Pariwisata Jawa
           </Heading>
           <Text
             fontSize={{ base: "xl", md: "2xl" }}
@@ -86,8 +86,8 @@ function LandingPage() {
             fontWeight="medium"
             opacity={0.9}
           >
-            Discover accessible tourist attractions across Java Island based on
-            transportation hubs proximity
+            Temukan objek wisata yang mudah diakses di Pulau Jawa berdasarkan
+            kedekatan dengan pusat transportasi
           </Text>
           <Button
             size="lg"
@@ -102,7 +102,7 @@ function LandingPage() {
             onClick={() => (window.location.href = "/map")}
             _hover={{ transform: "translateY(-2px)", transition: "all 0.2s" }}
           >
-            Explore the Map
+            Jelajahi Peta
           </Button>
         </Flex>
       </Box>
@@ -117,14 +117,13 @@ function LandingPage() {
                 fontSize={{ base: "2xl", md: "3xl" }}
                 letterSpacing="tight"
               >
-                About Our Project
+                Tentang Aplikasi
               </Heading>
               <Box width="40px" height="2px" bg={accentColor} mb={6} />
               <Text fontSize="lg" maxWidth="800px" opacity={0.85}>
-                Our GIS platform analyzes and visualizes tourist attractions
-                across Java Island based on their accessibility from key
-                transportation hubs like airports, bus stations, railway
-                stations, and harbors.
+                Platform GIS kami menganalisis dan memvisualisasikan objek wisata
+                di Pulau Jawa berdasarkan aksesibilitas dari pusat transportasi utama 
+                seperti bandara, terminal bus, stasiun kereta api, dan pelabuhan.
               </Text>
             </Center>
 
@@ -147,24 +146,24 @@ function LandingPage() {
               <Stack direction="column" gap={8} py={4}>
                 <Box>
                   <Heading size="md" mb={3} letterSpacing="tight">
-                    Why Java Island?
+                    Mengapa Pulau Jawa?
                   </Heading>
                   <Text opacity={0.85} lineHeight="tall">
-                    Java is Indonesia's most populous island and home to
-                    numerous world-class tourist destinations. From ancient
-                    temples and vibrant cities to stunning natural landscapes,
-                    Java offers diverse attractions.
+                    Pulau Jawa adalah pulau terpadat di Indonesia dan rumah bagi
+                    banyak destinasi wisata kelas dunia. Dari candi-candi kuno
+                    dan kota-kota yang dinamis hingga pemandangan alam yang menakjubkan,
+                    Jawa menawarkan berbagai atraksi wisata yang beragam.
                   </Text>
                 </Box>
                 <Box>
                   <Heading size="md" mb={3} letterSpacing="tight">
-                    Our Methodology
+                    Metodologi Kami
                   </Heading>
                   <Text opacity={0.85} lineHeight="tall">
-                    We use buffer analysis around transportation hubs to
-                    identify tourist attractions within accessible distances.
-                    This helps travelers understand which attractions are most
-                    convenient to reach from different entry points.
+                    Kami menggunakan analisis buffer di sekitar pusat transportasi untuk
+                    mengidentifikasi objek wisata dalam jarak yang mudah diakses.
+                    Hal ini membantu wisatawan memahami objek wisata mana yang 
+                    paling nyaman dijangkau dari berbagai titik masuk.
                   </Text>
                 </Box>
               </Stack>
@@ -183,20 +182,20 @@ function LandingPage() {
                 fontSize={{ base: "2xl", md: "3xl" }}
                 letterSpacing="tight"
               >
-                Key Features
+                Fitur Utama
               </Heading>
               <Box width="40px" height="2px" bg={accentColor} mb={6} />
               <Text fontSize="lg" maxWidth="800px" opacity={0.85}>
-                Our platform provides valuable insights for travelers planning
-                their visit to Java Island
+                Platform kami menyediakan informasi berharga bagi wisatawan yang
+                merencanakan kunjungan ke Pulau Jawa
               </Text>
             </Center>
 
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={10}>
               <Feature
                 icon={<Icon as={FaMapMarkedAlt} boxSize={8} color="white" />}
-                title="Interactive GIS Map"
-                text="Explore an intuitive map interface showing tourist attractions and transportation hubs across Java Island"
+                title="Peta GIS Interaktif"
+                text="Jelajahi antarmuka peta intuitif yang menampilkan objek wisata dan pusat transportasi di seluruh Pulau Jawa"
                 styles={{
                   bg: "transparent",
                   bgGradient: useColorModeValue(
@@ -213,8 +212,8 @@ function LandingPage() {
               />
               <Feature
                 icon={<Icon as={FaRoad} boxSize={8} color="white" />}
-                title="Accessibility Analysis"
-                text="See which attractions fall within buffer zones of transportation hubs for easy accessibility planning"
+                title="Analisis Aksesibilitas"
+                text="Lihat objek wisata yang berada dalam zona buffer dari pusat transportasi untuk perencanaan aksesibilitas yang mudah"
                 styles={{
                   bg: "transparent",
                   bgGradient: useColorModeValue(
@@ -231,8 +230,8 @@ function LandingPage() {
               />
               <Feature
                 icon={<Icon as={FaPlane} boxSize={8} color="white" />}
-                title="Transportation Filters"
-                text="Filter attractions by their proximity to airports, bus stations, railway stations, or harbors"
+                title="Filter Transportasi"
+                text="Filter objek wisata berdasarkan kedekatan dengan bandara, terminal bus, stasiun kereta api, atau pelabuhan"
                 styles={{
                   bg: "transparent",
                   bgGradient: useColorModeValue(
@@ -262,71 +261,38 @@ function LandingPage() {
                 fontSize={{ base: "2xl", md: "3xl" }}
                 letterSpacing="tight"
               >
-                Transportation Analysis
+                Analisis Transportasi
               </Heading>
               <Box width="40px" height="2px" bg={accentColor} mb={6} />
               <Text fontSize="lg" maxWidth="800px" opacity={0.85}>
-                We analyze tourist attraction accessibility based on proximity
-                to these transportation types
+                Kami menganalisis aksesibilitas objek wisata berdasarkan kedekatan
+                dengan jenis-jenis transportasi berikut
               </Text>
             </Center>
 
             <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={8}>
               <TransportationCard
                 icon={FaPlane}
-                title="Airports"
-                description="Major international and domestic airports across Java Island"
+                title="Bandara"
+                description="Bandara internasional dan domestik utama di seluruh Pulau Jawa"
               />
               <TransportationCard
                 icon={FaBus}
-                title="Bus Stations"
-                description="Central bus terminals connecting major cities and towns"
+                title="Terminal Bus"
+                description="Terminal bus pusat yang menghubungkan kota-kota besar dan kecil"
               />
               <TransportationCard
                 icon={FaTrain}
-                title="Railway Stations"
-                description="Train stations along Java's extensive railway network"
+                title="Stasiun Kereta Api"
+                description="Stasiun kereta api di sepanjang jaringan kereta api Jawa yang luas"
               />
               <TransportationCard
                 icon={FaShip}
-                title="Harbors"
-                description="Passenger ports serving ferries and cruise ships"
+                title="Pelabuhan"
+                description="Pelabuhan penumpang yang melayani kapal feri dan kapal pesiar"
               />
             </SimpleGrid>
           </Stack>
-        </Box>
-      </Box>
-
-      {/* Contact Section */}
-      <Box id="contact" py={24}>
-        <Box maxWidth="800px" mx="auto" px={{ base: 4, md: 8 }}>
-          <Center flexDirection="column" textAlign="center" gap={8}>
-            <Heading
-              mb={3}
-              fontSize={{ base: "2xl", md: "3xl" }}
-              letterSpacing="tight"
-            >
-              Contact Us
-            </Heading>
-            <Box width="40px" height="2px" bg={accentColor} mb={4} />
-            <Text fontSize="lg" maxWidth="600px" opacity={0.85}>
-              Have questions about our GIS platform or need assistance with
-              planning your Java Island trip?
-            </Text>
-            <Button
-              colorScheme="blue"
-              variant={buttonVariant}
-              size="lg"
-              rounded="full"
-              px={8}
-              onClick={() =>
-                (window.location.href = "mailto:contact@javatourismgis.com")
-              }
-              _hover={{ transform: "translateY(-2px)", transition: "all 0.2s" }}
-            >
-              Get In Touch
-            </Button>
-          </Center>
         </Box>
       </Box>
 
@@ -339,9 +305,9 @@ function LandingPage() {
             alignItems="center"
             gap={6}
           >
-            <Text fontWeight="medium">Java Tourism GIS Platform</Text>
+            <Text fontWeight="medium">Platform GIS Pariwisata Jawa</Text>
             <Text opacity={0.7} fontSize="sm">
-              © {new Date().getFullYear()} - All Rights Reserved
+              © {new Date().getFullYear()} - Hak Cipta Dilindungi
             </Text>
           </Stack>
         </Box>
@@ -364,25 +330,25 @@ function TransportationCard({
   let gradientStyle;
 
   switch (title) {
-    case "Airports":
+    case "Bandara":
       gradientStyle = useColorModeValue(
         customGradients.orangeToPink,
         customGradients.pinkToPurple
       );
       break;
-    case "Bus Stations":
+    case "Terminal Bus":
       gradientStyle = useColorModeValue(
         customGradients.purpleToBlue,
         customGradients.blueToTeal
       );
       break;
-    case "Railway Stations":
+    case "Stasiun Kereta Api":
       gradientStyle = useColorModeValue(
         customGradients.blueToTeal,
         customGradients.tealToGreen
       );
       break;
-    case "Harbors":
+    case "Pelabuhan":
       gradientStyle = useColorModeValue(
         customGradients.tealToGreen,
         customGradients.greenToOrange
