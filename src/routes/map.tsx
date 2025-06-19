@@ -8,6 +8,7 @@ import {
   Popup,
   Polygon,
   Marker,
+  LayersControl,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -21,14 +22,7 @@ import NavBar from "../components/NavBar";
 import { GetAllTransportationWithFilter } from "@/api/transportation";
 import { GetProvinceByName } from "@/api/province";
 import { GetBufferAnalysis } from "@/api/buffer-analysis";
-
-// Fixes the default icon path issues in Leaflet
-// L.Icon.Default.mergeOptions({
-//   iconRetinaUrl:
-//     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-//   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-//   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-// });
+import { toaster } from "@/components/ui/toaster";
 
 export const Route = createFileRoute("/map")({
   component: MapPage,
@@ -40,7 +34,7 @@ function MapPage() {
     "JAWA TENGAH"
   );
   const [bufferRadius, setBufferRadius] = useState<number>(500);
-  
+
   const [activeFilters, setActiveFilters] = useState({
     AIRPORT: true,
     BUS_STATION: true,
@@ -69,7 +63,6 @@ function MapPage() {
     position?: [number, number];
   } | null>(null);
 
-
   const { open, onOpen, onClose } = useDisclosure();
   const {
     cardBgColor,
@@ -82,6 +75,18 @@ function MapPage() {
 
   // Toggle filter status
   const toggleFilter = (filterName: string) => {
+    // Minimum 1 filter must be active
+    if (
+      Object.values(activeFilters).filter((value) => value).length <= 1 &&
+      activeFilters[filterName as keyof typeof activeFilters]
+    ) {
+      toaster.create({
+        title: "Minimal 1 filter transportasi harus aktif",
+        type: "error",
+        closable: true,
+      });
+      return;
+    }
     setActiveFilters((prev) => ({
       ...prev,
       [filterName]: !prev[filterName as keyof typeof activeFilters],
@@ -106,176 +111,185 @@ function MapPage() {
             url={mapStyle}
           />
 
-          {/* Province Layer */}
-          {provinceData && (
-            <LayerGroup>
-              {provinceData.geometry.coordinates.map((polygon, index) => (
-                <Polygon
-                  key={`province-polygon-${index}`}
-                  // @ts-expect-error
-                  positions={polygon[0].map((coord: number[]) => [
-                    coord[1],
-                    coord[0],
-                  ])}
-                  pathOptions={{
-                    fillOpacity: 0.05,
-                    color: filterColors.ATTRACTION,
-                    weight: 1,
-                  }}
-                />
-              ))}
-            </LayerGroup>
-          )}
+          <LayersControl position="bottomleft">
+            {/* Province Layer */}
+            {provinceData && (
+              <LayersControl.Overlay name="Province Boundary" checked={true}>
+                <LayerGroup>
+                  {provinceData.geometry.coordinates.map((polygon, index) => (
+                    <Polygon
+                      key={`province-polygon-${index}`}
+                      // @ts-expect-error
+                      positions={polygon[0].map((coord: number[]) => [
+                        coord[1],
+                        coord[0],
+                      ])}
+                      pathOptions={{
+                        fillOpacity: 0.05,
+                        color: filterColors.ATTRACTION,
+                        weight: 1,
+                      }}
+                    />
+                  ))}
+                </LayerGroup>
+              </LayersControl.Overlay>
+            )}
 
-          {/* Transportation Hubs Layers */}
-          {data?.data?.transportations && (
-            <LayerGroup>
-              {data.data.transportations.map((hub) => (
-                <Marker
-                  key={`hub-${hub.latitude}-${hub.longitude}`}
-                  position={[hub.latitude, hub.longitude]}
-                  icon={
-                    new L.Icon({
-                      iconUrl: `https://img.icons8.com/?size=20&id=${
-                        hub.type === "HARBOR"
-                          ? "9580"
-                          : hub.type === "AIRPORT"
-                            ? "12665"
-                            : hub.type === "TRAIN_STATION"
-                              ? "9361"
-                              : "9351"
-                      }&format=png&color=${(filterColors[hub.type as keyof typeof filterColors] as string).split("#")[1]}`,
-                      iconRetinaUrl: `https://img.icons8.com/?size=100&id=${
-                        hub.type === "HARBOR"
-                          ? "9580"
-                          : hub.type === "AIRPORT"
-                            ? "12665"
-                            : hub.type === "TRAIN_STATION"
-                              ? "9361"
-                              : "9351"
-                      }&format=png&color=${(filterColors[hub.type as keyof typeof filterColors] as string).split("#")[1]}`,
+            {/* Transportation Hubs Layers */}
+            {data?.data?.transportations && (
+              <LayersControl.Overlay name="Transportation Hubs" checked={true}>
+                <LayerGroup>
+                  {data.data.transportations.map((hub) => (
+                    <Marker
+                      key={`hub-${hub.latitude}-${hub.longitude}`}
+                      position={[hub.latitude, hub.longitude]}
+                      icon={
+                        new L.Icon({
+                          iconUrl: `https://img.icons8.com/?size=20&id=${
+                            hub.type === "HARBOR"
+                              ? "9580"
+                              : hub.type === "AIRPORT"
+                                ? "12665"
+                                : hub.type === "TRAIN_STATION"
+                                  ? "9361"
+                                  : "9351"
+                          }&format=png&color=${(filterColors[hub.type as keyof typeof filterColors] as string).split("#")[1]}`,
+                          iconRetinaUrl: `https://img.icons8.com/?size=100&id=${
+                            hub.type === "HARBOR"
+                              ? "9580"
+                              : hub.type === "AIRPORT"
+                                ? "12665"
+                                : hub.type === "TRAIN_STATION"
+                                  ? "9361"
+                                  : "9351"
+                          }&format=png&color=${(filterColors[hub.type as keyof typeof filterColors] as string).split("#")[1]}`,
 
-                      iconSize: [25, 25],
-                      iconAnchor: [12, 41],
-                      popupAnchor: [0, -41],
-                      tooltipAnchor: [12, 0],
-                    })
-                  }
-                  eventHandlers={{
-                    click: () => {
-                      setSelectedLocation({
-                        name: hub.name,
-                        type: hub.type,
-                        description: hub.province,
-                        isHub: true,
-                        position: [hub.latitude, hub.longitude],
-                      });
-                    },
-                  }}
-                >
-                  <Popup
-                    closeButton={false}
-                    autoClose={false}
-                    className="custom-popup"
-                  >
-                    <Box p={1}>
-                      <Heading size="xs">{hub.name}</Heading>
-                      <Text fontSize="xs" mt={1}>
-                        {hub.type === "HARBOR"
-                          ? "Harbor"
-                          : hub.type === "AIRPORT"
-                            ? "Airport"
-                            : hub.type === "TRAIN_STATION"
-                              ? "Train Station"
-                              : "Bus Station"}
-                      </Text>
-                    </Box>
-                  </Popup>
-                </Marker>
-              ))}
-            </LayerGroup>
-          )}
-
-          {/* Attractions Layer */}
-          {bufferData?.data && (
-            <LayerGroup>
-              {bufferData.data.data.features.map((attraction) => (
-                <>
-                  <Marker
-                    key={`attraction-${attraction.properties.id}`}
-                    position={[
-                      attraction.properties.latitude,
-                      attraction.properties.longitude,
-                    ]}
-                    icon={
-                      new L.Icon({
-                        iconUrl: `https://img.icons8.com/?size=100&id=62215&format=png&color=${
-                          attraction.properties.is_reachable
-                            ? (
-                                filterColors.ATTRACTION_REACHABLE as string
-                              ).split("#")[1]
-                            : (
-                                filterColors.ATTRACTION_UNREACHABLE as string
-                              ).split("#")[1]
-                        }`,
-                        iconRetinaUrl: `https://img.icons8.com/?size=100&id=62215&format=png&color=${
-                          attraction.properties.is_reachable
-                            ? (
-                                filterColors.ATTRACTION_REACHABLE as string
-                              ).split("#")[1]
-                            : (
-                                filterColors.ATTRACTION_UNREACHABLE as string
-                              ).split("#")[1]
-                        }`,
-                        iconSize: [25, 25],
-                        iconAnchor: [12, 41],
-                        popupAnchor: [0, -41],
-                        tooltipAnchor: [12, 0],
-                      })
-                    }
-                    eventHandlers={{
-                      click: () => {
-                        setSelectedLocation({
-                          name: attraction.properties.attraction_name,
-                          description: `${attraction.properties.city}, ${attraction.properties.province}`,
-                          type: "attraction",
-                          nearbyTransport:
-                            attraction.properties.transportation_names || [],
-                          isHub: false,
-                          position: [
-                            attraction.properties.latitude,
-                            attraction.properties.longitude,
-                          ],
-                        });
-                      },
-                    }}
-                  >
-                    <Popup
-                      closeButton={false}
-                      autoClose={false}
-                      className="custom-popup"
+                          iconSize: [25, 25],
+                          iconAnchor: [12, 41],
+                          popupAnchor: [0, -41],
+                          tooltipAnchor: [12, 0],
+                        })
+                      }
+                      eventHandlers={{
+                        click: () => {
+                          setSelectedLocation({
+                            name: hub.name,
+                            type: hub.type,
+                            description: hub.province,
+                            isHub: true,
+                            position: [hub.latitude, hub.longitude],
+                          });
+                        },
+                      }}
                     >
-                      <Box p={1}>
-                        <Heading size="xs">
-                          {attraction.properties.attraction_name}
-                        </Heading>
-                        <Text fontSize="xs" mt={1}>
-                          {attraction.properties.city},{" "}
-                          {attraction.properties.province}
-                        </Text>
-                        {attraction.properties.transportation_count > 0 && (
-                          <Badge colorScheme="green" mt={1} size="xs">
-                            {attraction.properties.transportation_count}{" "}
-                            transport options
-                          </Badge>
-                        )}
-                      </Box>
-                    </Popup>
-                  </Marker>
-                </>
-              ))}
-            </LayerGroup>
-          )}
+                      <Popup
+                        closeButton={false}
+                        autoClose={false}
+                        className="custom-popup"
+                      >
+                        <Box p={1}>
+                          <Heading size="xs">{hub.name}</Heading>
+                          <Text fontSize="xs" mt={1}>
+                            {hub.type === "HARBOR"
+                              ? "Harbor"
+                              : hub.type === "AIRPORT"
+                                ? "Airport"
+                                : hub.type === "TRAIN_STATION"
+                                  ? "Train Station"
+                                  : "Bus Station"}
+                          </Text>
+                        </Box>
+                      </Popup>
+                    </Marker>
+                  ))}
+                </LayerGroup>
+              </LayersControl.Overlay>
+            )}
+
+            {/* Attractions Layer */}
+            {bufferData?.data && (
+              <LayersControl.Overlay name="Attractions" checked={true}>
+                <LayerGroup>
+                  {bufferData.data.data.features.map((attraction) => (
+                    <>
+                      <Marker
+                        key={`attraction-${attraction.properties.id}`}
+                        position={[
+                          attraction.properties.latitude,
+                          attraction.properties.longitude,
+                        ]}
+                        icon={
+                          new L.Icon({
+                            iconUrl: `https://img.icons8.com/?size=100&id=62215&format=png&color=${
+                              attraction.properties.is_reachable
+                                ? (
+                                    filterColors.ATTRACTION_REACHABLE as string
+                                  ).split("#")[1]
+                                : (
+                                    filterColors.ATTRACTION_UNREACHABLE as string
+                                  ).split("#")[1]
+                            }`,
+                            iconRetinaUrl: `https://img.icons8.com/?size=100&id=62215&format=png&color=${
+                              attraction.properties.is_reachable
+                                ? (
+                                    filterColors.ATTRACTION_REACHABLE as string
+                                  ).split("#")[1]
+                                : (
+                                    filterColors.ATTRACTION_UNREACHABLE as string
+                                  ).split("#")[1]
+                            }`,
+                            iconSize: [25, 25],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [0, -41],
+                            tooltipAnchor: [12, 0],
+                          })
+                        }
+                        eventHandlers={{
+                          click: () => {
+                            setSelectedLocation({
+                              name: attraction.properties.attraction_name,
+                              description: `${attraction.properties.city}, ${attraction.properties.province}`,
+                              type: "attraction",
+                              nearbyTransport:
+                                attraction.properties.transportation_names ||
+                                [],
+                              isHub: false,
+                              position: [
+                                attraction.properties.latitude,
+                                attraction.properties.longitude,
+                              ],
+                            });
+                          },
+                        }}
+                      >
+                        <Popup
+                          closeButton={false}
+                          autoClose={false}
+                          className="custom-popup"
+                        >
+                          <Box p={1}>
+                            <Heading size="xs">
+                              {attraction.properties.attraction_name}
+                            </Heading>
+                            <Text fontSize="xs" mt={1}>
+                              {attraction.properties.city},{" "}
+                              {attraction.properties.province}
+                            </Text>
+                            {attraction.properties.transportation_count > 0 && (
+                              <Badge colorScheme="green" mt={1} size="xs">
+                                {attraction.properties.transportation_count}{" "}
+                                transport options
+                              </Badge>
+                            )}
+                          </Box>
+                        </Popup>
+                      </Marker>
+                    </>
+                  ))}
+                </LayerGroup>
+              </LayersControl.Overlay>
+            )}
+          </LayersControl>
 
           {selectedLocation?.position && (
             <SetMapView center={selectedLocation.position} zoom={10} />

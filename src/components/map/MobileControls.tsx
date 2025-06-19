@@ -1,5 +1,5 @@
 import { IconButton, HStack, Icon } from "@chakra-ui/react";
-import { FaList, FaSearch, FaMapMarkerAlt, FaCompass, FaHome } from "react-icons/fa";
+import { FaList, FaHome } from "react-icons/fa";
 
 interface MobileControlsProps {
   onOpenFilters: () => void;
@@ -27,33 +27,6 @@ export function MobileControls({ onOpenFilters }: MobileControlsProps) {
           boxShadow="lg"
         >
           <FaList />
-        </IconButton>
-        <IconButton
-          aria-label="Search"
-          colorScheme="blue"
-          size="lg"
-          borderRadius="full"
-          boxShadow="lg"
-        >
-          <FaSearch />
-        </IconButton>
-        <IconButton
-          aria-label="Map layers"
-          colorScheme="blue"
-          size="lg"
-          borderRadius="full"
-          boxShadow="lg"
-        >
-          <FaMapMarkerAlt />
-        </IconButton>
-        <IconButton
-          aria-label="My location"
-          colorScheme="blue"
-          size="lg"
-          borderRadius="full"
-          boxShadow="lg"
-        >
-          <FaCompass />
         </IconButton>
       </HStack>
 

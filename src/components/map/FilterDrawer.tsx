@@ -117,6 +117,14 @@ export function FilterDrawer({
                     </Button>
                     <Button
                       colorScheme={
+                        selectedProvince === "DI YOGYAKARTA" ? "blue" : "gray"
+                      }
+                      onClick={() => setSelectedProvince("DI YOGYAKARTA")}
+                    >
+                      D.I. Yogyakarta
+                    </Button>
+                    <Button
+                      colorScheme={
                         selectedProvince === "BANTEN" ? "blue" : "gray"
                       }
                       onClick={() => setSelectedProvince("BANTEN")}
