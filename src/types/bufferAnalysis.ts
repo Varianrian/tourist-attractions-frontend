@@ -11,7 +11,10 @@ export interface BufferAnalysis {
           city: string;
           latitude: number;
           longitude: number;
-          transportation_names: string[];
+          transportations: {
+            name: string;
+            type: string;
+          }[];
           transportation_count: number;
           is_reachable: boolean;
         };

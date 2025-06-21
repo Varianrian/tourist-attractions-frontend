@@ -1,11 +1,16 @@
-import { IconButton, HStack, Icon } from "@chakra-ui/react";
-import { FaList, FaHome } from "react-icons/fa";
+import { IconButton, HStack } from "@chakra-ui/react";
+import { GrDocumentText } from "react-icons/gr";
+import { ImMap2 } from "react-icons/im";
 
 interface MobileControlsProps {
   onOpenFilters: () => void;
+  onOpenResult: () => void;
 }
 
-export function MobileControls({ onOpenFilters }: MobileControlsProps) {
+export function MobileControls({
+  onOpenFilters,
+  onOpenResult,
+}: MobileControlsProps) {
   return (
     <>
       {/* Mobile Controls */}
@@ -26,25 +31,19 @@ export function MobileControls({ onOpenFilters }: MobileControlsProps) {
           borderRadius="full"
           boxShadow="lg"
         >
-          <FaList />
+          <ImMap2 />
+        </IconButton>
+        <IconButton
+          aria-label="Open filters"
+          onClick={onOpenResult}
+          colorScheme="blue"
+          size="lg"
+          borderRadius="full"
+          boxShadow="lg"
+        >
+          <GrDocumentText />
         </IconButton>
       </HStack>
-
-      {/* Home Button */}
-      <IconButton
-        aria-label="Return to Home"
-        position="absolute"
-        bottom="24px"
-        right="16px"
-        zIndex="2"
-        colorScheme="blue"
-        size="lg"
-        borderRadius="full"
-        boxShadow="lg"
-        onClick={() => (window.location.href = "/")}
-      >
-        <Icon as={FaHome} boxSize={6} />
-      </IconButton>
     </>
   );
 }

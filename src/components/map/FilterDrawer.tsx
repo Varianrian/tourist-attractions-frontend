@@ -6,9 +6,16 @@ import {
   Stack,
   Button,
   ButtonGroup,
+  Checkbox,
+  HStack,
 } from "@chakra-ui/react";
 import { FilterButton } from "./FilterButton";
 import { type TransportationType } from "@/types/transportation";
+import { bufferRadiusOptions } from "../../data/sampleData";
+import { useColorModeValue } from "../../components/ui/color-mode";
+import { FaInfoCircle as InfoCircleIcon } from "react-icons/fa";
+import { Tooltip } from "../../components/ui/tooltip";
+import React from "react";
 
 interface FilterDrawerProps {
   open: boolean;
@@ -18,10 +25,13 @@ interface FilterDrawerProps {
   borderColor: string;
   subtleTextColor: string;
   textColor?: string;
+  cardBgColor?: string;
   filterColors: Record<TransportationType | string, string>;
   toggleFilter: (type: TransportationType) => void;
   selectedProvince?: string;
   setSelectedProvince?: (province: string) => void;
+  selectedBufferRadius?: number;
+  setSelectedBufferRadius?: (radius: number) => void;
   data?: {
     data: {
       metadata: {
@@ -33,6 +43,33 @@ interface FilterDrawerProps {
       };
     };
   };
+  activeLayers?: {
+    province: boolean;
+    transportationHubs: boolean;
+    reachableAttractions: boolean;
+    unreachableAttractions: boolean;
+  };
+  setActiveLayers?: React.Dispatch<
+    React.SetStateAction<{
+      province: boolean;
+      transportationHubs: boolean;
+      reachableAttractions: boolean;
+      unreachableAttractions: boolean;
+    }>
+  >;
+  setSelectedLocation: React.Dispatch<
+    React.SetStateAction<{
+      name: string;
+      description?: string;
+      type: string;
+      nearbyTransport?: {
+        name: string;
+        type: string;
+      }[];
+      isHub?: boolean;
+      position?: [number, number];
+    } | null>
+  >;
 }
 
 export function FilterDrawer({
@@ -47,8 +84,12 @@ export function FilterDrawer({
   toggleFilter,
   selectedProvince,
   setSelectedProvince,
-  data,
+  selectedBufferRadius,
+  setSelectedBufferRadius,
+  activeLayers,
+  setActiveLayers,
 }: FilterDrawerProps) {
+  const checkboxBorderColor = useColorModeValue("gray.300", "gray.600");
   return (
     <Drawer.Root
       open={open}
@@ -67,9 +108,40 @@ export function FilterDrawer({
             <Drawer.CloseTrigger asChild>
               <CloseButton />
             </Drawer.CloseTrigger>
-          </Drawer.Header>
+          </Drawer.Header>{" "}
           <Drawer.Body>
             <Stack gap={6}>
+              {/* Buffer Radius Control */}
+              {selectedBufferRadius !== undefined &&
+                setSelectedBufferRadius && (
+                  <Box>
+                    <Heading size="sm" mb={3} color={textColor}>
+                      Buffer Radius
+                    </Heading>
+                    <ButtonGroup
+                      size="sm"
+                      variant="outline"
+                      display="flex"
+                      flexWrap="wrap"
+                      gap={2}
+                    >
+                      {bufferRadiusOptions.items.map((option) => (
+                        <Button
+                          key={option.value}
+                          colorScheme={
+                            selectedBufferRadius == option.value
+                              ? "blue"
+                              : "gray"
+                          }
+                          onClick={() => setSelectedBufferRadius(option.value)}
+                        >
+                          {option.label}
+                        </Button>
+                      ))}
+                    </ButtonGroup>
+                  </Box>
+                )}
+
               {/* Province Filter */}
               {selectedProvince && setSelectedProvince && (
                 <Box>
@@ -178,62 +250,82 @@ export function FilterDrawer({
                     filterColors={filterColors}
                     onToggle={toggleFilter}
                   />
-                </Stack>
+                </Stack>{" "}
               </Box>
 
-              {/* Buffer Analysis Results */}
-              {data && data.data && (
-                <Box
-                  borderWidth="1px"
-                  borderColor={borderColor}
-                  borderRadius="xl"
-                  p={4}
-                >
+              {/* Layer Control */}
+              {activeLayers && setActiveLayers && (
+                <Box>
                   <Heading size="sm" mb={3} color={textColor}>
-                    Buffer Analysis Results
+                    Layer Control
                   </Heading>
-                  <Stack>
-                    <Box
-                      borderBottomWidth="1px"
-                      borderColor={borderColor}
-                      pb={2}
+                  <Stack gap={2}>
+                    <Checkbox.Root
+                      checked={activeLayers.province}
+                      onCheckedChange={(value) =>
+                        setActiveLayers((prev) => ({
+                          ...prev,
+                          province: Boolean(value.checked),
+                        }))
+                      }
                     >
-                      <Box as="span" fontWeight="bold" mr={2}>
-                        Buffer Radius:
-                      </Box>
-                      {data.data.metadata.bufferRadiusMeters >= 1000
-                        ? `${(data.data.metadata.bufferRadiusMeters / 1000).toFixed(1)} km`
-                        : `${data.data.metadata.bufferRadiusMeters} m`}
-                    </Box>
-
-                    <Box
-                      borderBottomWidth="1px"
-                      borderColor={borderColor}
-                      pb={2}
+                      <Checkbox.HiddenInput />
+                      <Checkbox.Control borderColor={checkboxBorderColor} />
+                      <Checkbox.Label>Batas Provinsi</Checkbox.Label>
+                    </Checkbox.Root>
+                    <Checkbox.Root
+                      checked={activeLayers.reachableAttractions}
+                      onCheckedChange={(value) =>
+                        setActiveLayers((prev) => ({
+                          ...prev,
+                          reachableAttractions: Boolean(value.checked),
+                        }))
+                      }
                     >
-                      <Box as="span" fontWeight="bold" mr={2}>
-                        Total Attractions:
-                      </Box>
-                      {data.data.metadata.totalAttractions}
-                    </Box>
-
-                    <Box
-                      borderBottomWidth="1px"
-                      borderColor={borderColor}
-                      pb={2}
+                      <Checkbox.HiddenInput />
+                      <Checkbox.Control borderColor={checkboxBorderColor} />
+                      <HStack alignItems={"center"}>
+                        <Checkbox.Label>
+                          Tempat Wisata Terjangkau
+                        </Checkbox.Label>
+                        <Tooltip content="Tempat wisata yang dapat dijangkau dalam radius buffer yang ditentukan.">
+                          <InfoCircleIcon />
+                        </Tooltip>
+                      </HStack>
+                    </Checkbox.Root>
+                    <Checkbox.Root
+                      checked={activeLayers.unreachableAttractions}
+                      onCheckedChange={(value) =>
+                        setActiveLayers((prev) => ({
+                          ...prev,
+                          unreachableAttractions: Boolean(value.checked),
+                        }))
+                      }
                     >
-                      <Box as="span" fontWeight="bold" color="green.500" mr={2}>
-                        Reachable:
-                      </Box>
-                      {data.data.metadata.reachableAttractions}
-                    </Box>
-
-                    <Box pb={2}>
-                      <Box as="span" fontWeight="bold" color="red.500" mr={2}>
-                        Unreachable:
-                      </Box>
-                      {data.data.metadata.unreachableAttractions}
-                    </Box>
+                      <Checkbox.HiddenInput />
+                      <Checkbox.Control borderColor={checkboxBorderColor} />
+                      <HStack alignItems={"center"}>
+                        <Checkbox.Label>
+                          Tempat Wisata Tidak Terjangkau
+                        </Checkbox.Label>
+                        <Tooltip content="Tempat wisata yang tidak dapat dijangkau dalam radius buffer yang ditentukan.">
+                          <InfoCircleIcon />
+                        </Tooltip>
+                      </HStack>
+                    </Checkbox.Root>
+                    <Checkbox.Root
+                      checked={activeLayers.transportationHubs}
+                      onCheckedChange={(value) =>
+                        setActiveLayers((prev) => ({
+                          ...prev,
+                          transportationHubs: Boolean(value.checked),
+                        }))
+                      }
+                    >
+                      <Checkbox.HiddenInput />
+                      <Checkbox.Control borderColor={checkboxBorderColor} />
+                      <Checkbox.Label>Transportasi Umum</Checkbox.Label>
+                    </Checkbox.Root>
                   </Stack>
                 </Box>
               )}

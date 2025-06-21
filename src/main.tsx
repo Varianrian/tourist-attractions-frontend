@@ -2,7 +2,7 @@
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Provider } from "./components/ui/provider.tsx";
 
 // Import the generated route tree
@@ -42,7 +42,7 @@ if (rootElement && !rootElement.innerHTML) {
     <QueryClientProvider client={queryClient}>
       <Provider>
         <RouterProvider router={router} />
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </Provider>
     </QueryClientProvider>
   );

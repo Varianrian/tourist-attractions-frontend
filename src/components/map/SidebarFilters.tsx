@@ -13,18 +13,24 @@ import {
   Text,
   ProgressCircle,
   AbsoluteCenter,
+  Checkbox,
 } from "@chakra-ui/react";
 import { useColorModeValue } from "../../components/ui/color-mode";
 import { FilterButton } from "./FilterButton";
 import { bufferRadiusOptions, provinces } from "../../data/sampleData";
-import { type TransportationType } from "@/types/transportation";
+import {
+  type Transportation,
+  type TransportationType,
+} from "@/types/transportation";
 import { useState } from "react";
 import {
   FaChevronLeft as ChevronLeftIcon,
   FaChevronRight as ChevronRightIcon,
+  FaInfoCircle as InfoCircleIcon,
 } from "react-icons/fa";
 import { Select } from "@chakra-ui/react";
 import { type BufferAnalysis } from "@/types/bufferAnalysis";
+import { Tooltip } from "../../components/ui/tooltip";
 
 interface SidebarFiltersProps {
   activeFilters: Record<TransportationType, boolean>;
@@ -39,6 +45,34 @@ interface SidebarFiltersProps {
   selectedBufferRadius: number;
   setSelectedBufferRadius: (radius: number) => void;
   data: BufferAnalysis | undefined;
+  activeLayers: {
+    province: boolean;
+    transportationHubs: boolean;
+    reachableAttractions: boolean;
+    unreachableAttractions: boolean;
+  };
+  setActiveLayers: React.Dispatch<
+    React.SetStateAction<{
+      province: boolean;
+      transportationHubs: boolean;
+      reachableAttractions: boolean;
+      unreachableAttractions: boolean;
+    }>
+  >;
+  setSelectedLocation: React.Dispatch<
+    React.SetStateAction<{
+      name: string;
+      description?: string;
+      type: string;
+      nearbyTransport?: {
+        name: string;
+        type: string;
+      }[];
+      isHub?: boolean;
+      position?: [number, number];
+    } | null>
+  >;
+  transportations: Transportation[];
 }
 
 export function SidebarFilters({
@@ -54,6 +88,10 @@ export function SidebarFilters({
   selectedBufferRadius,
   setSelectedBufferRadius,
   data,
+  activeLayers,
+  setActiveLayers,
+  setSelectedLocation,
+  transportations,
 }: SidebarFiltersProps) {
   if (!data) {
     return null; // Return null if no data is available
@@ -75,16 +113,19 @@ export function SidebarFilters({
     }
     return `${meters} m`;
   };
-  const [isOpen, setIsOpen] = useState(true);
+  const [isSidebarLeftOpen, setIsSidebarLeftOpen] = useState(true);
+  const [isSidebarRightOpen, setIsSidebarRightOpen] = useState(true);
+
+  const checkboxBorderColor = useColorModeValue("gray.300", "gray.600");
 
   return (
     <>
       {/* Toggle button always visible */}
       <IconButton
-        aria-label={isOpen ? "Close filters" : "Open filters"}
+        aria-label={isSidebarLeftOpen ? "Close filters" : "Open filters"}
         position="absolute"
         top="80px"
-        left={isOpen ? "360px" : "16px"}
+        left={isSidebarLeftOpen ? "360px" : "16px"}
         zIndex={3}
         bg={cardBgColor}
         color={textColor}
@@ -93,19 +134,39 @@ export function SidebarFilters({
         borderRadius="md"
         boxShadow="md"
         size="md"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsSidebarLeftOpen(!isSidebarLeftOpen)}
         display={{ base: "none", md: "flex" }}
         transition="left 0.3s ease"
       >
-        {isOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+        {isSidebarLeftOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
       </IconButton>
 
-      {/* Sidebar with filters */}
+      <IconButton
+        aria-label={isSidebarRightOpen ? "Close filters" : "Open filters"}
+        position="absolute"
+        top="80px"
+        right={isSidebarRightOpen ? "360px" : "16px"}
+        zIndex={3}
+        bg={cardBgColor}
+        color={textColor}
+        borderWidth="1px"
+        borderColor={borderColor}
+        borderRadius="md"
+        boxShadow="md"
+        size="md"
+        onClick={() => setIsSidebarRightOpen(!isSidebarRightOpen)}
+        display={{ base: "none", md: "flex" }}
+        transition="right 0.3s ease"
+      >
+        {isSidebarRightOpen ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+      </IconButton>
+
+      {/* Sidebar Left with filters */}
       <VStack
         gap={6}
         position="absolute"
         top="80px"
-        left={isOpen ? "16px" : "-350px"}
+        left={isSidebarLeftOpen ? "16px" : "-350px"}
         transition="left 0.3s ease"
         maxH="calc(100vh - 80px)"
         overflowY="auto"
@@ -346,11 +407,93 @@ export function SidebarFilters({
                 />
               </Stack>
             </Stack>
+
+            {/* Layer Control */}
+            <Stack gap={3}>
+              <Heading size="sm" mb={1} color={textColor}>
+                Layer Control
+              </Heading>
+              <Checkbox.Root
+                checked={activeLayers.province}
+                onCheckedChange={(value) =>
+                  setActiveLayers((prev) => ({
+                    ...prev,
+                    province: Boolean(value.checked),
+                  }))
+                }
+              >
+                <Checkbox.HiddenInput />
+                <Checkbox.Control borderColor={checkboxBorderColor} />
+                <Checkbox.Label>Batas Provinsi</Checkbox.Label>
+              </Checkbox.Root>
+              <Checkbox.Root
+                checked={activeLayers.reachableAttractions}
+                onCheckedChange={(value) =>
+                  setActiveLayers((prev) => ({
+                    ...prev,
+                    reachableAttractions: Boolean(value.checked),
+                  }))
+                }
+              >
+                <Checkbox.HiddenInput />
+                <Checkbox.Control borderColor={checkboxBorderColor} />
+                <HStack alignItems={"center"}>
+                  <Checkbox.Label>Tempat Wisata Terjangkau</Checkbox.Label>
+                  <Tooltip content="Tempat wisata yang dapat dijangkau dalam radius buffer yang ditentukan.">
+                    <InfoCircleIcon />
+                  </Tooltip>
+                </HStack>
+              </Checkbox.Root>
+              <Checkbox.Root
+                checked={activeLayers.unreachableAttractions}
+                onCheckedChange={(value) =>
+                  setActiveLayers((prev) => ({
+                    ...prev,
+                    unreachableAttractions: Boolean(value.checked),
+                  }))
+                }
+              >
+                <Checkbox.HiddenInput />
+                <Checkbox.Control borderColor={checkboxBorderColor} />
+                <HStack alignItems={"center"}>
+                  <Checkbox.Label>
+                    Tempat Wisata Tidak Terjangkau
+                  </Checkbox.Label>
+                  <Tooltip content="Tempat wisata yang tidak dapat dijangkau dalam radius buffer yang ditentukan.">
+                    <InfoCircleIcon />
+                  </Tooltip>
+                </HStack>
+              </Checkbox.Root>
+              <Checkbox.Root
+                checked={activeLayers.transportationHubs}
+                onCheckedChange={(value) =>
+                  setActiveLayers((prev) => ({
+                    ...prev,
+                    transportationHubs: Boolean(value.checked),
+                  }))
+                }
+              >
+                <Checkbox.HiddenInput />
+                <Checkbox.Control borderColor={checkboxBorderColor} />
+                <Checkbox.Label>Transportasi Umum</Checkbox.Label>
+              </Checkbox.Root>
+            </Stack>
           </Stack>
         </Box>
+      </VStack>
 
+      {/* Sidebar Right with filters */}
+      <VStack
+        gap={6}
+        position="absolute"
+        top="80px"
+        right={isSidebarRightOpen ? "16px" : "-350px"}
+        transition="right 0.3s ease"
+        maxH="calc(100vh - 80px)"
+        overflowY="auto"
+        paddingBottom="16px"
+      >
         <Box
-          left={isOpen ? "16px" : "-350px"}
           zIndex="2"
           bg={cardBgColor}
           borderRadius="xl"
@@ -359,7 +502,7 @@ export function SidebarFilters({
           borderWidth="1px"
           borderColor={borderColor}
           display={{ base: "none", md: "block" }}
-          transition="left 0.3s ease"
+          transition="right 0.3s ease"
           width="340px"
         >
           <Stack gap={4}>
@@ -436,28 +579,117 @@ export function SidebarFilters({
 
             <Box height="1px" bg={borderColor} my={1} />
 
-            {/* <Box>
-              <Text fontSize="xs" color={subtleTextColor} mb={1}>
-                Analysis Filters
-              </Text>
-              <Flex gap={2} flexWrap="wrap">
-                {filters.transportationType && (
-                  <Badge colorScheme="purple" variant="subtle" fontSize="xs">
-                    {filters.transportationType.replace(/_/g, " ")}
-                  </Badge>
-                )}
-                {filters.provinceName && (
-                  <Badge colorScheme="teal" variant="subtle" fontSize="xs">
-                    {filters.provinceName}
-                  </Badge>
-                )}
-              </Flex>
-            </Box> */}
+            {/* Top 10 Attractions */}
+            <Stack gap={2}>
+              <Heading size="sm" color={textColor}>
+                Top 10 Attractions
+              </Heading>
+              {data.data.features
+                .slice(0, 10)
+                .filter((feature) => feature.properties.is_reachable)
+                .map((feature) => (
+                  <HStack
+                    key={feature.properties.id}
+                    justifyContent="space-between"
+                    alignItems="center"
+                    cursor="pointer"
+                    onClick={() =>
+                      setSelectedLocation({
+                        name: feature.properties.attraction_name,
+                        description: feature.properties.city,
+                        type: "attraction",
+                        nearbyTransport: feature.properties.transportations,
+                        isHub: false,
+                        position: [
+                          feature.properties.latitude,
+                          feature.properties.longitude,
+                        ],
+                      })
+                    }
+                  >
+                    <Text fontSize="sm" color={textColor}>
+                      {feature.properties.attraction_name}
+                    </Text>
+                    {/* Reached by transportations.lenghts */}
+                    <Badge
+                      colorScheme="blue"
+                      variant="subtle"
+                      fontSize="xs"
+                      px={2}
+                      py={1}
+                      borderRadius="md"
+                    >
+                      {feature.properties.transportation_count}{" "}
+                      {feature.properties.transportation_count >= 1
+                        ? "Transportasi"
+                        : "Transportasi"}
+                    </Badge>
+                  </HStack>
+                ))}
+            </Stack>
+            <Box height="1px" bg={borderColor} my={1} />
+
+            {/* Legends */}
+            <Stack gap={2}>
+              <Heading size="sm" color={textColor}>
+                Legenda
+              </Heading>
+              <HStack gap={2} flexWrap="wrap">
+                {Object.entries(filterColors)
+                  .filter(([type]) => type !== "ATTRACTION")
+                  .map(([type, color]) => (
+                    <Box
+                      key={type}
+                      display="flex"
+                      alignItems="center"
+                      gap={2}
+                      bgColor={cardBgColor}
+                      borderWidth="1px"
+                      borderColor={color}
+                      borderRadius="md"
+                      px={3}
+                      py={1}
+                    >
+                      <Box alignContent={"text-center"}>
+                        <img
+                          src={`https://img.icons8.com/?size=20&id=${
+                            type === "HARBOR"
+                              ? "9580"
+                              : type === "AIRPORT"
+                                ? "12665"
+                                : type === "TRAIN_STATION"
+                                  ? "9361"
+                                  : type === "BUS_STATION"
+                                    ? "9351"
+                                    : type === "ATTRACTION_REACHABLE"
+                                      ? "62215"
+                                      : "62215"
+                          }&format=png&color=${color.split("#")[1]}`}
+                          alt={type}
+                        />
+                      </Box>
+                      <Text fontSize="sm" color={textColor}>
+                        {type.charAt(0).toUpperCase() +
+                          type.slice(1).replace(/_/g, " ")}{" "}
+                        {" ("}
+                        {type === "ATTRACTION_REACHABLE" ||
+                        type === "ATTRACTION_UNREACHABLE"
+                          ? data.data.features.filter(
+                              (feature) =>
+                                feature.properties.is_reachable ===
+                                (type === "ATTRACTION_REACHABLE")
+                            ).length
+                          : transportations.filter((t) => t.type === type)
+                              .length}
+                        {")"}
+                      </Text>
+                    </Box>
+                  ))}
+              </HStack>
+            </Stack>
           </Stack>
         </Box>
       </VStack>
-
-      {/* Placeholder for additional content */}
     </>
   );
 }

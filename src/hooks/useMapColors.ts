@@ -13,20 +13,6 @@ export const useMapColors = () => {
     "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
   );
 
-  // Filter colors for each transportation type
-  //   const filterColors = {
-  //     airport: useColorModeValue(
-  //       customShades.orange[500],
-  //       customShades.orange[400]
-  //     ),
-  //     bus: useColorModeValue(customShades.purple[500], customShades.purple[400]),
-  //     train: useColorModeValue(customShades.blue[500], customShades.blue[400]),
-  //     harbor: useColorModeValue(customShades.teal[500], customShades.teal[400]),
-  //     attraction: useColorModeValue(
-  //       customShades.green[500],
-  //       customShades.green[400]
-  //     ),
-  //   };
   const filterColors: Record<TransportationType | string, string> = {
     AIRPORT: useColorModeValue(
       customShades.orange[500],

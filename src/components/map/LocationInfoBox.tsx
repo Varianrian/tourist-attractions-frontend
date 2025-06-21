@@ -14,7 +14,10 @@ interface LocationDetailProps {
     name: string;
     description?: string;
     type: string;
-    nearbyTransport?: string[];
+    nearbyTransport?: {
+      name: string;
+      type: string;
+    }[];
     isHub?: boolean;
     position?: [number, number];
   } | null;
@@ -34,6 +37,7 @@ export function LocationInfoBox({
   borderColor,
 }: LocationDetailProps) {
   if (!location) return null;
+  console.log("Location Info Box", location);
 
   return (
     <Box
@@ -52,14 +56,19 @@ export function LocationInfoBox({
       borderColor={borderColor}
     >
       <Box mb={3}>
-        <HStack justifyContent="space-between" alignItems="flex-start">
+        <HStack justifyContent="space-between" alignItems="center">
           <Heading as="h3" size="md" color={textColor}>
-            {location.name}
+            {location.name} {location.position && (
+              <Text fontSize="xs" color={subtleTextColor} mr={1} fontStyle="italic">
+                {location.position[0].toFixed(4)},{" "}
+                {location.position[1].toFixed(4)}
+              </Text>
+            )}
           </Heading>
           <CloseButton onClick={onClose} />
         </HStack>
         {location.description && (
-          <Text mt={1} color={subtleTextColor} fontSize="sm">
+          <Text color={subtleTextColor} fontSize="sm">
             {location.description}
           </Text>
         )}
@@ -75,24 +84,26 @@ export function LocationInfoBox({
               {/* Limit to 10 items */}
               {location.nearbyTransport.slice(0, 10).map((transport) => (
                 <Badge
-                  key={transport}
-                  colorScheme={
-                    transport === "airport"
+                  key={transport.name}
+                  colorPalette={
+                    transport.type === "AIRPORT"
                       ? "orange"
-                      : transport === "bus"
+                      : transport.type === "BUS_STATION"
                         ? "purple"
-                        : transport === "train"
+                        : transport.type === "TRAIN_STATION"
                           ? "blue"
                           : "teal"
                   }
+                  variant="outline"
                   borderRadius="full"
                   py={1}
                   px={2}
                   display="flex"
                   alignItems="center"
                 >
-                  <Icon as={getTransportIcon(transport)} mr={1} />
-                  {transport.charAt(0).toUpperCase() + transport.slice(1)}
+                  <Icon as={getTransportIcon(transport.type)} mr={1} />
+                  {transport.name.charAt(0).toUpperCase() +
+                    transport.name.slice(1)}
                 </Badge>
               ))}
               {location.nearbyTransport.length > 10 && (
@@ -105,16 +116,34 @@ export function LocationInfoBox({
         )}
       {location.isHub && (
         <Box>
-          <Badge borderRadius="full" py={1} px={2} alignItems="center">
+          <Badge
+            borderRadius="full"
+            py={1}
+            px={2}
+            alignItems="center"
+            colorPalette={
+              location.type === "AIRPORT"
+                ? "orange"
+                : location.type === "BUS_STATION"
+                  ? "purple"
+                  : location.type === "TRAIN_STATION"
+                    ? "blue"
+                    : location.type === "HARBOR"
+                      ? "teal"
+                      : "gray"
+            }
+            variant="outline"
+          >
+            
             <Icon as={getTransportIcon(location.type)} mr={1} />
             {location.type === "AIRPORT"
-              ? "Airport"
+              ? "Bandara"
               : location.type === "BUS_STATION"
-                ? "Bus Station"
+                ? "Terminal Bus"
                 : location.type === "TRAIN_STATION"
-                  ? "Train Station"
+                  ? "Stasiun Kereta"
                   : location.type === "HARBOR"
-                    ? "Harbor"
+                    ? "Pelabuhan"
                     : "Unknown"}
           </Badge>
         </Box>
