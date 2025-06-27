@@ -5,6 +5,7 @@ import { useColorModeValue } from "../components/ui/color-mode";
 import SegmentedControl from "../components/ui/SegmentedControl";
 import TransportationTable from "../components/data/TransportationTable";
 import AttractionTable from "../components/data/AttractionTable";
+import BufferAnalysisTable from "../components/data/BufferAnalysisTable";
 import { customColors, customShades } from "../theme/custom-color";
 import NavBar from "@/components/NavBar";
 
@@ -25,6 +26,7 @@ function RouteComponent() {
   const tabs = [
     { value: "transportations", label: "Transportation Hubs" },
     { value: "attractions", label: "Tourist Attractions" },
+    { value: "buffer-analysis", label: "Buffer Analysis" },
   ];
 
   return (
@@ -76,7 +78,7 @@ function RouteComponent() {
                   <TransportationTable />
                 </Box>
               </Box>
-            ) : (
+            ) : activeTab === "attractions" ? (
               <Box width="100%">
                 <Heading
                   as="h2"
@@ -88,6 +90,20 @@ function RouteComponent() {
                 </Heading>
                 <Box borderRadius="lg" width="100%" mb={{ base: 4, md: 0 }}>
                   <AttractionTable />
+                </Box>
+              </Box>
+            ) : (
+              <Box width="100%">
+                <Heading
+                  as="h2"
+                  size={{ base: "sm", md: "md" }}
+                  mb={{ base: 2, md: 4 }}
+                  color={highlightColor}
+                >
+                  Buffer Analysis
+                </Heading>
+                <Box borderRadius="lg" width="100%" mb={{ base: 4, md: 0 }}>
+                  <BufferAnalysisTable />
                 </Box>
               </Box>
             )}
