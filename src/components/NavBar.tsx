@@ -113,6 +113,27 @@ export default function NavBar() {
               Map
             </Link>
           </Route>
+          <Route to="/data">
+            <Link
+              color={textColor}
+              fontWeight="medium"
+              position="relative"
+              _hover={{
+                textDecoration: "none",
+                _after: {
+                  content: '""',
+                  position: "absolute",
+                  bottom: "-4px",
+                  left: "0",
+                  width: "100%",
+                  height: "2px",
+                  bgGradient: gradientBg,
+                },
+              }}
+            >
+              Data
+            </Link>
+          </Route>
         </HStack>
 
         <HStack gap={3}>
@@ -226,6 +247,27 @@ export default function NavBar() {
                     transition="all 0.2s"
                   >
                     Map
+                  </Link>
+                </Route>
+                <Route to="/data">
+                  <Link
+                    href="#about"
+                    color={textColor}
+                    fontWeight="medium"
+                    onClick={onClose}
+                    px={4}
+                    py={2}
+                    borderRadius="md"
+                    _hover={{
+                      bg: useColorModeValue("gray.50", "gray.700"),
+                      color: useColorModeValue(
+                        customColors.blue,
+                        customColors.purple
+                      ),
+                    }}
+                    transition="all 0.2s"
+                  >
+                    Data
                   </Link>
                 </Route>
                 <Box pt={6}>
