@@ -35,7 +35,7 @@ axiosInstance.interceptors.response.use(
 
         if (!refreshToken) {
           // No refresh token available, redirect to login
-          window.location.href = '/login';
+          window.location.href = '/admin';
           return Promise.reject(error);
         }
 
@@ -56,7 +56,7 @@ axiosInstance.interceptors.response.use(
         // Clear tokens and redirect to login
         Cookies.remove('token');
         Cookies.remove('refreshToken');
-        window.location.href = '/login';
+        window.location.href = '/admin';
       }
     }
     return Promise.reject(error);

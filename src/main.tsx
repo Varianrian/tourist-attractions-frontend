@@ -4,6 +4,7 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Provider } from "./components/ui/provider.tsx";
+import { AuthProvider } from "./provider/AuthProvider.tsx";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
@@ -40,10 +41,12 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <QueryClientProvider client={queryClient}>
-      <Provider>
-        <RouterProvider router={router} />
-        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-      </Provider>
+      <AuthProvider>
+        <Provider>
+          <RouterProvider router={router} />
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+        </Provider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
