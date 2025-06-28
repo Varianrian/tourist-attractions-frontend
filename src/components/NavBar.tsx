@@ -9,17 +9,18 @@ import {
   useDisclosure,
   HStack,
   Drawer,
-  Popover
+  Popover,
 } from "@chakra-ui/react";
 import { Avatar } from "@chakra-ui/react";
 import { useColorModeValue } from "../components/ui/color-mode";
 import { ColorModeButton } from "./ui/theme-toggle";
 import { Icon } from "@iconify/react";
 import { customColors, customGradients } from "../theme/custom-color";
-import { Link as Route } from "@tanstack/react-router";
+import { Link as Route, useRouter } from "@tanstack/react-router";
 import { useAuth } from "@/provider/AuthProvider";
 
 export default function NavBar() {
+  const router = useRouter();
   const { open, onOpen, onClose } = useDisclosure();
   const { user, logout, isAuthenticated } = useAuth();
 
@@ -142,29 +143,22 @@ export default function NavBar() {
 
         <HStack gap={3}>
           <ColorModeButton display={{ base: "none", md: "flex" }} />
-          
+
           {/* Show different content based on authentication */}
           {isAuthenticated ? (
             <>
-              {/* Admin Navigation Links */}
-              <Route to="/dashboard">
-                <Link
-                  color={textColor}
-                  fontWeight="medium"
-                  display={{ base: "none", md: "flex" }}
-                  _hover={{
-                    color: useColorModeValue(customColors.blue, customColors.purple),
-                  }}
-                >
-                  Dashboard
-                </Link>
-              </Route>
               {/* User Menu */}
               <Popover.Root>
                 <Popover.Trigger asChild>
-                  <Button variant="ghost" size="sm" display={{ base: "none", md: "flex" }}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    display={{ base: "none", md: "flex" }}
+                  >
                     <Avatar.Root size="sm">
-                      <Avatar.Fallback>{user?.username?.charAt(0)?.toUpperCase()}</Avatar.Fallback>
+                      <Avatar.Fallback>
+                        {user?.username?.charAt(0)?.toUpperCase()}
+                      </Avatar.Fallback>
                     </Avatar.Root>
                     <Text ml={2} fontSize="sm" fontWeight="medium">
                       {user?.username}
@@ -182,11 +176,15 @@ export default function NavBar() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => window.location.href = '/dashboard'}
+                          onClick={() => router.navigate({ to: "/dashboard" })}
                           justifyContent="flex-start"
                           width="full"
                         >
-                          <Icon icon="mdi:view-dashboard" width="16" height="16" />
+                          <Icon
+                            icon="mdi:view-dashboard"
+                            width="16"
+                            height="16"
+                          />
                           <Text ml={2}>Dashboard</Text>
                         </Button>
                         <Button
@@ -226,7 +224,7 @@ export default function NavBar() {
               >
                 Explore Map
               </Button>
-              
+
               <Route to="/admin">
                 <Button
                   variant="outline"
@@ -234,10 +232,19 @@ export default function NavBar() {
                   rounded="full"
                   fontWeight="medium"
                   display={{ base: "none", md: "inline-flex" }}
-                  borderColor={useColorModeValue(customColors.blue, customColors.purple)}
-                  color={useColorModeValue(customColors.blue, customColors.purple)}
+                  borderColor={useColorModeValue(
+                    customColors.blue,
+                    customColors.purple
+                  )}
+                  color={useColorModeValue(
+                    customColors.blue,
+                    customColors.purple
+                  )}
                   _hover={{
-                    bg: useColorModeValue(customColors.blue, customColors.purple),
+                    bg: useColorModeValue(
+                      customColors.blue,
+                      customColors.purple
+                    ),
                     color: "white",
                   }}
                 >
@@ -246,7 +253,7 @@ export default function NavBar() {
               </Route>
             </>
           )}
-          
+
           <IconButton
             display={{ base: "flex", md: "none" }}
             aria-label="Open menu"
@@ -360,7 +367,7 @@ export default function NavBar() {
                     Data
                   </Link>
                 </Route>
-                
+
                 {/* Authentication-aware mobile content */}
                 {isAuthenticated ? (
                   <>
@@ -384,11 +391,13 @@ export default function NavBar() {
                         Dashboard
                       </Link>
                     </Route>
-                    
+
                     <Box px={4} py={2}>
                       <Flex align="center" gap={3} mb={3}>
                         <Avatar.Root size="sm">
-                          <Avatar.Fallback>{user?.username?.charAt(0)?.toUpperCase()}</Avatar.Fallback>
+                          <Avatar.Fallback>
+                            {user?.username?.charAt(0)?.toUpperCase()}
+                          </Avatar.Fallback>
                         </Avatar.Root>
                         <Text fontSize="sm" fontWeight="medium">
                           {user?.username}
@@ -418,13 +427,21 @@ export default function NavBar() {
                       width="full"
                       mb={3}
                       onClick={() => {
-                        window.location.href = "/admin";
                         onClose();
                       }}
-                      borderColor={useColorModeValue(customColors.blue, customColors.purple)}
-                      color={useColorModeValue(customColors.blue, customColors.purple)}
+                      borderColor={useColorModeValue(
+                        customColors.blue,
+                        customColors.purple
+                      )}
+                      color={useColorModeValue(
+                        customColors.blue,
+                        customColors.purple
+                      )}
                       _hover={{
-                        bg: useColorModeValue(customColors.blue, customColors.purple),
+                        bg: useColorModeValue(
+                          customColors.blue,
+                          customColors.purple
+                        ),
                         color: "white",
                       }}
                     >
@@ -432,7 +449,7 @@ export default function NavBar() {
                     </Button>
                   </Box>
                 )}
-                
+
                 <Box pt={6}>
                   <HStack gap={3} mb={4} justifyContent="space-between">
                     <Text fontSize="sm" fontWeight="medium">
@@ -449,7 +466,7 @@ export default function NavBar() {
                       fontWeight="medium"
                       width="full"
                       onClick={() => {
-                        window.location.href = "/map";
+                        router.navigate({ to: "/map" });
                         onClose();
                       }}
                       _hover={{
