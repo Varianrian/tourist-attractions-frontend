@@ -43,6 +43,8 @@ export const useTransportation = () => {
   const {
     data: apiData,
     isLoading,
+    refetch: refetchTransportations,
+    isRefetching
   } = GetAllTransportationsPaginated(
     currentPage,
     itemsPerPage,
@@ -100,16 +102,14 @@ export const useTransportation = () => {
     });
   };
 
-  const handleDelete = (id: string) => {
-    // Implement delete logic here
-  };
-
   return {
     // Data
     apiData,
     isLoading,
     transportationsData,
     metaData,
+    refetchTransportations,
+    isRefetching,
     
     // Filter states
     searchTerm,

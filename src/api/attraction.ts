@@ -10,7 +10,7 @@ export const GetAllAttractionsPaginated = (
   page: number = 1,
   limit: number = 10,
   sortBy: string = "createdAt",
-  sortOrder: "ASC" | "DESC" = "ASC",
+  sortOrder: "ASC" | "DESC" = "DESC",
   province: string = "JAWA TENGAH",
   search?: string
 ) => {
@@ -36,6 +36,9 @@ export const GetAllAttractionsPaginated = (
     },
     {
       enabled: true,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
     }
   );
 };

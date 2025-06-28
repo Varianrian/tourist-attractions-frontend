@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { Icon } from "@iconify/react";
 import { useColorModeValue } from "@/components/ui/color-mode";
+import { useState } from "react";
 
 interface ConfirmationDialogProps {
   isOpen: boolean;
@@ -19,7 +20,6 @@ interface ConfirmationDialogProps {
   confirmText?: string;
   cancelText?: string;
   variant?: "danger" | "warning" | "info";
-  isLoading?: boolean;
 }
 
 export const ConfirmationDialog = ({
@@ -31,8 +31,8 @@ export const ConfirmationDialog = ({
   confirmText = "Confirm",
   cancelText = "Cancel",
   variant = "danger",
-  isLoading = false,
 }: ConfirmationDialogProps) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const getVariantStyles = () => {
     switch (variant) {
       case "danger":
@@ -67,11 +67,14 @@ export const ConfirmationDialog = ({
 
   const handleConfirm = async () => {
     try {
+      setIsSubmitting(true);
       await onConfirm();
       onClose();
     } catch (error) {
       // Error handling is done by the parent component
       console.error("Confirmation action failed:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -112,7 +115,7 @@ export const ConfirmationDialog = ({
                   <Button
                     variant="outline"
                     onClick={onClose}
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                   >
                     {cancelText}
                   </Button>
@@ -120,7 +123,7 @@ export const ConfirmationDialog = ({
                 <Button
                   colorPalette={colorScheme}
                   onClick={handleConfirm}
-                  loading={isLoading}
+                  loading={isSubmitting}
                   loadingText="Processing..."
                 >
                   {confirmText}

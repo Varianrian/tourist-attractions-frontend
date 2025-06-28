@@ -12,6 +12,12 @@ import { TransportationDialog } from "../../data-management/TransportationDialog
 import type { Transportation } from "@/types/transportation";
 import { useAuth } from "@/provider/AuthProvider";
 import { ConfirmationDialog } from "@/components/common/ConfirmationDialog";
+import {
+  CreateTransportation,
+  DeleteTransportation,
+  UpdateTransportation,
+} from "@/api/transportation";
+import { toaster } from "@/components/ui/toaster";
 
 const TransportationTable = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -30,6 +36,8 @@ const TransportationTable = () => {
     transportationsData,
     metaData,
     isLoading,
+    refetchTransportations,
+    isRefetching,
 
     // Filter states
     searchTerm,
@@ -68,16 +76,59 @@ const TransportationTable = () => {
   const handleSave = async (data: Partial<Transportation>) => {
     try {
       if (dialogMode === "create") {
-        // TODO: Implement create API call
-        console.log("Create transportation:", data);
-        alert("Create functionality will be implemented with API integration");
+        try {
+          await CreateTransportation(data);
+        } catch (error: any) {
+          console.error("Error creating transportation:", error);
+          toaster.create({
+            title: "Error",
+            description: `Gagal membuat sarana transportasi: ${error.response.data.message || error.message}`,
+            type: "error",
+            closable: true,
+          });
+          return;
+        }
+        setIsDialogOpen(false);
+        setSelectedTransport(null);
+        refetchTransportations(); // Refresh the data after creation
+        toaster.create({
+          title: "Success",
+          description: "Transportation hub created successfully",
+          type: "success",
+          closable: true,
+        });
       } else {
-        // TODO: Implement update API call
-        console.log("Update transportation:", data);
-        alert("Update functionality will be implemented with API integration");
+        try {
+          await UpdateTransportation(selectedTransport?.id!, data);
+        } catch (error: any) {
+          console.error("Error updating transportation:", error);
+          toaster.create({
+            title: "Error",
+            description: `Gagal memperbarui sarana transportasi: ${error.response.data.message || error.message}`,
+            type: "error",
+            closable: true,
+          });
+          return;
+        }
+        setIsDialogOpen(false);
+        setSelectedTransport(null);
+        refetchTransportations(); // Refresh the data after update
+        toaster.create({
+          title: "Success",
+          description: "Transportation hub updated successfully",
+          type: "success",
+          closable: true,
+        });
       }
     } catch (error) {
-      throw error;
+      console.error("Error saving transportation:", error);
+      toaster.create({
+        title: "Error",
+        description: `Gagal menyimpan sarana transportasi`,
+        type: "error",
+        closable: true,
+      });
+      throw error; // Re-throw the error to be handled by the parent component if needed
     }
   };
 
@@ -85,12 +136,27 @@ const TransportationTable = () => {
     if (!selectedTransport) return;
 
     try {
-      // TODO: Implement delete API call
-      console.log("Delete transportation:", selectedTransport.id);
-      alert("Delete functionality will be implemented with API integration");
-    } catch (error) {
-      throw error;
+      await DeleteTransportation(selectedTransport.id);
+      setIsConfirmationDialogOpen(false);
+      setSelectedTransport(null);
+      refetchTransportations(); // Refresh the data after deletion
+      toaster.create({
+        title: "Success",
+        description: "Transportation hub deleted successfully",
+        type: "success",
+        closable: true,
+      });
+    } catch (error: any) {
+      console.error("Error deleting transportation:", error);
+      toaster.create({
+        title: "Error",
+        description: `Gagal menghapus sarana transportasi: ${error.response.data.message || error.message}`,
+        type: "error",
+        closable: true,
+      });
     }
+    setIsConfirmationDialogOpen(false);
+    setSelectedTransport(null);
   };
 
   return (
@@ -131,6 +197,7 @@ const TransportationTable = () => {
         columns={createTransportationTableColumns(
           // Edit
           (transportation) => {
+            console.log("Edit transportation:", transportation);
             setSelectedTransport(transportation);
             setDialogMode("edit");
             setIsDialogOpen(true);
@@ -146,7 +213,7 @@ const TransportationTable = () => {
           isDataManagement
         )}
         data={transportationsData}
-        isLoading={isLoading}
+        isLoading={isLoading || isRefetching}
         loadingText="Loading transportation data..."
         emptyText="No transportation data found"
         headerBgColor={headerBgColor}
@@ -176,8 +243,8 @@ const TransportationTable = () => {
             isOpen={isConfirmationDialogOpen}
             onClose={() => setIsConfirmationDialogOpen(false)}
             onConfirm={handleDelete}
-            title="Delete Transportation Hub"
-            message="Are you sure you want to delete this transportation hub?"
+            title="Hapus Sarana Transportasi"
+            message={`Apakah Anda yakin ingin menghapus sarana transportasi ini (${selectedTransport?.name})?`}
             variant="danger"
           />
           <TransportationDialog

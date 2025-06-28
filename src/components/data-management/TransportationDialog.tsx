@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import type { Transportation } from "@/types/transportation";
+import { useEffect } from "react";
 
 interface TransportationDialogProps {
   isOpen: boolean;
@@ -69,6 +70,19 @@ export const TransportationDialog = ({
     latitude: initialData?.latitude?.toString() || "",
     longitude: initialData?.longitude?.toString() || "",
   });
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        name: initialData.name || "",
+        type: initialData.type || "BUS_STATION",
+        province: initialData.province || "",
+        latitude: initialData.latitude?.toString() || "",
+        longitude: initialData.longitude?.toString() || "",
+      });
+      console.log("Initial data set in form:", initialData);
+    }
+  }, [initialData]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -215,6 +229,7 @@ export const TransportationDialog = ({
                   </Text>
                   <Select.Root
                     collection={transportationOptions}
+                    value={[formData.type as string]}
                     onValueChange={(value) =>
                       handleInputChange("type", value.value[0])
                     }
@@ -251,6 +266,7 @@ export const TransportationDialog = ({
                   </Text>
                   <Select.Root
                     collection={provincesOptions}
+                    value={[formData.province as string]}
                     onValueChange={(value) =>
                       handleInputChange("province", value.value[0])
                     }
@@ -333,7 +349,7 @@ export const TransportationDialog = ({
                 </Button>
               </Dialog.ActionTrigger>
               <Button
-                colorScheme="blue"
+                colorPalette="blue"
                 onClick={handleSave}
                 loading={isLoading}
                 loadingText="Saving..."

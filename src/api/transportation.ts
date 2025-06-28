@@ -92,13 +92,19 @@ export const GetAllTransportationsPaginated = (
     },
     {
       enabled: true,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
     }
   );
 };
 
 // Transportation CRUD operations
 export const CreateTransportation = (data: Partial<Transportation>) => {
-  return api.post<Response<Transportation>>(apiRoutes.createTransportation, data);
+  return api.post<Response<Transportation>>(
+    apiRoutes.createTransportation,
+    data
+  );
 };
 
 export const GetTransportationById = (id: string) => {
@@ -111,8 +117,14 @@ export const GetTransportationById = (id: string) => {
   );
 };
 
-export const UpdateTransportation = (id: string, data: Partial<Transportation>) => {
-  return api.patch<Response<Transportation>>(apiRoutes.updateTransportation(id), data);
+export const UpdateTransportation = (
+  id: string,
+  data: Partial<Transportation>
+) => {
+  return api.patch<Response<Transportation>>(
+    apiRoutes.updateTransportation(id),
+    data
+  );
 };
 
 export const DeleteTransportation = (id: string) => {
