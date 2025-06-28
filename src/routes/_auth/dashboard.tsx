@@ -14,9 +14,6 @@ import { customShades } from "@/theme/custom-color";
 import { useDashboard } from "@/hooks/useDashboard";
 import { OverviewStats } from "@/components/dashboard/OverviewStats";
 import { GeographicCharts } from "@/components/dashboard/GeographicCharts";
-import { DataQuality } from "@/components/dashboard/DataQuality";
-import { RecentActivity } from "@/components/dashboard/RecentActivity";
-import { TransportationAnalysis } from "@/components/dashboard/TransportationAnalysis";
 import { Icon } from "@iconify/react";
 
 export const Route = createFileRoute("/_auth/dashboard")({
