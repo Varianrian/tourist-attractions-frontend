@@ -108,7 +108,6 @@ function Dashboard() {
             </Text>
             <OverviewStats 
               totals={dashboardData.overview.totals}
-              recent={dashboardData.overview.recent}
             />
           </VStack>
 

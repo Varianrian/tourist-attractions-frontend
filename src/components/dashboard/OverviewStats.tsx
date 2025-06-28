@@ -1,11 +1,4 @@
-import {
-  Box,
-  Text,
-  HStack,
-  VStack,
-  Card,
-  SimpleGrid,
-} from "@chakra-ui/react";
+import { Box, Text, HStack, VStack, Card, SimpleGrid } from "@chakra-ui/react";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { Icon } from "@iconify/react";
 import { customShades } from "@/theme/custom-color";
@@ -15,18 +8,10 @@ interface StatsCardProps {
   value: number | string;
   icon: string;
   color: string;
-  subValue?: number | string;
   subLabel?: string;
 }
 
-export const StatsCard = ({ 
-  title, 
-  value, 
-  icon, 
-  color, 
-  subValue, 
-  subLabel 
-}: StatsCardProps) => {
+export const StatsCard = ({ title, value, icon, color }: StatsCardProps) => {
   const cardBg = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.800", "white");
@@ -52,25 +37,15 @@ export const StatsCard = ({
               {title}
             </Text>
             <Text fontSize="3xl" fontWeight="bold" color={textColor}>
-              {typeof value === 'number' ? value.toLocaleString() : value}
+              {typeof value === "number" ? value.toLocaleString() : value}
             </Text>
-            {subValue && subLabel && (
-              <Text fontSize="sm" color={subTextColor}>
-                {subLabel}: {typeof subValue === 'number' ? subValue.toLocaleString() : subValue}
-              </Text>
-            )}
           </VStack>
           <Box
             p={3}
             bg={`linear-gradient(135deg, ${color}20, ${color}30)`}
             borderRadius="lg"
           >
-            <Icon
-              icon={icon}
-              width="24"
-              height="24"
-              color={color}
-            />
+            <Icon icon={icon} width="24" height="24" color={color} />
           </Box>
         </HStack>
       </Card.Body>
@@ -84,13 +59,9 @@ interface OverviewStatsProps {
     transportation: number;
     provinces: number;
   };
-  recent: {
-    attractions: number;
-    transportation: number;
-  };
 }
 
-export const OverviewStats = ({ totals, recent }: OverviewStatsProps) => {
+export const OverviewStats = ({ totals }: OverviewStatsProps) => {
   return (
     <SimpleGrid width="100%" columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
       <StatsCard
@@ -98,7 +69,6 @@ export const OverviewStats = ({ totals, recent }: OverviewStatsProps) => {
         value={totals.attractions}
         icon="mdi:map-marker-multiple"
         color={customShades.blue[500]}
-        subValue={recent.attractions}
         subLabel="Recent"
       />
       <StatsCard
@@ -106,7 +76,6 @@ export const OverviewStats = ({ totals, recent }: OverviewStatsProps) => {
         value={totals.transportation}
         icon="mdi:bus-multiple"
         color={customShades.green[500]}
-        subValue={recent.transportation}
         subLabel="Recent"
       />
       <StatsCard

@@ -4,10 +4,6 @@ export interface DashboardOverview {
     transportation: number;
     provinces: number;
   };
-  recent: {
-    attractions: number;
-    transportation: number;
-  };
 }
 
 export interface ProvinceCount {
