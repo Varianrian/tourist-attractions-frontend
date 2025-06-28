@@ -3,26 +3,34 @@ import {
   Box,
   Container,
   VStack,
-  HStack,
   Text,
-  Card,
   Spinner,
+  Alert,
+  HStack,
 } from "@chakra-ui/react";
 import { useAuth } from "@/provider/AuthProvider";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { customShades } from "@/theme/custom-color";
+import { useDashboard } from "@/hooks/useDashboard";
+import { OverviewStats } from "@/components/dashboard/OverviewStats";
+import { GeographicCharts } from "@/components/dashboard/GeographicCharts";
+import { DataQuality } from "@/components/dashboard/DataQuality";
+import { RecentActivity } from "@/components/dashboard/RecentActivity";
+import { TransportationAnalysis } from "@/components/dashboard/TransportationAnalysis";
+import { Icon } from "@iconify/react";
 
 export const Route = createFileRoute("/_auth/dashboard")({
   component: Dashboard,
 });
 
 function Dashboard() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
+  const { data: dashboardData, isLoading, error } = useDashboard();
   const bgColor = useColorModeValue("gray.50", "gray.900");
-  const cardBgColor = useColorModeValue("white", "gray.800");
-  const borderColor = useColorModeValue("gray.200", "gray.700");
+  const textColor = useColorModeValue("gray.800", "white");
+  const subTextColor = useColorModeValue("gray.600", "gray.400");
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <Box
         minH="100vh"
@@ -39,142 +47,85 @@ function Dashboard() {
     );
   }
 
+  if (error) {
+    return (
+      <Box minH="100vh" bg={bgColor} py={8}>
+        <Container maxW="6xl">
+          <Alert.Root status="error">
+            <Alert.Indicator />
+            <Alert.Title>Error loading dashboard</Alert.Title>
+            <Alert.Description>
+              {error instanceof Error ? error.message : 'Something went wrong'}
+            </Alert.Description>
+          </Alert.Root>
+        </Container>
+      </Box>
+    );
+  }
+
+  if (!dashboardData) {
+    return (
+      <Box minH="100vh" bg={bgColor} py={8}>
+        <Container maxW="6xl">
+          <Alert.Root>
+            <Alert.Indicator />
+            <Alert.Title>No data available</Alert.Title>
+            <Alert.Description>
+              Dashboard data is not available at the moment.
+            </Alert.Description>
+          </Alert.Root>
+        </Container>
+      </Box>
+    );
+  }
+
   return (
     <Box minH="100vh" bg={bgColor} py={8}>
       <Container maxW="6xl">
         <VStack gap={8} align="stretch">
           {/* Header */}
           <VStack align="start" gap={1}>
-            <Text fontSize="3xl" fontWeight="bold" color={useColorModeValue("gray.800", "white")}>
-              Welcome back, {user?.username}!
+            <HStack gap={3}>
+              <Icon 
+                icon="mdi:view-dashboard" 
+                width="32" 
+                height="32" 
+                color={customShades.blue[500]} 
+              />
+              <Text fontSize="3xl" fontWeight="bold" color={textColor}>
+                Welcome back, {user?.username}!
+              </Text>
+            </HStack>
+            <Text fontSize="lg" color={subTextColor}>
+              Tourist Attractions Analytics Dashboard
             </Text>
-            <Text fontSize="lg" color={useColorModeValue("gray.600", "gray.400")}>
-              Tourist Attractions Dashboard
+            <Text fontSize="sm" color={subTextColor}>
+              Last updated: {new Date(dashboardData.metadata.generatedAt).toLocaleString()}
             </Text>
           </VStack>
 
-          {/* Quick Stats */}
-          <Card.Root
-            bg={cardBgColor}
-            borderWidth="1px"
-            borderColor={borderColor}
-            borderRadius="xl"
-            shadow="md"
-          >
-            <Card.Header>
-              <Text fontSize="xl" fontWeight="semibold">
-                Quick Navigation
-              </Text>
-            </Card.Header>
-            <Card.Body>
-              <VStack gap={4} align="stretch">
-                <HStack gap={4} wrap="wrap">
-                  <Box
-                    p={6}
-                    bg={`linear-gradient(135deg, ${customShades.purple[500]}, ${customShades.purple[600]})`}
-                    color="white"
-                    borderRadius="lg"
-                    minW="200px"
-                    textAlign="center"
-                    shadow="md"
-                    _hover={{
-                      transform: "translateY(-2px)",
-                      shadow: "lg",
-                    }}
-                    transition="all 0.2s"
-                    cursor="pointer"
-                  >
-                    <VStack gap={2}>
-                      <Text fontSize="2xl">🗺️</Text>
-                      <Text fontWeight="semibold">Map View</Text>
-                      <Text fontSize="sm" opacity={0.9}>
-                        Interactive map with attractions
-                      </Text>
-                    </VStack>
-                  </Box>
+          {/* Overview Stats */}
+          <VStack align="start" gap={4} width={"100%"}>
+            <Text fontSize="xl" fontWeight="semibold" color={textColor}>
+              Overview
+            </Text>
+            <OverviewStats 
+              totals={dashboardData.overview.totals}
+              recent={dashboardData.overview.recent}
+            />
+          </VStack>
 
-                  <Box
-                    p={6}
-                    bg={`linear-gradient(135deg, ${customShades.blue[500]}, ${customShades.blue[600]})`}
-                    color="white"
-                    borderRadius="lg"
-                    minW="200px"
-                    textAlign="center"
-                    shadow="md"
-                    _hover={{
-                      transform: "translateY(-2px)",
-                      shadow: "lg",
-                    }}
-                    transition="all 0.2s"
-                    cursor="pointer"
-                  >
-                    <VStack gap={2}>
-                      <Text fontSize="2xl">📊</Text>
-                      <Text fontWeight="semibold">Data Tables</Text>
-                      <Text fontSize="sm" opacity={0.9}>
-                        View and manage data
-                      </Text>
-                    </VStack>
-                  </Box>
-
-                  <Box
-                    p={6}
-                    bg={`linear-gradient(135deg, ${customShades.green[500]}, ${customShades.green[600]})`}
-                    color="white"
-                    borderRadius="lg"
-                    minW="200px"
-                    textAlign="center"
-                    shadow="md"
-                    _hover={{
-                      transform: "translateY(-2px)",
-                      shadow: "lg",
-                    }}
-                    transition="all 0.2s"
-                    cursor="pointer"
-                  >
-                    <VStack gap={2}>
-                      <Text fontSize="2xl">🚌</Text>
-                      <Text fontWeight="semibold">Transportation</Text>
-                      <Text fontSize="sm" opacity={0.9}>
-                        Transportation analysis
-                      </Text>
-                    </VStack>
-                  </Box>
-                </HStack>
-              </VStack>
-            </Card.Body>
-          </Card.Root>
-
-          {/* User Info */}
-          <Card.Root
-            bg={cardBgColor}
-            borderWidth="1px"
-            borderColor={borderColor}
-            borderRadius="xl"
-            shadow="md"
-          >
-            <Card.Header>
-              <Text fontSize="xl" fontWeight="semibold">
-                User Information
-              </Text>
-            </Card.Header>
-            <Card.Body>
-              <VStack gap={3} align="start">
-                <HStack>
-                  <Text fontWeight="semibold">User ID:</Text>
-                  <Text>{user?.userId}</Text>
-                </HStack>
-                <HStack>
-                  <Text fontWeight="semibold">Username:</Text>
-                  <Text>{user?.username}</Text>
-                </HStack>
-                <HStack>
-                  <Text fontWeight="semibold">Status:</Text>
-                  <Text color="green.500" fontWeight="semibold">Authenticated</Text>
-                </HStack>
-              </VStack>
-            </Card.Body>
-          </Card.Root>
+          {/* Geographic Distribution */}
+          <VStack align="start" gap={4} width={"100%"}>
+            <Text fontSize="xl" fontWeight="semibold" color={textColor}>
+              Geographic Distribution
+            </Text>
+            <GeographicCharts 
+              attractionsByProvince={dashboardData.geographic.attractionsByProvince}
+              transportationByProvince={dashboardData.geographic.transportationByProvince}
+              transportationByType={dashboardData.geographic.transportationByType}
+            />
+          </VStack>
         </VStack>
       </Container>
     </Box>
