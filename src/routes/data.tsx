@@ -3,9 +3,9 @@ import { useState } from "react";
 import { Box, Container, Heading, VStack, Text } from "@chakra-ui/react";
 import { useColorModeValue } from "../components/ui/color-mode";
 import SegmentedControl from "../components/ui/SegmentedControl";
-import TransportationTable from "../components/data/TransportationTable";
-import AttractionTable from "../components/data/AttractionTable";
-import BufferAnalysisTable from "../components/data/BufferAnalysisTable";
+import TransportationTable from "../components/data/table/TransportationTable";
+import AttractionTable from "@/components/data/table/AttractionTable";
+import BufferAnalysisTable from "../components/data/table/BufferAnalysisTable";
 import { customColors, customShades } from "../theme/custom-color";
 import NavBar from "@/components/NavBar";
 
