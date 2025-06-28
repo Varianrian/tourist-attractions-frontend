@@ -1,10 +1,15 @@
 import { useFetch } from "@/utils/reactQuery";
+import { api } from "@/utils/api";
 import { type Transportation } from "@/types/transportation";
 import { type Response } from "@/types/response";
 
 export const apiRoutes = {
   getListTransportations: "/transportation/filter",
   getAllTransportationsPaginated: "/transportation/paginated",
+  createTransportation: "/transportation",
+  getTransportationById: (id: string) => `/transportation/${id}`,
+  updateTransportation: (id: string) => `/transportation/${id}`,
+  deleteTransportation: (id: string) => `/transportation/${id}`,
 };
 
 export const GetAllTransportationWithFilter = (
@@ -89,6 +94,29 @@ export const GetAllTransportationsPaginated = (
       enabled: true,
     }
   );
+};
+
+// Transportation CRUD operations
+export const CreateTransportation = (data: Partial<Transportation>) => {
+  return api.post<Response<Transportation>>(apiRoutes.createTransportation, data);
+};
+
+export const GetTransportationById = (id: string) => {
+  return useFetch<Response<Transportation>>(
+    apiRoutes.getTransportationById(id),
+    undefined,
+    {
+      enabled: !!id,
+    }
+  );
+};
+
+export const UpdateTransportation = (id: string, data: Partial<Transportation>) => {
+  return api.patch<Response<Transportation>>(apiRoutes.updateTransportation(id), data);
+};
+
+export const DeleteTransportation = (id: string) => {
+  return api.delete<Response<null>>(apiRoutes.deleteTransportation(id));
 };
 
 // export const PaketById = (id: string) => {

@@ -100,6 +100,10 @@ export const useTransportation = () => {
     });
   };
 
+  const handleDelete = (id: string) => {
+    // Implement delete logic here
+  };
+
   return {
     // Data
     apiData,

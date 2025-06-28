@@ -190,6 +190,16 @@ export default function NavBar() {
                         <Button
                           variant="ghost"
                           size="sm"
+                          onClick={() => router.navigate({ to: "/data-management" })}
+                          justifyContent="flex-start"
+                          width="full"
+                        >
+                          <Icon icon="mdi:database-edit" width="16" height="16" />
+                          <Text ml={2}>Data Management</Text>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={logout}
                           justifyContent="flex-start"
                           width="full"

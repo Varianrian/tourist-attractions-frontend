@@ -14,6 +14,7 @@ import { Route as DataRouteImport } from './routes/data'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthDataManagementRouteImport } from './routes/_auth/data-management'
 import { Route as AuthDashboardRouteImport } from './routes/_auth/dashboard'
 
 const MapRoute = MapRouteImport.update({
@@ -40,6 +41,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthDataManagementRoute = AuthDataManagementRouteImport.update({
+  id: '/data-management',
+  path: '/data-management',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthDashboardRoute = AuthDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/data': typeof DataRoute
   '/map': typeof MapRoute
   '/dashboard': typeof AuthDashboardRoute
+  '/data-management': typeof AuthDataManagementRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/data': typeof DataRoute
   '/map': typeof MapRoute
   '/dashboard': typeof AuthDashboardRoute
+  '/data-management': typeof AuthDataManagementRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -70,12 +78,20 @@ export interface FileRoutesById {
   '/data': typeof DataRoute
   '/map': typeof MapRoute
   '/_auth/dashboard': typeof AuthDashboardRoute
+  '/_auth/data-management': typeof AuthDataManagementRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '' | '/admin' | '/data' | '/map' | '/dashboard'
+  fullPaths:
+    | '/'
+    | ''
+    | '/admin'
+    | '/data'
+    | '/map'
+    | '/dashboard'
+    | '/data-management'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/admin' | '/data' | '/map' | '/dashboard'
+  to: '/' | '' | '/admin' | '/data' | '/map' | '/dashboard' | '/data-management'
   id:
     | '__root__'
     | '/'
@@ -84,6 +100,7 @@ export interface FileRouteTypes {
     | '/data'
     | '/map'
     | '/_auth/dashboard'
+    | '/_auth/data-management'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -131,6 +148,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/data-management': {
+      id: '/_auth/data-management'
+      path: '/data-management'
+      fullPath: '/data-management'
+      preLoaderRoute: typeof AuthDataManagementRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/dashboard': {
       id: '/_auth/dashboard'
       path: '/dashboard'
@@ -143,10 +167,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthDashboardRoute: typeof AuthDashboardRoute
+  AuthDataManagementRoute: typeof AuthDataManagementRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthDashboardRoute: AuthDashboardRoute,
+  AuthDataManagementRoute: AuthDataManagementRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
