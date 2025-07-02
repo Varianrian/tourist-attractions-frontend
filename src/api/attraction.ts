@@ -1,9 +1,14 @@
 import { useFetch } from "@/utils/reactQuery";
+import { api } from "@/utils/api";
 import { type Attraction } from "@/types/attraction";
 import { type Response } from "@/types/response";
 
 export const apiRoutes = {
   getAllAttractionsPaginated: "/tourist-attraction/paginated",
+  createAttraction: "/tourist-attraction",
+  getAttractionById: (id: string) => `/tourist-attraction/${id}`,
+  updateAttraction: (id: string) => `/tourist-attraction/${id}`,
+  deleteAttraction: (id: string) => `/tourist-attraction/${id}`,
 };
 
 export const GetAllAttractionsPaginated = (
@@ -41,6 +46,38 @@ export const GetAllAttractionsPaginated = (
       refetchOnMount: false,
     }
   );
+};
+
+// Attraction CRUD operations
+export const CreateAttraction = (data: Partial<Attraction>) => {
+  return api.post<Response<Attraction>>(
+    apiRoutes.createAttraction,
+    data
+  );
+};
+
+export const GetAttractionById = (id: string) => {
+  return useFetch<Response<Attraction>>(
+    apiRoutes.getAttractionById(id),
+    undefined,
+    {
+      enabled: !!id,
+    }
+  );
+};
+
+export const UpdateAttraction = (
+  id: string,
+  data: Partial<Attraction>
+) => {
+  return api.patch<Response<Attraction>>(
+    apiRoutes.updateAttraction(id),
+    data
+  );
+};
+
+export const DeleteAttraction = (id: string) => {
+  return api.delete<Response<null>>(apiRoutes.deleteAttraction(id));
 };
 
 // export const PaketById = (id: string) => {

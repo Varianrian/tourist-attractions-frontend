@@ -72,6 +72,116 @@ export const attractionTableColumns: TableColumn[] = [
   },
 ];
 
+// Attraction Table Configuration with Actions
+export const createAttractionTableColumns = (
+  onEdit?: (item: Attraction) => void,
+  onDelete?: (item: Attraction) => void,
+  showActions = false
+): TableColumn[] => {
+  const baseColumns: TableColumn[] = [
+    {
+      key: "index",
+      label: "No",
+      minWidth: { base: "50px", md: "60px" },
+      textAlign: "center",
+    },
+    {
+      key: "name",
+      label: "Name",
+      sortable: true,
+      minWidth: { base: "120px", md: "180px" },
+      render: (item: Attraction) => (
+        <Box>
+          <Text fontWeight="medium">{item.name}</Text>
+          <Text
+            fontSize="2xs"
+            color="gray.500"
+            display={{ base: "block", md: "none" }}
+          >
+            {item.province}
+          </Text>
+        </Box>
+      ),
+    },
+    {
+      key: "city",
+      label: "City",
+      sortable: true,
+      minWidth: { base: "80px", md: "120px" },
+    },
+    {
+      key: "province",
+      label: "Province",
+      sortable: true,
+      minWidth: { base: "100px", md: "150px" },
+      display: { base: "none", md: "table-cell" },
+    },
+    {
+      key: "coordinates",
+      label: "Coordinates",
+      minWidth: { base: "120px", md: "150px" },
+      render: (item: Attraction) => (
+        <Text fontSize={{ base: "2xs", md: "sm" }}>
+          {item.latitude.toFixed(4)}, {item.longitude.toFixed(4)}
+        </Text>
+      ),
+    },
+    {
+      key: "createdAt",
+      label: "Created",
+      sortable: true,
+      minWidth: { base: "100px", md: "120px" },
+      display: { base: "none", md: "table-cell" },
+      render: (item: Attraction) => (
+        <Text fontSize={{ base: "2xs", md: "sm" }}>
+          {new Date(item.createdAt).toLocaleDateString("id-ID", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
+        </Text>
+      ),
+    },
+  ];
+
+  // Add actions column if needed
+  if (showActions && (onEdit || onDelete)) {
+    baseColumns.push({
+      key: "actions",
+      label: "Actions",
+      minWidth: { base: "80px", md: "100px" },
+      textAlign: "center",
+      render: (item: Attraction) => (
+        <HStack justify="center" gap={1}>
+          {onEdit && (
+            <IconButton
+              variant="ghost"
+              size="sm"
+              onClick={() => onEdit(item)}
+              aria-label="Edit attraction"
+            >
+              <Icon icon="mdi:pencil" width="16" height="16" />
+            </IconButton>
+          )}
+          {onDelete && (
+            <IconButton
+              variant="ghost"
+              size="sm"
+              colorScheme="red"
+              onClick={() => onDelete(item)}
+              aria-label="Delete attraction"
+            >
+              <Icon icon="mdi:delete" width="16" height="16" />
+            </IconButton>
+          )}
+        </HStack>
+      ),
+    });
+  }
+
+  return baseColumns;
+};
+
 // Transportation Table Configuration with Actions
 export const createTransportationTableColumns = (
   onEdit?: (item: Transportation) => void,

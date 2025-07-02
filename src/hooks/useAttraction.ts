@@ -26,6 +26,8 @@ export const useAttraction = () => {
   const {
     data: apiData,
     isLoading,
+    refetch: refetchAttractions,
+    isRefetching
   } = GetAllAttractionsPaginated(
     currentPage,
     itemsPerPage,
@@ -83,6 +85,8 @@ export const useAttraction = () => {
     isLoading,
     attractionsData,
     metaData,
+    refetchAttractions,
+    isRefetching,
     
     // Filter states
     searchTerm,
