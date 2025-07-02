@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { login as loginApi, getProfile } from '@/api/auth';
 import type { User, LoginUser } from '@/types/user';
-import { useRouter } from '@tanstack/react-router';
+// import { useRouter } from '@tanstack/react-router';
 
 interface AuthContextType {
   user: User | null;
@@ -29,7 +29,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
+  // const router = useRouter();
 
   const isAuthenticated = !!user && !!Cookies.get('token');
 
