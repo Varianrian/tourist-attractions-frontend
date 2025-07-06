@@ -9,6 +9,10 @@ export const apiRoutes = {
   getAttractionById: (id: string) => `/tourist-attraction/${id}`,
   updateAttraction: (id: string) => `/tourist-attraction/${id}`,
   deleteAttraction: (id: string) => `/tourist-attraction/${id}`,
+
+  exportAllAttractions: "/tourist-attraction/export-excel",
+  importExampleAttractions: "/tourist-attraction/import-example",
+  importAttractions: "/tourist-attraction/import",
 };
 
 export const GetAllAttractionsPaginated = (
@@ -16,7 +20,7 @@ export const GetAllAttractionsPaginated = (
   limit: number = 10,
   sortBy: string = "createdAt",
   sortOrder: "ASC" | "DESC" = "DESC",
-  province: string = "JAWA TENGAH",
+  province: string = "",
   search?: string
 ) => {
   return useFetch<
@@ -80,20 +84,23 @@ export const DeleteAttraction = (id: string) => {
   return api.delete<Response<null>>(apiRoutes.deleteAttraction(id));
 };
 
-// export const PaketById = (id: string) => {
-//   return useFetch<PaketConfig>(apiRoutes.getPaketById(id), undefined, {
-//     enabled: !!id,
-//   });
-// };
+// Import/Export operations
+export const ExportAllAttractions = () => {
+  return api.get(apiRoutes.exportAllAttractions, {}, {
+    responseType: "blob",
+  });
+};
 
-// export const CreatePaket = (data: PaketConfig) => {
-//   return api.post<PaketConfig>(apiRoutes.createPaket, data);
-// };
+export const ImportExampleAttractions = () => {
+  return api.get(apiRoutes.importExampleAttractions, {}, {
+    responseType: "blob",
+  });
+};
 
-// export const DeletePaket = (id: string) => {
-//   return api.delete<PaketConfig>(apiRoutes.deletePaket(id));
-// };
-
-// export const UpdatePaket = (id: string, data: PaketConfig) => {
-//   return api.patch<PaketConfig>(apiRoutes.updatePaketById(id), data);
-// };
+export const ImportAttractions = (formData: FormData) => {
+  return api.post(apiRoutes.importAttractions, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+};

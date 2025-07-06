@@ -16,11 +16,13 @@ import AttractionPagination from "../AttractionPagination";
 import ReusableTable from "../../common/ReusableTable";
 import { attractionTableColumns, createAttractionTableColumns } from "../../config/tableConfigs";
 import { AttractionDialog } from "../../data-management/AttractionDialog";
+import { AttractionImportExportDialog } from "../../data-management/AttractionImportExportDialog";
 import { ConfirmationDialog } from "../../common/ConfirmationDialog";
 import type { Attraction } from "@/types/attraction";
 
 const AttractionTable = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isImportExportDialogOpen, setIsImportExportDialogOpen] = useState(false);
   const [selectedAttraction, setSelectedAttraction] =
     useState<Attraction | null>(null);
   const [dialogMode, setDialogMode] = useState<"create" | "edit">("create");
@@ -59,6 +61,10 @@ const AttractionTable = () => {
     setSelectedAttraction(null);
     setDialogMode("create");
     setIsDialogOpen(true);
+  };
+
+  const handleImportExport = () => {
+    setIsImportExportDialogOpen(true);
   };
 
   const handleSave = async (data: Partial<Attraction>) => {
@@ -139,7 +145,14 @@ const AttractionTable = () => {
   return (
     <VStack gap={4} width="100%" align="stretch">
       {isDataManagement && (
-        <HStack justify="flex-end" width="100%" px={4} pt={4}>
+        <HStack justify="flex-end" width="100%" px={4} pt={4} gap={2}>
+          <Button
+            colorPalette="purple"
+            onClick={handleImportExport}
+          >
+            <Icon icon="mdi:file-import" />
+            Bulk Import/Export
+          </Button>
           <Button
             colorPalette="purple"
             onClick={handleCreate}
@@ -216,6 +229,14 @@ const AttractionTable = () => {
             onSave={handleSave}
             initialData={selectedAttraction || undefined}
             mode={dialogMode}
+          />
+          <AttractionImportExportDialog
+            isOpen={isImportExportDialogOpen}
+            onClose={() => setIsImportExportDialogOpen(false)}
+            onImportSuccess={() => {
+              refetchAttractions();
+              setIsImportExportDialogOpen(false);
+            }}
           />
         </>
       )}

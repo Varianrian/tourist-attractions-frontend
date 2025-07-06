@@ -7,12 +7,14 @@ import {
   Box,
   Input,
   Text,
-  Select
+  Tabs,
+  Alert,
 } from "@chakra-ui/react";
-import { createListCollection } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import type { Attraction } from "@/types/attraction";
+import { DraggableMarkerMap } from "@/components/map/DraggableMarkerMap";
+import { AxiosError } from "axios";
 
 interface AttractionDialogProps {
   isOpen: boolean;
@@ -22,22 +24,6 @@ interface AttractionDialogProps {
   mode: "create" | "edit";
   trigger?: React.ReactNode;
 }
-
-const provinces = [
-  "JAWA TENGAH",
-  "JAWA BARAT",
-  "JAWA TIMUR",
-  "BANTEN",
-  "DKI JAKARTA",
-  "DI YOGYAKARTA",
-];
-
-const provincesOptions = createListCollection({
-  items: provinces.map((province) => ({
-    value: province,
-    label: province,
-  })),
-});
 
 export const AttractionDialog = ({
   isOpen,
@@ -49,8 +35,6 @@ export const AttractionDialog = ({
 }: AttractionDialogProps) => {
   const [formData, setFormData] = useState({
     name: initialData?.name || "",
-    city: initialData?.city || "",
-    province: initialData?.province || "",
     latitude: initialData?.latitude?.toString() || "",
     longitude: initialData?.longitude?.toString() || "",
   });
@@ -59,8 +43,6 @@ export const AttractionDialog = ({
     if (initialData) {
       setFormData({
         name: initialData.name || "",
-        city: initialData.city || "",
-        province: initialData.province || "",
         latitude: initialData.latitude?.toString() || "",
         longitude: initialData.longitude?.toString() || "",
       });
@@ -83,17 +65,18 @@ export const AttractionDialog = ({
     setError(""); // Clear error when user types
   };
 
+  const handleCoordinateChange = (lat: number, lng: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      latitude: lat.toString(),
+      longitude: lng.toString(),
+    }));
+    setError(""); // Clear error when coordinates change
+  };
+
   const validateForm = () => {
     if (!formData.name.trim()) {
       setError("Name is required");
-      return false;
-    }
-    if (!formData.city.trim()) {
-      setError("City is required");
-      return false;
-    }
-    if (!formData.province.trim()) {
-      setError("Province is required");
       return false;
     }
     if (formData.latitude && isNaN(Number(formData.latitude))) {
@@ -125,17 +108,18 @@ export const AttractionDialog = ({
       // Reset form on successful save
       setFormData({
         name: "",
-        city: "",
-        province: "",
         latitude: "",
         longitude: "",
       });
 
       onClose();
     } catch (err) {
+      console.error("Error saving attraction data:", err);
       setError(
-        err instanceof Error ? err.message : "Failed to save attraction data"
-      );
+              err instanceof AxiosError
+                ? err.response?.data.message
+                : "Failed to save attraction data"
+            );
     } finally {
       setIsLoading(false);
     }
@@ -144,8 +128,6 @@ export const AttractionDialog = ({
   const handleCancel = () => {
     setFormData({
       name: "",
-      city: "",
-      province: "",
       latitude: "",
       longitude: "",
     });
@@ -176,9 +158,10 @@ export const AttractionDialog = ({
             <Dialog.Body>
               <VStack gap={4} align="stretch">
                 {error && (
-                  <Text color="red.500" fontSize="sm">
-                    {error}
-                  </Text>
+                  <Alert.Root status="error">
+                    <Alert.Indicator />
+                    <Alert.Description>{error}</Alert.Description>
+                  </Alert.Root>
                 )}
 
                 <Box>
@@ -201,106 +184,78 @@ export const AttractionDialog = ({
 
                 <Box>
                   <Text
-                    mb={2}
-                    fontSize="sm"
-                    fontWeight="medium"
-                    color={textColor}
-                  >
-                    City
-                  </Text>
-                  <Input
-                    value={formData.city}
-                    onChange={(e) => handleInputChange("city", e.target.value)}
-                    placeholder="Enter city name"
-                    bg={inputBg}
-                    borderColor={borderColor}
-                  />
-                </Box>
-
-                <Box>
-                  <Text
                     fontSize="sm"
                     fontWeight="medium"
                     mb={2}
                     color={textColor}
                   >
-                    Province *
+                    Location Coordinates
                   </Text>
-                  <Select.Root
-                    collection={provincesOptions}
-                    value={[formData.province as string]}
-                    onValueChange={(value) =>
-                      handleInputChange("province", value.value[0])
-                    }
-                  >
-                    <Select.Control>
-                      <Select.Trigger bg={inputBg} borderColor={borderColor}>
-                        <Select.ValueText placeholder="Select province" />
-                      </Select.Trigger>
-                      <Select.IndicatorGroup>
-                        <Select.Indicator />
-                      </Select.IndicatorGroup>
-                    </Select.Control>
-
-                    <Select.Positioner>
-                      <Select.Content>
-                        {provincesOptions.items.map((item) => (
-                          <Select.Item
-                            key={item.value}
-                            item={item.value}
+                  <Tabs.Root defaultValue="map" size="sm">
+                    <Tabs.List>
+                      <Tabs.Trigger value="map">Map Selection</Tabs.Trigger>
+                      <Tabs.Trigger value="manual">Manual Input</Tabs.Trigger>
+                    </Tabs.List>
+                    
+                    <Tabs.Content value="manual" pt={3}>
+                      <VStack gap={3} align="stretch">
+                        <Box>
+                          <Text
+                            fontSize="sm"
+                            fontWeight="medium"
+                            mb={2}
+                            color={textColor}
                           >
-                            <Select.ItemText>
-                              {item.label}
-                            </Select.ItemText>
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select.Positioner>
-                  </Select.Root>
-                </Box>
+                            Latitude
+                          </Text>
+                          <Input
+                            value={formData.latitude}
+                            onChange={(e) =>
+                              handleInputChange("latitude", e.target.value)
+                            }
+                            placeholder="Enter latitude"
+                            type="number"
+                            step="any"
+                            bg={inputBg}
+                            borderColor={borderColor}
+                          />
+                        </Box>
 
-                <Box>
-                  <Text
-                    mb={2}
-                    fontSize="sm"
-                    fontWeight="medium"
-                    color={textColor}
-                  >
-                    Latitude
-                  </Text>
-                  <Input
-                    value={formData.latitude}
-                    onChange={(e) =>
-                      handleInputChange("latitude", e.target.value)
-                    }
-                    placeholder="Enter latitude"
-                    type="number"
-                    step="any"
-                    bg={inputBg}
-                    borderColor={borderColor}
-                  />
-                </Box>
-
-                <Box>
-                  <Text
-                    mb={2}
-                    fontSize="sm"
-                    fontWeight="medium"
-                    color={textColor}
-                  >
-                    Longitude
-                  </Text>
-                  <Input
-                    value={formData.longitude}
-                    onChange={(e) =>
-                      handleInputChange("longitude", e.target.value)
-                    }
-                    placeholder="Enter longitude"
-                    type="number"
-                    step="any"
-                    bg={inputBg}
-                    borderColor={borderColor}
-                  />
+                        <Box>
+                          <Text
+                            fontSize="sm"
+                            fontWeight="medium"
+                            mb={2}
+                            color={textColor}
+                          >
+                            Longitude
+                          </Text>
+                          <Input
+                            value={formData.longitude}
+                            onChange={(e) =>
+                              handleInputChange("longitude", e.target.value)
+                            }
+                            placeholder="Enter longitude"
+                            type="number"
+                            step="any"
+                            bg={inputBg}
+                            borderColor={borderColor}
+                          />
+                        </Box>
+                      </VStack>
+                    </Tabs.Content>
+                    
+                    <Tabs.Content value="map" pt={3}>
+                      <Box>
+                        <DraggableMarkerMap
+                          latitude={formData.latitude ? Number(formData.latitude) : undefined}
+                          longitude={formData.longitude ? Number(formData.longitude) : undefined}
+                          onPositionChange={handleCoordinateChange}
+                          height="250px"
+                        />
+                      </Box>
+                    </Tabs.Content>
+                  </Tabs.Root>
                 </Box>
               </VStack>
             </Dialog.Body>

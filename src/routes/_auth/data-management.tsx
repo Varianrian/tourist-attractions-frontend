@@ -72,7 +72,7 @@ function DataManagement() {
     <Box color={textColor} minH="100vh" bg={bgColor}>
       <Container
         maxW="container.xl"
-        pt={{ base: 20, md: 24 }}
+        pt={8}
         pb={8}
         px={{ base: 4, md: 6, lg: 8 }}
       >

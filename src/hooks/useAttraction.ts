@@ -17,10 +17,10 @@ export const useAttraction = () => {
   // State for filters and pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedProvince, setSelectedProvince] = useState("JAWA TENGAH");
+  const [selectedProvince, setSelectedProvince] = useState("");
   const [sortBy, setSortBy] = useState("createdAt");
-  const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("ASC");
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("DESC");
+  const [itemsPerPage, setItemsPerPage] = useState(50);
 
   // Fetch data using API
   const {
