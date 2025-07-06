@@ -48,6 +48,9 @@ export const GetBufferAnalysis = (
     },
     {
       enabled: !!provinceName,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
     }
   );
 }

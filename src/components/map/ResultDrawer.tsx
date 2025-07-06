@@ -192,7 +192,7 @@ export function ResultDrawer({
                     onClick={() =>
                       setSelectedLocation({
                         name: feature.properties.attraction_name,
-                        description: feature.properties.city,
+                        description: feature.properties.province,
                         type: "attraction",
                         nearbyTransport: feature.properties.transportations,
                         isHub: false,

@@ -65,7 +65,6 @@ export const useBufferAnalysis = () => {
           item.attraction_name
             .toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
-          item.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.province.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
@@ -78,10 +77,6 @@ export const useBufferAnalysis = () => {
         case "attraction_name":
           aVal = a.attraction_name;
           bVal = b.attraction_name;
-          break;
-        case "city":
-          aVal = a.city;
-          bVal = b.city;
           break;
         case "province":
           aVal = a.province;

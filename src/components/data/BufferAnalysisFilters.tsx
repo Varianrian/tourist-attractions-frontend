@@ -127,7 +127,7 @@ export const BufferAnalysisFilters = ({
               Search Attractions
             </Text>
             <Input
-              placeholder="Search by name, city, or province..."
+              placeholder="Search by name"
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
               borderColor={inputBorderColor}

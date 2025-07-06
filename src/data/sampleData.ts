@@ -15,9 +15,8 @@ export const provinces = createListCollection({
 
 export const bufferRadiusOptions = createListCollection({
   items: [
-    { label: "500 m", value: 500 },
     { label: "1 km", value: 1000 },
-    { label: "2 km", value: 2000 },
+    { label: "3 km", value: 3000 },
     { label: "5 km", value: 5000 },
   ],
 });

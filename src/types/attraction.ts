@@ -1,7 +1,6 @@
 export type Attraction = {
   id: string;
   province: string;
-  city: string;
   name: string;
   latitude: number;
   longitude: number;

@@ -33,7 +33,7 @@ function MapPage() {
   const [selectedProvince, setSelectedProvince] = useState<string | null>(
     "JAWA TENGAH"
   );
-  const [bufferRadius, setBufferRadius] = useState<number>(500);
+  const [bufferRadius, setBufferRadius] = useState<number>(1000);
 
   const [activeFilters, setActiveFilters] = useState({
     AIRPORT: true,
@@ -146,8 +146,9 @@ function MapPage() {
       {/* Map Container */}
       <Box position="relative" height="calc(100vh)" width="100%">
         <MapContainer
-          center={[-1.6037, 117.4158]} // Indonesia center
-          zoom={5}
+          // center={[-1.6037, 117.4158]} // Indonesia center
+          center={[-6.7956, 110.3695]} // Central Java center
+          zoom={7}
           style={{ height: "100%", width: "100%", zIndex: 1 }}
           zoomControl={false}
           attributionControl={false}
@@ -309,7 +310,7 @@ function MapPage() {
                         click: () => {
                           setSelectedLocation({
                             name: attraction.properties.attraction_name,
-                            description: `${attraction.properties.city}, ${attraction.properties.province}`,
+                            description: `${attraction.properties.province}`,
                             type: "attraction",
                             nearbyTransport:
                               attraction.properties.tranportations || [],
@@ -338,7 +339,6 @@ function MapPage() {
                             {attraction.properties.attraction_name}
                           </Heading>
                           <Text fontSize="xs" mt={1}>
-                            {attraction.properties.city},{" "}
                             {attraction.properties.province}
                           </Text>
                           {attraction.properties.transportation_count > 0 && (

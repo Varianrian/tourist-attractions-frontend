@@ -65,7 +65,7 @@ export const AttractionFilters = ({
               Search Attractions
             </Text>
             <Input
-              placeholder="Search by name or city..."
+              placeholder="Search by name"
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
               borderColor={inputBorderColor}

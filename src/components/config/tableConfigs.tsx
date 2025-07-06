@@ -32,12 +32,6 @@ export const attractionTableColumns: TableColumn[] = [
     ),
   },
   {
-    key: "city",
-    label: "City",
-    sortable: true,
-    minWidth: { base: "100px", md: "120px" },
-  },
-  {
     key: "province",
     label: "Province",
     sortable: true,
@@ -102,12 +96,6 @@ export const createAttractionTableColumns = (
           </Text>
         </Box>
       ),
-    },
-    {
-      key: "city",
-      label: "City",
-      sortable: true,
-      minWidth: { base: "80px", md: "120px" },
     },
     {
       key: "province",
@@ -361,12 +349,6 @@ export const bufferAnalysisTableColumns: TableColumn[] = [
         </Text>
       </Box>
     ),
-  },
-  {
-    key: "city",
-    label: "City",
-    sortable: true,
-    minWidth: { base: "80px", md: "100px" },
   },
   {
     key: "province",

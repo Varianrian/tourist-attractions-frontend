@@ -8,7 +8,6 @@ export interface BufferAnalysis {
           id: string;
           attraction_name: string;
           province: string;
-          city: string;
           latitude: number;
           longitude: number;
           transportations: {
