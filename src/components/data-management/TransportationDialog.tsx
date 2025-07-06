@@ -11,11 +11,13 @@ import {
   CloseButton,
   Select,
   createListCollection,
+  Tabs,
 } from "@chakra-ui/react";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import type { Transportation } from "@/types/transportation";
 import { useEffect } from "react";
 import { AxiosError } from "axios";
+import { DraggableMarkerMap } from "@/components/map/DraggableMarkerMap";
 
 interface TransportationDialogProps {
   isOpen: boolean;
@@ -33,26 +35,10 @@ const transportationTypes = [
   { value: "HARBOR", label: "Harbor" },
 ];
 
-const provinces = [
-  "JAWA TENGAH",
-  "JAWA BARAT",
-  "JAWA TIMUR",
-  "BANTEN",
-  "DKI JAKARTA",
-  "DI YOGYAKARTA",
-];
-
 const transportationOptions = createListCollection({
   items: transportationTypes.map((type) => ({
     value: type.value,
     label: type.label,
-  })),
-});
-
-const provincesOptions = createListCollection({
-  items: provinces.map((province) => ({
-    value: province,
-    label: province,
   })),
 });
 
@@ -72,7 +58,6 @@ export const TransportationDialog = ({
   >({
     name: initialData?.name || "",
     type: initialData?.type || "BUS_STATION",
-    province: initialData?.province || "",
     latitude: initialData?.latitude?.toString() || "",
     longitude: initialData?.longitude?.toString() || "",
   });
@@ -82,7 +67,6 @@ export const TransportationDialog = ({
       setFormData({
         name: initialData.name || "",
         type: initialData.type || "BUS_STATION",
-        province: initialData.province || "",
         latitude: initialData.latitude?.toString() || "",
         longitude: initialData.longitude?.toString() || "",
       });
@@ -104,6 +88,15 @@ export const TransportationDialog = ({
     setError(""); // Clear error when user types
   };
 
+  const handleCoordinateChange = (lat: number, lng: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      latitude: lat.toString(),
+      longitude: lng.toString(),
+    }));
+    setError(""); // Clear error when coordinates change
+  };
+
   const validateForm = () => {
     if (!formData.name?.trim()) {
       setError("Name is required");
@@ -111,10 +104,6 @@ export const TransportationDialog = ({
     }
     if (!formData.type) {
       setError("Type is required");
-      return false;
-    }
-    if (!formData.province?.trim()) {
-      setError("Province is required");
       return false;
     }
     if (formData.latitude && isNaN(Number(formData.latitude))) {
@@ -273,78 +262,73 @@ export const TransportationDialog = ({
                     mb={2}
                     color={textColor}
                   >
-                    Province *
+                    Location Coordinates
                   </Text>
-                  <Select.Root
-                    collection={provincesOptions}
-                    value={[formData.province as string]}
-                    onValueChange={(value) =>
-                      handleInputChange("province", value.value[0])
-                    }
-                  >
-                    <Select.Control>
-                      <Select.Trigger bg={inputBg} borderColor={borderColor}>
-                        <Select.ValueText placeholder="Select province" />
-                      </Select.Trigger>
-                      <Select.IndicatorGroup>
-                        <Select.Indicator />
-                      </Select.IndicatorGroup>
-                    </Select.Control>
+                  <Tabs.Root defaultValue="map" size="sm">
+                    <Tabs.List>
+                      <Tabs.Trigger value="map">Map Selection</Tabs.Trigger>
+                      <Tabs.Trigger value="manual">Manual Input</Tabs.Trigger>
+                    </Tabs.List>
+                    
+                    <Tabs.Content value="manual" pt={3}>
+                      <VStack gap={3} align="stretch">
+                        <Box>
+                          <Text
+                            fontSize="sm"
+                            fontWeight="medium"
+                            mb={2}
+                            color={textColor}
+                          >
+                            Latitude
+                          </Text>
+                          <Input
+                            value={formData.latitude}
+                            onChange={(e) =>
+                              handleInputChange("latitude", e.target.value)
+                            }
+                            placeholder="Enter latitude"
+                            type="number"
+                            step="any"
+                            bg={inputBg}
+                            borderColor={borderColor}
+                          />
+                        </Box>
 
-                    <Select.Positioner>
-                      <Select.Content>
-                        {provincesOptions.items.map((item) => (
-                          <Select.Item key={item.value} item={item.value}>
-                            {item.label}
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select.Positioner>
-                  </Select.Root>
-                </Box>
-
-                <Box>
-                  <Text
-                    fontSize="sm"
-                    fontWeight="medium"
-                    mb={2}
-                    color={textColor}
-                  >
-                    Latitude
-                  </Text>
-                  <Input
-                    value={formData.latitude}
-                    onChange={(e) =>
-                      handleInputChange("latitude", e.target.value)
-                    }
-                    placeholder="Enter latitude"
-                    type="number"
-                    step="any"
-                    bg={inputBg}
-                    borderColor={borderColor}
-                  />
-                </Box>
-
-                <Box>
-                  <Text
-                    fontSize="sm"
-                    fontWeight="medium"
-                    mb={2}
-                    color={textColor}
-                  >
-                    Longitude
-                  </Text>
-                  <Input
-                    value={formData.longitude}
-                    onChange={(e) =>
-                      handleInputChange("longitude", e.target.value)
-                    }
-                    placeholder="Enter longitude"
-                    type="number"
-                    step="any"
-                    bg={inputBg}
-                    borderColor={borderColor}
-                  />
+                        <Box>
+                          <Text
+                            fontSize="sm"
+                            fontWeight="medium"
+                            mb={2}
+                            color={textColor}
+                          >
+                            Longitude
+                          </Text>
+                          <Input
+                            value={formData.longitude}
+                            onChange={(e) =>
+                              handleInputChange("longitude", e.target.value)
+                            }
+                            placeholder="Enter longitude"
+                            type="number"
+                            step="any"
+                            bg={inputBg}
+                            borderColor={borderColor}
+                          />
+                        </Box>
+                      </VStack>
+                    </Tabs.Content>
+                    
+                    <Tabs.Content value="map" pt={3}>
+                      <Box>
+                        <DraggableMarkerMap
+                          latitude={formData.latitude ? Number(formData.latitude) : undefined}
+                          longitude={formData.longitude ? Number(formData.longitude) : undefined}
+                          onPositionChange={handleCoordinateChange}
+                          height="250px"
+                        />
+                      </Box>
+                    </Tabs.Content>
+                  </Tabs.Root>
                 </Box>
               </VStack>
             </Dialog.Body>
