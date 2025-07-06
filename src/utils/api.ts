@@ -15,7 +15,9 @@ axiosInstance.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
   config.headers['Accept'] = 'application/json';
-  config.headers['Content-Type'] = 'application/json';
+  if (config.headers['Content-Type'] === undefined) {
+    config.headers['Content-Type'] = 'application/json';
+  }
   return config;
 });
 
@@ -64,8 +66,10 @@ axiosInstance.interceptors.response.use(
 );
 
 export const api = {
-  get: <T>(url: string, params?: object) => axiosInstance.get<T>(url, { params }),
-  post: <T, D = unknown>(url: string, data: D) => axiosInstance.post<T>(url, data),
+  get: <T>(url: string, params?: object,
+    config?: object
+  ) => axiosInstance.get<T>(url, { params, ...config }),
+  post: <T, D = unknown>(url: string, data: D, config?: object) => axiosInstance.post<T>(url, data, config),
   put: <T, D = unknown>(url: string, data: D) => axiosInstance.put<T>(url, data),
   patch: <T, D = unknown>(url: string, data: D) => axiosInstance.patch<T>(url, data),
   delete: <T>(url: string) => axiosInstance.delete<T>(url),

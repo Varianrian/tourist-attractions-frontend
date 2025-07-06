@@ -10,6 +10,10 @@ export const apiRoutes = {
   getTransportationById: (id: string) => `/transportation/${id}`,
   updateTransportation: (id: string) => `/transportation/${id}`,
   deleteTransportation: (id: string) => `/transportation/${id}`,
+
+  exportAllTransportations: "/transportation/export-excel",
+  importExampleTransportations: "/transportation/import-example",
+  importTransportations: "/transportation/import",
 };
 
 export const GetAllTransportationWithFilter = (
@@ -131,20 +135,22 @@ export const DeleteTransportation = (id: string) => {
   return api.delete<Response<null>>(apiRoutes.deleteTransportation(id));
 };
 
-// export const PaketById = (id: string) => {
-//   return useFetch<PaketConfig>(apiRoutes.getPaketById(id), undefined, {
-//     enabled: !!id,
-//   });
-// };
+export const ExportAllTransportations = () => {
+  return api.get(apiRoutes.exportAllTransportations, {}, {
+    responseType: "blob",
+  });
+};
 
-// export const CreatePaket = (data: PaketConfig) => {
-//   return api.post<PaketConfig>(apiRoutes.createPaket, data);
-// };
+export const ImportExampleTransportations = () => {
+  return api.get(apiRoutes.importExampleTransportations, {}, {
+    responseType: "blob",
+  });
+};
 
-// export const DeletePaket = (id: string) => {
-//   return api.delete<PaketConfig>(apiRoutes.deletePaket(id));
-// };
-
-// export const UpdatePaket = (id: string, data: PaketConfig) => {
-//   return api.patch<PaketConfig>(apiRoutes.updatePaketById(id), data);
-// };
+export const ImportTransportations = (data: FormData) => {
+  return api.post(apiRoutes.importTransportations, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};

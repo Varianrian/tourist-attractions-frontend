@@ -9,6 +9,7 @@ import { TransportationPagination } from "../TransportationPagination";
 import ReusableTable from "../../common/ReusableTable";
 import { createTransportationTableColumns } from "../../config/tableConfigs";
 import { TransportationDialog } from "../../data-management/TransportationDialog";
+import { TransportationImportExportDialog } from "../../data-management/TransportationImportExportDialog";
 import type { Transportation } from "@/types/transportation";
 import { useAuth } from "@/provider/AuthProvider";
 import { ConfirmationDialog } from "@/components/common/ConfirmationDialog";
@@ -21,6 +22,7 @@ import { toaster } from "@/components/ui/toaster";
 
 const TransportationTable = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isImportExportDialogOpen, setIsImportExportDialogOpen] = useState(false);
   const [selectedTransport, setSelectedTransport] =
     useState<Transportation | null>(null);
   const [dialogMode, setDialogMode] = useState<"create" | "edit">("create");
@@ -73,6 +75,10 @@ const TransportationTable = () => {
     setIsDialogOpen(true);
   };
 
+  const handleImportExport = () => {
+    setIsImportExportDialogOpen(true);
+  };
+
   const handleSave = async (data: Partial<Transportation>) => {
     try {
       if (dialogMode === "create") {
@@ -80,13 +86,7 @@ const TransportationTable = () => {
           await CreateTransportation(data);
         } catch (error: any) {
           console.error("Error creating transportation:", error);
-          toaster.create({
-            title: "Error",
-            description: `Gagal membuat sarana transportasi: ${error.response.data.message || error.message}`,
-            type: "error",
-            closable: true,
-          });
-          return;
+          throw error; // Re-throw the error to be handled by the parent component if needed
         }
         setIsDialogOpen(false);
         setSelectedTransport(null);
@@ -102,13 +102,7 @@ const TransportationTable = () => {
           await UpdateTransportation(selectedTransport?.id!, data);
         } catch (error: any) {
           console.error("Error updating transportation:", error);
-          toaster.create({
-            title: "Error",
-            description: `Gagal memperbarui sarana transportasi: ${error.response.data.message || error.message}`,
-            type: "error",
-            closable: true,
-          });
-          return;
+          throw error; // Re-throw the error to be handled by the parent component if needed
         }
         setIsDialogOpen(false);
         setSelectedTransport(null);
@@ -162,7 +156,23 @@ const TransportationTable = () => {
   return (
     <VStack gap={4} width="100%" align="stretch">
       {isDataManagement && (
-        <HStack justify="flex-end" width="100%" px={4} pt={4}>
+        <HStack justify="flex-end" width="100%" px={4} pt={4} gap={2}>
+          <Button
+            size="md"
+            colorScheme="blue"
+            onClick={handleImportExport}
+            bg={highlightColor}
+            color="white"
+            _hover={{
+              bg: useColorModeValue(customColors.blue, customShades.blue[400]),
+              transform: "translateY(-1px)",
+            }}
+            shadow="md"
+            transition="all 0.2s"
+          >
+            <Icon icon="mdi:file-import" width="16" height="16" />
+            Bulk Import/Export
+          </Button>
           <Button
             size="md"
             colorScheme="blue"
@@ -253,6 +263,14 @@ const TransportationTable = () => {
             onSave={handleSave}
             initialData={selectedTransport || undefined}
             mode={dialogMode}
+          />
+          <TransportationImportExportDialog
+            isOpen={isImportExportDialogOpen}
+            onClose={() => setIsImportExportDialogOpen(false)}
+            onImportSuccess={() => {
+              refetchTransportations();
+              setIsImportExportDialogOpen(false);
+            }}
           />
         </>
       )}

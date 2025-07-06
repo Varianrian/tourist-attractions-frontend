@@ -15,6 +15,7 @@ import {
 import { useColorModeValue } from "@/components/ui/color-mode";
 import type { Transportation } from "@/types/transportation";
 import { useEffect } from "react";
+import { AxiosError } from "axios";
 
 interface TransportationDialogProps {
   isOpen: boolean;
@@ -63,7 +64,12 @@ export const TransportationDialog = ({
   mode,
   trigger,
 }: TransportationDialogProps) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<
+    Omit<Partial<Transportation>, "latitude" | "longitude"> & {
+      latitude: string;
+      longitude: string;
+    }
+  >({
     name: initialData?.name || "",
     type: initialData?.type || "BUS_STATION",
     province: initialData?.province || "",
@@ -80,7 +86,6 @@ export const TransportationDialog = ({
         latitude: initialData.latitude?.toString() || "",
         longitude: initialData.longitude?.toString() || "",
       });
-      console.log("Initial data set in form:", initialData);
     }
   }, [initialData]);
 
@@ -100,7 +105,7 @@ export const TransportationDialog = ({
   };
 
   const validateForm = () => {
-    if (!formData.name.trim()) {
+    if (!formData.name?.trim()) {
       setError("Name is required");
       return false;
     }
@@ -108,7 +113,7 @@ export const TransportationDialog = ({
       setError("Type is required");
       return false;
     }
-    if (!formData.province.trim()) {
+    if (!formData.province?.trim()) {
       setError("Province is required");
       return false;
     }
@@ -136,22 +141,28 @@ export const TransportationDialog = ({
         longitude: formData.longitude ? Number(formData.longitude) : undefined,
       };
 
+      if (mode === "edit" && initialData) {
+        dataToSave.id = initialData.id; // Ensure ID is included for updates
+      }
+
       await onSave(dataToSave);
 
       // Reset form on successful save
-      setFormData({
-        name: "",
-        type: "BUS_STATION",
-        province: "",
-        latitude: "",
-        longitude: "",
-      });
+      if (mode === "create") {
+        setFormData({
+          name: "",
+          type: "BUS_STATION",
+          province: "",
+          latitude: "",
+          longitude: "",
+        });
+      }
 
-      onClose();
+      // onClose();
     } catch (err) {
       setError(
-        err instanceof Error
-          ? err.message
+        err instanceof AxiosError
+          ? err.response?.data.message
           : "Failed to save transportation data"
       );
     } finally {
