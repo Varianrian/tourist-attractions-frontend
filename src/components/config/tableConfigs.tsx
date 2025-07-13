@@ -1,8 +1,10 @@
-import { Box, Text, Badge, HStack, IconButton } from "@chakra-ui/react";
+import { Box, Text, Badge, HStack, VStack, IconButton } from "@chakra-ui/react";
 import { Icon } from "@iconify/react";
 import type { TableColumn } from "../common/ReusableTable";
 import type { Attraction } from "../../types/attraction";
 import type { Transportation } from "../../types/transportation";
+import { FaCheck, FaTimes } from "react-icons/fa";
+import { Popover } from "@chakra-ui/react";
 
 // Attraction Table Configuration
 export const attractionTableColumns: TableColumn[] = [
@@ -14,7 +16,7 @@ export const attractionTableColumns: TableColumn[] = [
   },
   {
     key: "name",
-    label: "Name",
+    label: "Nama",
     sortable: true,
     minWidth: { base: "150px", md: "200px" },
     render: (item: Attraction) => (
@@ -33,14 +35,14 @@ export const attractionTableColumns: TableColumn[] = [
   },
   {
     key: "province",
-    label: "Province",
+    label: "Provinsi",
     sortable: true,
     minWidth: { base: "100px", md: "150px" },
     display: { base: "none", md: "table-cell" },
   },
   {
     key: "coordinates",
-    label: "Coordinates",
+    label: "Koordinat",
     minWidth: { base: "120px", md: "150px" },
     render: (item: Attraction) => (
       <Text fontSize={{ base: "2xs", md: "sm" }}>
@@ -57,6 +59,22 @@ export const attractionTableColumns: TableColumn[] = [
     render: (item: Attraction) => (
       <Text fontSize={{ base: "2xs", md: "sm" }}>
         {new Date(item.createdAt).toLocaleDateString("id-ID", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })}
+      </Text>
+    ),
+  },
+  {
+    key: "updatedAt",
+    label: "Updated",
+    sortable: true,
+    minWidth: { base: "100px", md: "120px" },
+    display: { base: "none", md: "table-cell" },
+    render: (item: Attraction) => (
+      <Text fontSize={{ base: "2xs", md: "sm" }}>
+        {new Date(item.updatedAt).toLocaleDateString("id-ID", {
           year: "numeric",
           month: "short",
           day: "numeric",
@@ -81,7 +99,7 @@ export const createAttractionTableColumns = (
     },
     {
       key: "name",
-      label: "Name",
+      label: "Nama",
       sortable: true,
       minWidth: { base: "120px", md: "180px" },
       render: (item: Attraction) => (
@@ -99,14 +117,14 @@ export const createAttractionTableColumns = (
     },
     {
       key: "province",
-      label: "Province",
+      label: "Provinsi",
       sortable: true,
       minWidth: { base: "100px", md: "150px" },
       display: { base: "none", md: "table-cell" },
     },
     {
       key: "coordinates",
-      label: "Coordinates",
+      label: "Koordinat",
       minWidth: { base: "120px", md: "150px" },
       render: (item: Attraction) => (
         <Text fontSize={{ base: "2xs", md: "sm" }}>
@@ -130,13 +148,29 @@ export const createAttractionTableColumns = (
         </Text>
       ),
     },
+    {
+      key: "updatedAt",
+      label: "Updated",
+      sortable: true,
+      minWidth: { base: "100px", md: "120px" },
+      display: { base: "none", md: "table-cell" },
+      render: (item: Attraction) => (
+        <Text fontSize={{ base: "2xs", md: "sm" }}>
+          {new Date(item.updatedAt).toLocaleDateString("id-ID", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
+        </Text>
+      ),
+    },
   ];
 
   // Add actions column if needed
   if (showActions && (onEdit || onDelete)) {
     baseColumns.push({
       key: "actions",
-      label: "Actions",
+      label: "Aksi",
       minWidth: { base: "80px", md: "100px" },
       textAlign: "center",
       render: (item: Attraction) => (
@@ -185,7 +219,7 @@ export const createTransportationTableColumns = (
     },
     {
       key: "name",
-      label: "Name",
+      label: "Nama",
       sortable: true,
       minWidth: { base: "120px", md: "180px" },
       render: (item: Transportation) => (
@@ -203,35 +237,20 @@ export const createTransportationTableColumns = (
     },
     {
       key: "type",
-      label: "Type",
+      label: "Tipe Transportasi",
       sortable: true,
       minWidth: { base: "80px", md: "120px" },
       render: (item: Transportation) => {
-        const getTypeColor = (type: string) => {
-          switch (type.toLowerCase()) {
-            case "airport":
-              return "blue";
-            case "bus_station":
-              return "green";
-            case "train_station":
-              return "purple";
-            case "port":
-              return "orange";
-            default:
-              return "gray";
-          }
-        };
-
         const getTypeLabel = (type: string) => {
           switch (type.toLowerCase()) {
             case "airport":
-              return "Airport";
+              return "Bandara";
             case "bus_station":
-              return "Bus Station";
+              return "Terminal Bus";
             case "train_station":
-              return "Train Station";
+              return "Stasiun Kereta";
             case "harbor":
-              return "Harbor";
+              return "Pelabuhan";
             default:
               return type;
           }
@@ -239,7 +258,7 @@ export const createTransportationTableColumns = (
 
         return (
           <Badge
-            colorScheme={getTypeColor(item.type)}
+            variant={"surface"}
             borderRadius="md"
             px={{ base: 1, md: 2 }}
             py={{ base: 0.5, md: 1 }}
@@ -252,14 +271,14 @@ export const createTransportationTableColumns = (
     },
     {
       key: "province",
-      label: "Province",
+      label: "Provinsi",
       sortable: true,
       minWidth: { base: "100px", md: "150px" },
       display: { base: "none", md: "table-cell" },
     },
     {
       key: "coordinates",
-      label: "Coordinates",
+      label: "Koordinat",
       minWidth: { base: "120px", md: "150px" },
       render: (item: Transportation) => (
         <Text fontSize={{ base: "2xs", md: "sm" }}>
@@ -283,13 +302,29 @@ export const createTransportationTableColumns = (
         </Text>
       ),
     },
+    {
+      key: "updatedAt",
+      label: "Updated",
+      sortable: true,
+      minWidth: { base: "100px", md: "120px" },
+      display: { base: "none", md: "table-cell" },
+      render: (item: Transportation) => (
+        <Text fontSize={{ base: "2xs", md: "sm" }}>
+          {new Date(item.updatedAt).toLocaleDateString("id-ID", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
+        </Text>
+      ),
+    },
   ];
 
   // Add actions column if needed
   if (showActions && (onEdit || onDelete)) {
     baseColumns.push({
       key: "actions",
-      label: "Actions",
+      label: "Aksi",
       minWidth: { base: "80px", md: "100px" },
       textAlign: "center",
       render: (item: Transportation) => (
@@ -333,7 +368,7 @@ export const bufferAnalysisTableColumns: TableColumn[] = [
   },
   {
     key: "attraction_name",
-    label: "Attraction Name",
+    label: "Nama Tempat Wisata",
     sortable: true,
     minWidth: { base: "150px", md: "200px" },
     render: (item: any) => (
@@ -352,37 +387,50 @@ export const bufferAnalysisTableColumns: TableColumn[] = [
   },
   {
     key: "province",
-    label: "Province",
+    label: "Provinsi",
     sortable: true,
     minWidth: { base: "100px", md: "150px" },
     display: { base: "none", md: "table-cell" },
   },
   {
     key: "is_reachable",
-    label: "Reachable",
+    label: "Ada Transportasi di Sekitar?",
     sortable: true,
+    textAlign: "center",
     minWidth: { base: "80px", md: "100px" },
     render: (item: any) => (
       <Badge
-        colorScheme={item.is_reachable ? "green" : "red"}
+        colorPalette={item.is_reachable ? "green" : "red"}
+        variant="subtle"
         borderRadius="md"
         px={{ base: 1, md: 2 }}
         py={{ base: 0.5, md: 1 }}
         fontSize={{ base: "2xs", md: "xs" }}
       >
-        {item.is_reachable ? "✓ Yes" : "✗ No"}
+        {item.is_reachable ? (
+          <HStack gap={1}>
+            <FaCheck />
+            <Text>Ya</Text>
+          </HStack>
+        ) : (
+          <HStack gap={1}>
+            <FaTimes />
+            <Text>Tidak</Text>
+          </HStack>
+        )}
       </Badge>
     ),
   },
   {
     key: "transportation_count",
-    label: "Transport Count",
+    label: "Jumlah Transportasi Sekitar",
     sortable: true,
     minWidth: { base: "80px", md: "100px" },
     textAlign: "center",
     render: (item: any) => (
       <Badge
-        colorScheme={item.transportation_count > 0 ? "blue" : "gray"}
+        colorPalette={item.transportation_count > 0 ? "blue" : "gray"}
+        variant="subtle"
         borderRadius="md"
         px={{ base: 1, md: 2 }}
         py={{ base: 0.5, md: 1 }}
@@ -394,13 +442,13 @@ export const bufferAnalysisTableColumns: TableColumn[] = [
   },
   {
     key: "transportations",
-    label: "Transportation Types",
+    label: "Jenis Transportasi",
     minWidth: { base: "150px", md: "200px" },
     render: (item: any) => {
       if (!item.transportations || item.transportations.length === 0) {
         return (
           <Text fontSize={{ base: "2xs", md: "xs" }} color="gray.500">
-            No transportation
+            Tidak ada transportasi
           </Text>
         );
       }
@@ -408,73 +456,76 @@ export const bufferAnalysisTableColumns: TableColumn[] = [
       const types = item.transportations.map((t: any) => t.type);
       const uniqueTypes = [...new Set(types)];
 
+      const getTypeLabel = (type: string) => {
+        switch (type.toLowerCase()) {
+          case "airport":
+            return "Bandara";
+          case "bus_station":
+            return "Terminal Bus";
+          case "train_station":
+            return "Kereta";
+          case "harbor":
+          case "port":
+            return "Pelabuhan";
+          default:
+            return type;
+        }
+      };
+
       return (
         <Box display="flex" flexWrap="wrap" gap={1}>
-          {uniqueTypes.slice(0, 3).map((type: unknown, index: number) => {
+          {uniqueTypes.map((type: unknown, index: number) => {
             const typeStr = type as string;
-            const getTypeColor = (type: string) => {
-              switch (type.toLowerCase()) {
-                case "airport":
-                  return "blue";
-                case "bus_station":
-                  return "green";
-                case "train_station":
-                  return "purple";
-                case "port":
-                  return "orange";
-                default:
-                  return "gray";
-              }
-            };
-
-            const getTypeLabel = (type: string) => {
-              switch (type.toLowerCase()) {
-                case "airport":
-                  return "Airport";
-                case "bus_station":
-                  return "Bus";
-                case "train_station":
-                  return "Train";
-                case "port":
-                  return "Port";
-                default:
-                  return type;
-              }
-            };
+            const transportationsOfType = item.transportations.filter((t: any) => t.type === typeStr);
 
             return (
-              <Badge
-                key={index}
-                colorScheme={getTypeColor(typeStr)}
-                size="sm"
-                borderRadius="sm"
-                fontSize={{ base: "2xs", md: "2xs" }}
-                px={1}
-                py={0.5}
-              >
-                {getTypeLabel(typeStr)}
-              </Badge>
+              <Popover.Root key={index} lazyMount unmountOnExit positioning={{ placement: "top" }} closeOnInteractOutside={true}>
+                <Popover.Trigger asChild>
+                  <Badge
+                    variant="subtle"
+                    size="sm"
+                    borderRadius="sm"
+                    fontSize={{ base: "2xs", md: "2xs" }}
+                    px={1}
+                    py={0.5}
+                    cursor="pointer"
+                    as="button"
+                  >
+                    {getTypeLabel(typeStr)} ({transportationsOfType.length})
+                  </Badge>
+                </Popover.Trigger>
+                <Popover.Positioner>
+                  <Popover.Content 
+                    maxW="320px" 
+                    maxH="200px" 
+                    overflowY="auto"
+                    zIndex={1000}
+                    shadow="lg"
+                  >
+                    <Box p={3}>
+                      <Text fontSize="sm" fontWeight="medium" mb={2}>
+                        {getTypeLabel(typeStr)}:
+                      </Text>
+                      <VStack align="start" gap={1}>
+                        {transportationsOfType.map((transportation: any) => (
+                          <Text key={transportation.id} fontSize="xs">
+                            • {transportation.name}
+                          </Text>
+                        ))}
+                      </VStack>
+                    </Box>
+                  </Popover.Content>
+                </Popover.Positioner>
+              </Popover.Root>
             );
           })}
-          {uniqueTypes.length > 3 && (
-            <Badge
-              colorScheme="gray"
-              size="sm"
-              borderRadius="sm"
-              fontSize={{ base: "2xs", md: "2xs" }}
-              px={1}
-              py={0.5}
-            >
-              +{uniqueTypes.length - 3}
-            </Badge>
-          )}
         </Box>
       );
     },
   },
   {
-    key: "coordinates",
-    label: "Coordinates",
+    key: "Koordinat",
+    label: "Koordinat",
     minWidth: { base: "120px", md: "150px" },
     render: (item: any) => (
       <Text fontSize={{ base: "2xs", md: "sm" }}>

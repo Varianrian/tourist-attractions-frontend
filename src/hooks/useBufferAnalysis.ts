@@ -23,7 +23,7 @@ export interface PaginationState {
 export const useBufferAnalysis = () => {
   // State for filters
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedProvince, setSelectedProvince] = useState("JAWA TENGAH");
+  const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedTypes, setSelectedTypes] = useState<{
     AIRPORT: boolean;
     BUS_STATION: boolean;
@@ -41,13 +41,14 @@ export const useBufferAnalysis = () => {
 
   // Frontend pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
 
   // Fetch data using API
   const { data: apiData, isLoading } = GetBufferAnalysis(
     bufferRadius,
     selectedProvince,
-    selectedTypes
+    selectedTypes,
+    false
   );
 
   // Process and filter data on frontend

@@ -14,6 +14,7 @@ import { customColors, customShades } from "../../theme/custom-color";
 import { Icon } from "@iconify/react";
 import TransportationTable from "@/components/data/table/TransportationTable";
 import AttractionTable from "@/components/data/table/AttractionTable";
+import BufferAnalysisTable from "@/components/data/table/BufferAnalysisTable";
 
 export const Route = createFileRoute("/_auth/data-management")({
   component: DataManagement,
@@ -31,8 +32,9 @@ function DataManagement() {
   const bgColor = useColorModeValue("gray.50", "gray.900");
 
   const tabs = [
-    { value: "transportations", label: "Transportation Hubs" },
-    { value: "attractions", label: "Tourist Attractions" },
+    { value: "transportations", label: "Transportasi Umum" },
+    { value: "attractions", label: "Tempat Wisata" },
+    { value: "analysis", label: "Analisis Buffer" },
   ];
 
   const getTabIcon = (tab: string) => {
@@ -49,11 +51,13 @@ function DataManagement() {
   const getTabTitle = (tab: string) => {
     switch (tab) {
       case "transportations":
-        return "Transportation Hubs Management";
+        return "Transportasi Umum"
       case "attractions":
-        return "Tourist Attractions Management";
+        return "Tempat Wisata";
+      case "analysis":
+        return "Analisis Buffer";
       default:
-        return "Data Management";
+        return "Manajemen Data";
     }
   };
 
@@ -63,6 +67,8 @@ function DataManagement() {
         return <TransportationTable />;
       case "attractions":
         return <AttractionTable />;
+      case "analysis":
+        return <BufferAnalysisTable />;
       default:
         return <Text>No data available</Text>;
     }
@@ -91,7 +97,7 @@ function DataManagement() {
                 size={{ base: "lg", md: "xl" }}
                 color={textColor}
               >
-                Data Management
+                Manajemen Data
               </Heading>
             </HStack>
             <Text
@@ -99,8 +105,7 @@ function DataManagement() {
               mb={{ base: 4, md: 6 }}
               fontSize={{ base: "sm", md: "md" }}
             >
-              Manage transportation hubs and tourist attractions data with full
-              CRUD operations
+              Kelola data transportasi dan objek wisata dengan mudah. Pilih tab di bawah untuk mengelola data yang sesuai.
             </Text>
 
             {/* Tab Navigation */}

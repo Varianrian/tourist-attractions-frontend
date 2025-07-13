@@ -66,9 +66,9 @@ function Dashboard() {
         <Container maxW="6xl">
           <Alert.Root>
             <Alert.Indicator />
-            <Alert.Title>No data available</Alert.Title>
+            <Alert.Title>Tidak Ada Data</Alert.Title>
             <Alert.Description>
-              Dashboard data is not available at the moment.
+              Data dasbor tidak tersedia saat ini.
             </Alert.Description>
           </Alert.Root>
         </Container>
@@ -90,14 +90,14 @@ function Dashboard() {
                 color={customShades.blue[500]} 
               />
               <Text fontSize="3xl" fontWeight="bold" color={textColor}>
-                Welcome back, {user?.username}!
+                Selamat Datang Kembali, {user?.username}!
               </Text>
             </HStack>
             <Text fontSize="lg" color={subTextColor}>
-              Tourist Attractions Analytics Dashboard
+              Dashboard Analisis Tempat Wisata
             </Text>
             <Text fontSize="sm" color={subTextColor}>
-              Last updated: {new Date(dashboardData.metadata.generatedAt).toLocaleString()}
+              Terakhir diperbarui: {new Date(dashboardData.metadata.generatedAt).toLocaleString()}
             </Text>
           </VStack>
 
@@ -114,7 +114,7 @@ function Dashboard() {
           {/* Geographic Distribution */}
           <VStack align="start" gap={4} width={"100%"}>
             <Text fontSize="xl" fontWeight="semibold" color={textColor}>
-              Geographic Distribution
+              Distribusi Geografis
             </Text>
             <GeographicCharts 
               attractionsByProvince={dashboardData.geographic.attractionsByProvince}

@@ -187,7 +187,7 @@ const TransportationTable = () => {
             transition="all 0.2s"
           >
             <Icon icon="mdi:plus" width="16" height="16" />
-            Add Transportation Hub
+            Tambah Sarana Transportasi
           </Button>
         </HStack>
       )}
@@ -207,18 +207,14 @@ const TransportationTable = () => {
         columns={createTransportationTableColumns(
           // Edit
           (transportation) => {
-            console.log("Edit transportation:", transportation);
             setSelectedTransport(transportation);
             setDialogMode("edit");
             setIsDialogOpen(true);
           },
           // Delete
           (transportation) => {
-            console.log("Delete transportation:", transportation);
             setSelectedTransport(transportation);
             setIsConfirmationDialogOpen(true);
-
-            console.log("isConfirmationDialogOpen:", isConfirmationDialogOpen);
           },
           isDataManagement
         )}

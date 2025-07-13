@@ -50,7 +50,7 @@ const ReusableTable = ({
 }: ReusableTableProps) => {
   const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
-  const hoverBgColor = useColorModeValue("gray.50", "gray.700");
+  const hoverBgColor = useColorModeValue("gray.50", "gray.600");
 
   const handleSortClick = (columnKey: string) => {
     if (onSortChange) {
@@ -90,12 +90,15 @@ const ReusableTable = ({
       bg={bgColor}
       shadow="sm"
       width="100%"
+      position="relative"
+      overflow="hidden"
     >
       <Table.ScrollArea
         height={height}
         overflowX="auto"
         borderWidth="1px"
         rounded="md"
+        position="relative"
       >
         <Table.Root
           size={{ base: "sm", md: "md" }}

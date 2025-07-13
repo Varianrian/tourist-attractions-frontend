@@ -158,7 +158,7 @@ const AttractionTable = () => {
             onClick={handleCreate}
           >
             <Icon icon="mdi:plus" />
-            Add Attraction
+            Tambah Tempat Wisata
           </Button>
         </HStack>
       )}

@@ -116,7 +116,7 @@ export function ResultDrawer({
                     color={textColor}
                     fontSize={{ base: "xs", md: "sm" }}
                   >
-                    Buffer Analysis Results
+                    Hasil Analisis Buffer
                   </Heading>{" "}
                   <Stack gap={{ base: 1, md: 2 }}>
                     <Box

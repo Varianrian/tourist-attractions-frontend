@@ -313,7 +313,7 @@ function MapPage() {
                             description: `${attraction.properties.province}`,
                             type: "attraction",
                             nearbyTransport:
-                              attraction.properties.tranportations || [],
+                              attraction.properties.transportations || [],
                             isHub: false,
                             position: [
                               attraction.properties.latitude,

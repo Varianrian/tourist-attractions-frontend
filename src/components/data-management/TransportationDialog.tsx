@@ -29,10 +29,10 @@ interface TransportationDialogProps {
 }
 
 const transportationTypes = [
-  { value: "BUS_STATION", label: "Bus Station" },
-  { value: "TRAIN_STATION", label: "Train Station" },
-  { value: "AIRPORT", label: "Airport" },
-  { value: "HARBOR", label: "Harbor" },
+  { value: "BUS_STATION", label: "Terminal Bus" },
+  { value: "TRAIN_STATION", label: "Stasiun Kereta" },
+  { value: "AIRPORT", label: "Bandara" },
+  { value: "HARBOR", label: "Pelabuhan" },
 ];
 
 const transportationOptions = createListCollection({
@@ -152,7 +152,7 @@ export const TransportationDialog = ({
       setError(
         err instanceof AxiosError
           ? err.response?.data.message
-          : "Failed to save transportation data"
+          : "Gagal menyimpan data transportasi",
       );
     } finally {
       setIsLoading(false);
@@ -186,8 +186,8 @@ export const TransportationDialog = ({
             <Dialog.Header>
               <Dialog.Title>
                 {mode === "create"
-                  ? "Add Transportation Hub"
-                  : "Edit Transportation Hub"}
+                  ? "Tambahkan Data Transportasi"
+                  : "Edit Data Transportasi"}
               </Dialog.Title>
             </Dialog.Header>
 
@@ -207,12 +207,12 @@ export const TransportationDialog = ({
                     mb={2}
                     color={textColor}
                   >
-                    Name *
+                    Nama *
                   </Text>
                   <Input
                     value={formData.name}
                     onChange={(e) => handleInputChange("name", e.target.value)}
-                    placeholder="Enter transportation hub name"
+                    placeholder="Masukkan nama pusat transportasi"
                     bg={inputBg}
                     borderColor={borderColor}
                   />
@@ -225,7 +225,7 @@ export const TransportationDialog = ({
                     mb={2}
                     color={textColor}
                   >
-                    Type *
+                    Jenis Transportasi *
                   </Text>
                   <Select.Root
                     collection={transportationOptions}
@@ -236,7 +236,7 @@ export const TransportationDialog = ({
                   >
                     <Select.Control>
                       <Select.Trigger bg={inputBg} borderColor={borderColor}>
-                        <Select.ValueText placeholder="Select transportation type" />
+                        <Select.ValueText placeholder="Pilih jenis transportasi" />
                       </Select.Trigger>
                       <Select.IndicatorGroup>
                         <Select.Indicator />
@@ -262,12 +262,12 @@ export const TransportationDialog = ({
                     mb={2}
                     color={textColor}
                   >
-                    Location Coordinates
+                    Koordinat Lokasi *
                   </Text>
                   <Tabs.Root defaultValue="map" size="sm">
                     <Tabs.List>
-                      <Tabs.Trigger value="map">Map Selection</Tabs.Trigger>
-                      <Tabs.Trigger value="manual">Manual Input</Tabs.Trigger>
+                      <Tabs.Trigger value="map">Pilih dari Peta</Tabs.Trigger>
+                      <Tabs.Trigger value="manual">Input Manual</Tabs.Trigger>
                     </Tabs.List>
                     
                     <Tabs.Content value="manual" pt={3}>

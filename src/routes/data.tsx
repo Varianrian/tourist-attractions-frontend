@@ -24,9 +24,9 @@ function RouteComponent() {
   );
 
   const tabs = [
-    { value: "transportations", label: "Transportation Hubs" },
-    { value: "attractions", label: "Tourist Attractions" },
-    { value: "buffer-analysis", label: "Buffer Analysis" },
+    { value: "transportations", label: "Transportasi Umum" },
+    { value: "attractions", label: "Tempat Wisata" },
+    { value: "buffer-analysis", label: "Analisis Buffer" },
   ];
 
   return (
@@ -53,7 +53,7 @@ function RouteComponent() {
               mb={{ base: 4, md: 6 }}
               fontSize={{ base: "sm", md: "md" }}
             >
-              Browse transportation hubs and tourist attractions data
+              Detail data transportasi umum, tempat wisata, dan hasil analisis buffer
             </Text>
 
             <Box mb={{ base: 4, md: 6 }} overflowX="auto" width="100%">
@@ -72,7 +72,7 @@ function RouteComponent() {
                   mb={{ base: 2, md: 4 }}
                   color={highlightColor}
                 >
-                  Transportation Hubs
+                  Transportasi Umum
                 </Heading>
                 <Box borderRadius="lg" width="100%" mb={{ base: 4, md: 0 }}>
                   <TransportationTable />
@@ -86,7 +86,7 @@ function RouteComponent() {
                   mb={{ base: 2, md: 4 }}
                   color={highlightColor}
                 >
-                  Tourist Attractions
+                  Tempat Wisata
                 </Heading>
                 <Box borderRadius="lg" width="100%" mb={{ base: 4, md: 0 }}>
                   <AttractionTable />
@@ -100,7 +100,7 @@ function RouteComponent() {
                   mb={{ base: 2, md: 4 }}
                   color={highlightColor}
                 >
-                  Buffer Analysis
+                  Analisis Buffer
                 </Heading>
                 <Box borderRadius="lg" width="100%" mb={{ base: 4, md: 0 }}>
                   <BufferAnalysisTable />

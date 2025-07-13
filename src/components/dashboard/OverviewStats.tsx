@@ -65,21 +65,21 @@ export const OverviewStats = ({ totals }: OverviewStatsProps) => {
   return (
     <SimpleGrid width="100%" columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
       <StatsCard
-        title="Total Attractions"
+        title="Tempat Wisata"
         value={totals.attractions}
         icon="mdi:map-marker-multiple"
         color={customShades.blue[500]}
         subLabel="Recent"
       />
       <StatsCard
-        title="Transportation Points"
+        title="Transportasi Umum"
         value={totals.transportation}
         icon="mdi:bus-multiple"
         color={customShades.green[500]}
         subLabel="Recent"
       />
       <StatsCard
-        title="Provinces"
+        title="Provinsi"
         value={totals.provinces}
         icon="mdi:map"
         color={customShades.purple[500]}

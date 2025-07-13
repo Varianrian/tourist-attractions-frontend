@@ -84,10 +84,10 @@ export const Login = () => {
               </Box>
               <VStack gap={1}>
                 <Text fontSize="2xl" fontWeight="bold">
-                  Welcome Back
+                  Selamat Datang
                 </Text>
                 <Text fontSize="md" opacity={0.9}>
-                  Sign in to Tourist Attractions Dashboard
+                  Silakan masuk untuk melanjutkan
                 </Text>
               </VStack>
             </VStack>
@@ -199,39 +199,8 @@ export const Login = () => {
             textAlign="center"
             bg={useColorModeValue("gray.50", "gray.750")}
           >
-            <Text fontSize="sm" color={useColorModeValue("gray.600", "gray.400")}>
-              Need help?{" "}
-              <Link
-                color={customShades.purple[500]}
-                fontWeight="semibold"
-                _hover={{
-                  color: customShades.purple[600],
-                  textDecoration: "underline",
-                }}
-              >
-                Contact Support
-              </Link>
-            </Text>
           </Box>
         </Card.Root>
-
-        {/* Additional Info */}
-        <VStack gap={4} mt={6} textAlign="center">
-          <Text fontSize="sm" color={useColorModeValue("gray.500", "gray.400")}>
-            Secure access to tourist attraction data and analytics
-          </Text>
-          <HStack gap={6} justify="center">
-            <Text fontSize="xs" color={useColorModeValue("gray.400", "gray.500")}>
-              🔒 Secure Login
-            </Text>
-            <Text fontSize="xs" color={useColorModeValue("gray.400", "gray.500")}>
-              📊 Analytics Dashboard
-            </Text>
-            <Text fontSize="xs" color={useColorModeValue("gray.400", "gray.500")}>
-              🗺️ Map Integration
-            </Text>
-          </HStack>
-        </VStack>
       </Container>
     </Box>
   );

@@ -213,7 +213,7 @@ export const AttractionImportExportDialog = ({
         <Dialog.Positioner>
           <Dialog.Content maxW="2xl" mx={4}>
             <Dialog.Header>
-              <Dialog.Title>Tourist Attraction Data Import/Export</Dialog.Title>
+              <Dialog.Title>Import/Export Data Tempat Wisata</Dialog.Title>
             </Dialog.Header>
 
             <Dialog.Body>
@@ -238,7 +238,7 @@ export const AttractionImportExportDialog = ({
                     Export Data
                   </Text>
                   <Text fontSize="sm" color="gray.600" mb={4}>
-                    Export all tourist attraction data to an Excel file
+                    Export semua data tempat wisata ke file Excel.
                   </Text>
                   <Button
                     onClick={handleExport}
@@ -260,7 +260,7 @@ export const AttractionImportExportDialog = ({
                     Import Data
                   </Text>
                   <Text fontSize="sm" color="gray.600" mb={4}>
-                    Import tourist attraction data from an Excel file. Download the template first to ensure proper formatting.
+                    Import data tempat wisata dari file Excel. Unduh template terlebih dahulu untuk memastikan format yang benar.
                   </Text>
 
                   {/* Download Template Button */}

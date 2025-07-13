@@ -1,9 +1,7 @@
-import {
-  Box,
-  Text,
-  SimpleGrid,
-} from "@chakra-ui/react";
+import { Box, Text, SimpleGrid } from "@chakra-ui/react";
 import { useColorModeValue } from "../ui/color-mode";
+import { Tooltip } from "../ui/tooltip";
+import { FaInfoCircle as InfoCircleIcon } from "react-icons/fa";
 
 interface BufferAnalysisSummaryProps {
   metadata?: {
@@ -14,7 +12,9 @@ interface BufferAnalysisSummaryProps {
   };
 }
 
-export const BufferAnalysisSummary = ({ metadata }: BufferAnalysisSummaryProps) => {
+export const BufferAnalysisSummary = ({
+  metadata,
+}: BufferAnalysisSummaryProps) => {
   const borderColor = useColorModeValue("gray.200", "gray.700");
 
   if (!metadata) return null;
@@ -37,11 +37,8 @@ export const BufferAnalysisSummary = ({ metadata }: BufferAnalysisSummaryProps) 
           >
             {metadata.totalAttractions}
           </Text>
-          <Text
-            fontSize="sm"
-            color={useColorModeValue("gray.600", "gray.400")}
-          >
-            Total Attractions
+          <Text fontSize="sm" color={useColorModeValue("gray.600", "gray.400")}>
+            Total Tempat Wisata
           </Text>
         </Box>
         <Box textAlign="center">
@@ -52,12 +49,22 @@ export const BufferAnalysisSummary = ({ metadata }: BufferAnalysisSummaryProps) 
           >
             {metadata.reachableAttractions}
           </Text>
-          <Text
-            fontSize="sm"
-            color={useColorModeValue("gray.600", "gray.400")}
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            gap={2}
           >
-            Reachable
-          </Text>
+            <Text
+              fontSize="sm"
+              color={useColorModeValue("gray.600", "gray.400")}
+            >
+              Dapat Dijangkau
+            </Text>
+            <Tooltip content="Jumlah tempat wisata yang dapat dijangkau oleh transportasi umum dalam radius buffer yang ditentukan.">
+              <InfoCircleIcon />
+            </Tooltip>
+          </Box>
         </Box>
         <Box textAlign="center">
           <Text
@@ -67,12 +74,22 @@ export const BufferAnalysisSummary = ({ metadata }: BufferAnalysisSummaryProps) 
           >
             {metadata.unreachableAttractions}
           </Text>
-          <Text
-            fontSize="sm"
-            color={useColorModeValue("gray.600", "gray.400")}
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            gap={2}
           >
-            Unreachable
-          </Text>
+            <Text
+              fontSize="sm"
+              color={useColorModeValue("gray.600", "gray.400")}
+            >
+              Tidak Terjangkau
+            </Text>
+            <Tooltip content="Jumlah tempat wisata yang tidak dapat dijangkau oleh transportasi umum dalam radius buffer yang ditentukan.">
+              <InfoCircleIcon />
+            </Tooltip>
+          </Box>
         </Box>
         <Box textAlign="center">
           <Text
@@ -82,10 +99,7 @@ export const BufferAnalysisSummary = ({ metadata }: BufferAnalysisSummaryProps) 
           >
             {(metadata.bufferRadiusMeters / 1000).toFixed(1)}km
           </Text>
-          <Text
-            fontSize="sm"
-            color={useColorModeValue("gray.600", "gray.400")}
-          >
+          <Text fontSize="sm" color={useColorModeValue("gray.600", "gray.400")}>
             Buffer Radius
           </Text>
         </Box>

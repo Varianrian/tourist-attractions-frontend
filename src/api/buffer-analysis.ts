@@ -22,7 +22,7 @@ export const apiRoutes = {
 
 export const GetBufferAnalysis = (
   bufferRadius: number = 3000,
-  provinceName: string = "JAWA TENGAH",
+  provinceName: string = "",
   transportationType: {
     AIRPORT: boolean;
     BUS_STATION: boolean;
@@ -33,7 +33,8 @@ export const GetBufferAnalysis = (
     BUS_STATION: true,
     TRAIN_STATION: true,
     HARBOR: true,
-  }
+  },
+  withGeometry: boolean = true
 ) => {
   const typeCommaSeparated = Object.entries(transportationType)
     .filter(([_, value]) => value)
@@ -45,9 +46,9 @@ export const GetBufferAnalysis = (
       bufferRadius,
       provinceName,
       transportationType: typeCommaSeparated,
+      withGeometry,
     },
     {
-      enabled: !!provinceName,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
       refetchOnMount: false,

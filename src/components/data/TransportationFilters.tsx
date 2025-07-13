@@ -18,22 +18,22 @@ export const typeColors = {
   AIRPORT: {
     color: "blue",
     icon: "✈️",
-    label: "Airport",
+    label: "Bandara",
   },
   BUS_STATION: {
     color: "green",
     icon: "🚌",
-    label: "Bus Station",
+    label: "Terminal Bus",
   },
   TRAIN_STATION: {
     color: "orange",
     icon: "🚆",
-    label: "Train Station",
+    label: "Stasiun Kereta",
   },
   HARBOR: {
     color: "purple",
     icon: "⚓",
-    label: "Harbor",
+    label: "Pelabuhan",
   },
 };
 
@@ -104,16 +104,16 @@ export const TransportationFilters = ({
     >
       <VStack gap={6} align="stretch">
         <Text fontSize="lg" fontWeight="bold" color={useColorModeValue("gray.800", "white")}>
-          Filter Transportation Data
+          Filter Data Transportasi
         </Text>
         
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
           <Box>
             <Text fontSize="sm" fontWeight="semibold" mb={3} color={useColorModeValue("gray.700", "gray.200")}>
-              Search Transportation
+              Cari Transportasi
             </Text>
             <Input
-              placeholder="Search by name or province..."
+              placeholder="Cari berdasarkan nama..."
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
               borderColor={inputBorderColor}
@@ -133,7 +133,7 @@ export const TransportationFilters = ({
 
           <Box>
             <Text fontSize="sm" fontWeight="semibold" mb={3} color={useColorModeValue("gray.700", "gray.200")}>
-              Select Province
+              Pilih Provinsi
             </Text>
             <Select.Root
               collection={provincesOptions}
@@ -154,9 +154,10 @@ export const TransportationFilters = ({
                     boxShadow: `0 0 0 1px ${customShades.blue[500]}`,
                   }}
                 >
-                  <Select.ValueText placeholder="Select province" />
+                  <Select.ValueText placeholder="Pilih Provinsi..." />
                 </Select.Trigger>
                 <Select.IndicatorGroup>
+                  <Select.ClearTrigger />
                   <Select.Indicator />
                 </Select.IndicatorGroup>
               </Select.Control>
@@ -177,7 +178,7 @@ export const TransportationFilters = ({
 
           <Box>
             <Text fontSize="sm" fontWeight="semibold" mb={3} color={useColorModeValue("gray.700", "gray.200")}>
-              Transportation Types
+              Jenis Transportasi
             </Text>
             <Select.Root
               multiple

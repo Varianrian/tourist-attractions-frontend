@@ -295,7 +295,7 @@ export function SidebarFilters({
 
             <Stack gap={3}>
               <Heading size="sm" mb={0} color={textColor}>
-                Province Filters
+                Filter Provinsi
               </Heading>
               <Select.Root
                 collection={provinces}
@@ -366,12 +366,12 @@ export function SidebarFilters({
 
             <Stack gap={3}>
               <Heading size="sm" mb={1} color={textColor}>
-                Transportation Filters
+                Filter Transportasi Umum
               </Heading>
               <Stack>
                 <FilterButton
                   type="AIRPORT"
-                  label="Airports"
+                  label="Bandara"
                   isActive={activeFilters.AIRPORT}
                   borderColor={borderColor}
                   subtleTextColor={subtleTextColor}
@@ -380,7 +380,7 @@ export function SidebarFilters({
                 />
                 <FilterButton
                   type="BUS_STATION"
-                  label="Bus Stations"
+                  label="Terminal Bus"
                   isActive={activeFilters.BUS_STATION}
                   borderColor={borderColor}
                   subtleTextColor={subtleTextColor}
@@ -389,7 +389,7 @@ export function SidebarFilters({
                 />
                 <FilterButton
                   type="TRAIN_STATION"
-                  label="Railway Stations"
+                  label="Stasiun Kereta"
                   isActive={activeFilters.TRAIN_STATION}
                   borderColor={borderColor}
                   subtleTextColor={subtleTextColor}
@@ -398,7 +398,7 @@ export function SidebarFilters({
                 />
                 <FilterButton
                   type="HARBOR"
-                  label="Harbors"
+                  label="Pelabuhan"
                   isActive={activeFilters.HARBOR}
                   borderColor={borderColor}
                   subtleTextColor={subtleTextColor}
@@ -507,7 +507,7 @@ export function SidebarFilters({
         >
           <Stack gap={4}>
             <Heading size="sm" color={textColor}>
-              Buffer Analysis Results
+              Hasil Analisis Buffer
             </Heading>
 
             <Flex justify="space-between" align="center">
@@ -526,9 +526,6 @@ export function SidebarFilters({
                   >
                     {formatDistance(bufferRadiusMeters)}
                   </Badge>
-                  <Text fontSize="xs" color={subtleTextColor}>
-                    from Hubs
-                  </Text>
                 </HStack>
               </Stack>
 
@@ -548,6 +545,9 @@ export function SidebarFilters({
             </Flex>
 
             <Box height="1px" bg={borderColor} my={1} />
+            <Text fontSize="sm" color={subtleTextColor}>
+              Tempat Wisata
+            </Text>
             <StatGroup>
               <Stat.Root>
                 <Stat.Label color={textColor} fontSize="xs">
@@ -560,7 +560,7 @@ export function SidebarFilters({
 
               <Stat.Root>
                 <Stat.Label color="green.500" fontSize="xs">
-                  Reachable
+                  Terjangkau
                 </Stat.Label>
                 <Stat.ValueText color="green.500" fontSize="md">
                   {reachableAttractions}
@@ -569,7 +569,7 @@ export function SidebarFilters({
 
               <Stat.Root>
                 <Stat.Label color="red.500" fontSize="xs">
-                  Unreachable
+                  Tidak Terjangkau
                 </Stat.Label>
                 <Stat.ValueText color="red.500" fontSize="md">
                   {unreachableAttractions}
@@ -582,7 +582,7 @@ export function SidebarFilters({
             {/* Top 10 Attractions */}
             <Stack gap={2}>
               <Heading size="sm" color={textColor}>
-                Top 10 Attractions
+                10 Tempat Wisata Terjangkau
               </Heading>
               {data.data.features
                 .slice(0, 10)
@@ -669,8 +669,19 @@ export function SidebarFilters({
                         />
                       </Box>
                       <Text fontSize="sm" color={textColor}>
-                        {type.charAt(0).toUpperCase() +
-                          type.slice(1).replace(/_/g, " ")}{" "}
+                        {type === "ATTRACTION_REACHABLE"
+                          ? "Tempat Wisata Terjangkau"
+                          : type === "ATTRACTION_UNREACHABLE"
+                            ? "Tempat Wisata Tidak Terjangkau"
+                            : type === "HARBOR"
+                              ? "Pelabuhan"
+                              : type === "AIRPORT"
+                                ? "Bandara"
+                                : type === "TRAIN_STATION"
+                                  ? "Stasiun Kereta"
+                                  : type === "BUS_STATION"
+                                    ? "Terminal Bus"
+                                    : ""}
                         {" ("}
                         {type === "ATTRACTION_REACHABLE" ||
                         type === "ATTRACTION_UNREACHABLE"

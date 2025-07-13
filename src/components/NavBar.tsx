@@ -71,7 +71,7 @@ export default function NavBar() {
             bgClip="text"
             bgGradient={logoGradient}
           >
-            Attractions GIS
+            Buffer Analysis GIS
           </Text>
         </Box>
 
@@ -303,7 +303,7 @@ export default function NavBar() {
                 bgClip="text"
                 bgGradient={logoGradient}
               >
-                Attractions GIS
+                Buffer Analysis GIS
               </Drawer.Title>
               <Drawer.CloseTrigger
                 _hover={{

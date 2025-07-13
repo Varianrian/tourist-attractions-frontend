@@ -150,8 +150,8 @@ export const AttractionDialog = ({
             <Dialog.Header>
               <Dialog.Title>
                 {mode === "create"
-                  ? "Add Tourist Attraction"
-                  : "Edit Tourist Attraction"}
+                  ? "Tambah Data Tempat Wisata"
+                  : "Edit Data Tempat Wisata"}
               </Dialog.Title>
             </Dialog.Header>
 
@@ -171,12 +171,12 @@ export const AttractionDialog = ({
                     fontWeight="medium"
                     color={textColor}
                   >
-                    Name
+                    Nama *
                   </Text>
                   <Input
                     value={formData.name}
                     onChange={(e) => handleInputChange("name", e.target.value)}
-                    placeholder="Enter attraction name"
+                    placeholder="Masukkan nama tempat wisata"
                     bg={inputBg}
                     borderColor={borderColor}
                   />
@@ -189,12 +189,12 @@ export const AttractionDialog = ({
                     mb={2}
                     color={textColor}
                   >
-                    Location Coordinates
+                    Koordinat Lokasi *
                   </Text>
                   <Tabs.Root defaultValue="map" size="sm">
                     <Tabs.List>
-                      <Tabs.Trigger value="map">Map Selection</Tabs.Trigger>
-                      <Tabs.Trigger value="manual">Manual Input</Tabs.Trigger>
+                      <Tabs.Trigger value="map">Pilih Peta</Tabs.Trigger>
+                      <Tabs.Trigger value="manual">Input Manual</Tabs.Trigger>
                     </Tabs.List>
                     
                     <Tabs.Content value="manual" pt={3}>

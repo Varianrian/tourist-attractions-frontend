@@ -103,10 +103,10 @@ const TransportationTypeChart = ({ data }: { data: TransportationTypeCount[] }) 
   };
 
   const typeLabels: Record<string, string> = {
-    'BUS_STATION': 'Bus Stations',
-    'TRAIN_STATION': 'Train Stations',
-    'AIRPORT': 'Airports',
-    'HARBOR': 'Harbors',
+    'BUS_STATION': 'Terminal Bus',
+    'TRAIN_STATION': 'Stasiun Kereta',
+    'AIRPORT': 'Bandara',
+    'HARBOR': 'Pelabuhan',
   };
 
   const typeColors = [
@@ -128,7 +128,7 @@ const TransportationTypeChart = ({ data }: { data: TransportationTypeCount[] }) 
         <HStack>
           <Icon icon="mdi:chart-donut" width="20" height="20" color={customShades.purple[500]} />
           <Text fontSize="lg" fontWeight="semibold" color={textColor}>
-            Transportation by Type
+            Transportasi Berdasarkan Jenis
           </Text>
         </HStack>
       </Card.Header>
@@ -165,20 +165,20 @@ const TransportationTypeChart = ({ data }: { data: TransportationTypeCount[] }) 
 
 export const GeographicCharts = ({ 
   attractionsByProvince, 
-  transportationByProvince, 
+transportationByProvince, 
   transportationByType 
 }: GeographicChartsProps) => {
   return (
     <SimpleGrid columns={{ base: 1, lg: 2 }} gap={6} width={"100%"}>
       <ProvinceChart
         data={attractionsByProvince}
-        title="Attractions by Province"
+        title="Tempat Wisata Berdasarkan Provinsi"
         icon="mdi:map-marker-multiple"
         color={customShades.blue[500]}
       />
       <ProvinceChart
         data={transportationByProvince}
-        title="Transportation by Province"
+        title="Transportasi Berdasarkan Provinsi"
         icon="mdi:bus-multiple"
         color={customShades.green[500]}
       />

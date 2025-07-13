@@ -213,7 +213,7 @@ export const TransportationImportExportDialog = ({
         <Dialog.Positioner>
           <Dialog.Content maxW="2xl" mx={4}>
             <Dialog.Header>
-              <Dialog.Title>Transportation Data Import/Export</Dialog.Title>
+              <Dialog.Title>Import/Export Data Transportasi</Dialog.Title>
             </Dialog.Header>
 
             <Dialog.Body>
@@ -238,7 +238,7 @@ export const TransportationImportExportDialog = ({
                     Export Data
                   </Text>
                   <Text fontSize="sm" color="gray.600" mb={4}>
-                    Export all transportation data to an Excel file
+                    Ekspor semua data transportasi ke file Excel
                   </Text>
                   <Button
                     onClick={handleExport}
@@ -260,7 +260,7 @@ export const TransportationImportExportDialog = ({
                     Import Data
                   </Text>
                   <Text fontSize="sm" color="gray.600" mb={4}>
-                    Import transportation data from an Excel file. Download the template first to ensure proper formatting.
+                    Impor data transportasi dari file Excel. Pastikan file sesuai dengan format yang telah ditentukan.
                   </Text>
 
                   {/* Download Template Button */}
@@ -338,7 +338,7 @@ export const TransportationImportExportDialog = ({
                   onClick={handleCancel}
                   disabled={isExporting || isDownloadingTemplate || isImporting}
                 >
-                  Close
+                  Batal
                 </Button>
               </Dialog.ActionTrigger>
             </Dialog.Footer>

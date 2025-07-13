@@ -17,22 +17,22 @@ export const transportationTypeColors = {
   AIRPORT: {
     color: "blue",
     icon: "✈️",
-    label: "Airport",
+    label: "Bandara",
   },
   BUS_STATION: {
     color: "green",
     icon: "🚌",
-    label: "Bus Station",
+    label: "Terminal Bus",
   },
   TRAIN_STATION: {
     color: "orange",
     icon: "🚆",
-    label: "Train Station",
+    label: "Stasiun Kereta",
   },
   HARBOR: {
     color: "purple",
     icon: "⚓",
-    label: "Harbor",
+    label: "Pelabuhan",
   },
 };
 
@@ -60,6 +60,16 @@ export const provincesOptions = createListCollection({
     label: province,
   })),
 });
+
+const bufferRadius = ["1000", "3000", "5000"];
+
+const bufferRadiusOptions = createListCollection({
+  items: bufferRadius.map((radius) => ({
+    value: radius,
+    label: `${radius} meter`,
+  })),
+});
+console.log("Buffer Radius Options:", bufferRadiusOptions);
 
 interface BufferAnalysisFiltersProps {
   searchTerm: string;
@@ -124,10 +134,10 @@ export const BufferAnalysisFilters = ({
               mb={3}
               color={useColorModeValue("gray.700", "gray.200")}
             >
-              Search Attractions
+              Cari Tempat Wisata
             </Text>
             <Input
-              placeholder="Search by name"
+              placeholder="Cari berdasarkan nama..."
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
               borderColor={inputBorderColor}
@@ -152,7 +162,7 @@ export const BufferAnalysisFilters = ({
               mb={3}
               color={useColorModeValue("gray.700", "gray.200")}
             >
-              Select Province
+              Pilih Provinsi
             </Text>
             <Select.Root
               collection={provincesOptions}
@@ -173,7 +183,7 @@ export const BufferAnalysisFilters = ({
                     boxShadow: `0 0 0 1px ${customShades.green[500]}`,
                   }}
                 >
-                  <Select.ValueText placeholder="Select province" />
+                  <Select.ValueText placeholder="Pilih provinsi" />
                 </Select.Trigger>
                 <Select.IndicatorGroup>
                   <Select.Indicator />
@@ -202,7 +212,7 @@ export const BufferAnalysisFilters = ({
               mb={3}
               color={useColorModeValue("gray.700", "gray.200")}
             >
-              Transportation Types
+              Jenis Transportasi
             </Text>
             <Select.Root
               multiple
@@ -238,7 +248,7 @@ export const BufferAnalysisFilters = ({
                     boxShadow: `0 0 0 1px ${customShades.green[500]}`,
                   }}
                 >
-                  <Select.ValueText placeholder="Select transportation types" />
+                  <Select.ValueText placeholder="Pilih jenis transportasi" />
                 </Select.Trigger>
                 <Select.IndicatorGroup>
                   <Select.Indicator />
@@ -286,28 +296,51 @@ export const BufferAnalysisFilters = ({
               mb={3}
               color={useColorModeValue("gray.700", "gray.200")}
             >
-              Buffer Radius (meters)
+              Buffer Radius
             </Text>
-            <Input
-              type="number"
-              placeholder="Buffer radius in meters"
-              value={bufferRadius}
-              onChange={(e) => {
-                onBufferRadiusChange(parseInt(e.target.value) || 3000);
-              }}
-              borderColor={inputBorderColor}
-              borderWidth="2px"
-              borderRadius="md"
-              bg={useColorModeValue("white", "gray.700")}
-              _hover={{
-                borderColor: customShades.green[400],
-              }}
-              _focus={{
-                borderColor: customShades.green[500],
-                boxShadow: `0 0 0 1px ${customShades.green[500]}`,
-              }}
+            <Select.Root
+              collection={bufferRadiusOptions}
               size="md"
-            />
+              value={[bufferRadius.toString()]}
+              onValueChange={(value) => {
+                console.log("Selected buffer radius:", value);
+                const selectedRadius = parseInt(value.value[0], 10);
+                console.log("Parsed buffer radius:", selectedRadius);
+                onBufferRadiusChange(selectedRadius);
+              }}
+            >
+              <Select.Control>
+                <Select.Trigger
+                  borderWidth="2px"
+                  borderColor={inputBorderColor}
+                  bg={useColorModeValue("white", "gray.700")}
+                  _hover={{
+                    borderColor: customShades.green[400],
+                  }}
+                  _focus={{
+                    borderColor: customShades.green[500],
+                    boxShadow: `0 0 0 1px ${customShades.green[500]}`,
+                  }}
+                >
+                  <Select.ValueText placeholder="Pilih radius buffer" />
+                </Select.Trigger>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+              </Select.Control>
+
+              <Portal>
+                <Select.Positioner>
+                  <Select.Content>
+                    {bufferRadiusOptions.items.map((item) => (
+                      <Select.Item key={item.value} item={item.value}>
+                        <Text>{item.label}</Text>
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Positioner>
+              </Portal>
+            </Select.Root>
           </Box>
         </SimpleGrid>
       </VStack>

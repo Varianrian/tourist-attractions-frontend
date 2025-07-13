@@ -56,16 +56,16 @@ export const AttractionFilters = ({
     >
       <VStack gap={6} align="stretch">
         <Text fontSize="lg" fontWeight="bold" color={useColorModeValue("gray.800", "white")}>
-          Filter Tourist Attraction Data
+          Filter Data Tempat Wisata
         </Text>
         
         <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
           <Box>
             <Text fontSize="sm" fontWeight="semibold" mb={3} color={useColorModeValue("gray.700", "gray.200")}>
-              Search Attractions
+              Cari Tempat Wisata
             </Text>
             <Input
-              placeholder="Search by name"
+              placeholder="Cari berdasarkan nama"
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
               borderColor={inputBorderColor}
@@ -85,7 +85,7 @@ export const AttractionFilters = ({
 
           <Box>
             <Text fontSize="sm" fontWeight="semibold" mb={3} color={useColorModeValue("gray.700", "gray.200")}>
-              Select Province
+              Pilih Provinsi
             </Text>
             <Select.Root
               collection={provincesOptions}
