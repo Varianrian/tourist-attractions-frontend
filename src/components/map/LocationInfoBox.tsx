@@ -6,6 +6,8 @@ import {
   Badge,
   Icon,
   CloseButton,
+  Popover,
+  VStack,
 } from "@chakra-ui/react";
 import { getTransportIcon } from "../../utils/mapIcons";
 
@@ -58,8 +60,14 @@ export function LocationInfoBox({
       <Box mb={3}>
         <HStack justifyContent="space-between" alignItems="center">
           <Heading as="h3" size="md" color={textColor}>
-            {location.name} {location.position && (
-              <Text fontSize="xs" color={subtleTextColor} mr={1} fontStyle="italic">
+            {location.name}{" "}
+            {location.position && (
+              <Text
+                fontSize="xs"
+                color={subtleTextColor}
+                mr={1}
+                fontStyle="italic"
+              >
                 {location.position[0].toFixed(4)},{" "}
                 {location.position[1].toFixed(4)}
               </Text>
@@ -78,7 +86,7 @@ export function LocationInfoBox({
         location.nearbyTransport.length > 0 && (
           <Box>
             <Text fontSize="sm" fontWeight="bold" mb={2} color={textColor}>
-              Nearby Transportation:
+              Transportasi Sekitar:
             </Text>{" "}
             <HStack gap={2} flexWrap="wrap">
               {/* Limit to 10 items */}
@@ -107,9 +115,96 @@ export function LocationInfoBox({
                 </Badge>
               ))}
               {location.nearbyTransport.length > 10 && (
-                <Badge colorScheme="gray" borderRadius="full" py={1} px={2}>
-                  +{location.nearbyTransport.length - 10} more
-                </Badge>
+                <Popover.Root>
+                  <Popover.Trigger asChild>
+                    <Badge
+                      colorScheme="gray"
+                      borderRadius="full"
+                      py={1}
+                      px={2}
+                      cursor="pointer"
+                      _hover={{ bg: "gray.200" }}
+                      transition="background-color 0.2s"
+                    >
+                      +{location.nearbyTransport.length - 10} Lainnya
+                    </Badge>
+                  </Popover.Trigger>
+                  <Popover.Positioner>
+                    <Popover.Content
+                      bg={bgColor}
+                      borderColor={borderColor}
+                      borderWidth="1px"
+                      borderRadius="xl"
+                      boxShadow="xl"
+                      p={4}
+                      maxW="300px"
+                      maxH="400px"
+                      overflowY="auto"
+                    >
+                      <Popover.Header>
+                        <HStack justify="space-between" align="center">
+                          <Heading size="sm" color={textColor}>
+                            Semua Transportasi (
+                            {location.nearbyTransport.length})
+                          </Heading>
+                        </HStack>
+                      </Popover.Header>
+                      <Popover.Body>
+                        <VStack gap={2} align="stretch">
+                          {location.nearbyTransport
+                            .sort((a, b) => a.type.localeCompare(b.type))
+                            .map((transport, index) => (
+                              <HStack
+                                key={`${transport.name}-${index}`}
+                                p={2}
+                                borderRadius="md"
+                                bg={borderColor}
+                                align="center"
+                              >
+                                <Icon
+                                  as={getTransportIcon(transport.type)}
+                                  color={
+                                    transport.type === "AIRPORT"
+                                      ? "orange.500"
+                                      : transport.type === "BUS_STATION"
+                                        ? "purple.500"
+                                        : transport.type === "TRAIN_STATION"
+                                          ? "blue.500"
+                                          : "teal.500"
+                                  }
+                                  boxSize={4}
+                                />
+                                <VStack align="start" gap={0} flex={1}>
+                                  <Text
+                                    fontSize="sm"
+                                    fontWeight="medium"
+                                    color={textColor}
+                                    lineHeight="shorter"
+                                  >
+                                    {transport.name.charAt(0).toUpperCase() +
+                                      transport.name.slice(1)}
+                                  </Text>
+                                  <Text
+                                    fontSize="xs"
+                                    color={subtleTextColor}
+                                    lineHeight="shorter"
+                                  >
+                                    {transport.type === "AIRPORT"
+                                      ? "Bandara"
+                                      : transport.type === "BUS_STATION"
+                                        ? "Terminal Bus"
+                                        : transport.type === "TRAIN_STATION"
+                                          ? "Stasiun Kereta"
+                                          : "Pelabuhan"}
+                                  </Text>
+                                </VStack>
+                              </HStack>
+                            ))}
+                        </VStack>
+                      </Popover.Body>
+                    </Popover.Content>
+                  </Popover.Positioner>
+                </Popover.Root>
               )}
             </HStack>
           </Box>
@@ -134,7 +229,6 @@ export function LocationInfoBox({
             }
             variant="outline"
           >
-            
             <Icon as={getTransportIcon(location.type)} mr={1} />
             {location.type === "AIRPORT"
               ? "Bandara"

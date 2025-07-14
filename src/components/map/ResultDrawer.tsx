@@ -140,7 +140,7 @@ export function ResultDrawer({
                       fontSize={{ base: "xs", md: "sm" }}
                     >
                       <Box as="span" fontWeight="bold" mr={2}>
-                        Total Attractions:
+                        Total Tempat Wisata:
                       </Box>
                       {data.data.metadata.totalAttractions}
                     </Box>
@@ -152,14 +152,14 @@ export function ResultDrawer({
                       fontSize={{ base: "xs", md: "sm" }}
                     >
                       <Box as="span" fontWeight="bold" color="green.500" mr={2}>
-                        Reachable:
+                        Terjangkau:
                       </Box>
                       {data.data.metadata.reachableAttractions}
                     </Box>
 
                     <Box pb={1} fontSize={{ base: "xs", md: "sm" }}>
                       <Box as="span" fontWeight="bold" color="red.500" mr={2}>
-                        Unreachable:
+                        Tidak Terjangkau:
                       </Box>
                       {data.data.metadata.unreachableAttractions}
                     </Box>

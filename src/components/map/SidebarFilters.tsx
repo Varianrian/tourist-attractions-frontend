@@ -439,7 +439,10 @@ export function SidebarFilters({
                 <Checkbox.Control borderColor={checkboxBorderColor} />
                 <HStack alignItems={"center"}>
                   <Checkbox.Label>Tempat Wisata Terjangkau</Checkbox.Label>
-                  <Tooltip content="Tempat wisata yang dapat dijangkau dalam radius buffer yang ditentukan.">
+                  <Tooltip
+                    content="Tempat wisata yang dapat dijangkau oleh transportasi umum dalam radius buffer yang ditentukan."
+                    openDelay={100}
+                  >
                     <InfoCircleIcon />
                   </Tooltip>
                 </HStack>
@@ -459,7 +462,10 @@ export function SidebarFilters({
                   <Checkbox.Label>
                     Tempat Wisata Tidak Terjangkau
                   </Checkbox.Label>
-                  <Tooltip content="Tempat wisata yang tidak dapat dijangkau dalam radius buffer yang ditentukan.">
+                  <Tooltip
+                    content="Tempat wisata yang tidak dapat dijangkau oleh transportasi umum dalam radius buffer yang ditentukan."
+                    openDelay={100}
+                  >
                     <InfoCircleIcon />
                   </Tooltip>
                 </HStack>
@@ -561,6 +567,12 @@ export function SidebarFilters({
               <Stat.Root>
                 <Stat.Label color="green.500" fontSize="xs">
                   Terjangkau
+                  <Tooltip
+                    content="Tempat wisata yang dapat dijangkau oleh transportasi umum dalam radius buffer yang ditentukan."
+                    openDelay={100}
+                  >
+                    <InfoCircleIcon />
+                  </Tooltip>
                 </Stat.Label>
                 <Stat.ValueText color="green.500" fontSize="md">
                   {reachableAttractions}
@@ -570,6 +582,12 @@ export function SidebarFilters({
               <Stat.Root>
                 <Stat.Label color="red.500" fontSize="xs">
                   Tidak Terjangkau
+                  <Tooltip
+                    content="Tempat wisata yang tidak dapat dijangkau oleh transportasi umum dalam radius buffer yang ditentukan."
+                    openDelay={100}
+                  >
+                    <InfoCircleIcon />
+                  </Tooltip>
                 </Stat.Label>
                 <Stat.ValueText color="red.500" fontSize="md">
                   {unreachableAttractions}
