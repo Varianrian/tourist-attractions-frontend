@@ -190,11 +190,17 @@ export default function NavBar() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => router.navigate({ to: "/data-management" })}
+                          onClick={() =>
+                            router.navigate({ to: "/data-management" })
+                          }
                           justifyContent="flex-start"
                           width="full"
                         >
-                          <Icon icon="mdi:database-edit" width="16" height="16" />
+                          <Icon
+                            icon="mdi:database-edit"
+                            width="16"
+                            height="16"
+                          />
                           <Text ml={2}>Data Management</Text>
                         </Button>
                         <Button
@@ -422,7 +428,6 @@ export default function NavBar() {
                         Data Management
                       </Link>
                     </Route>
-                        
 
                     <Box px={4} py={2}>
                       <Flex align="center" gap={3} mb={3}>
@@ -451,34 +456,36 @@ export default function NavBar() {
                   </>
                 ) : (
                   <Box pt={2}>
-                    <Button
-                      variant="outline"
-                      size="md"
-                      rounded="full"
-                      fontWeight="medium"
-                      width="full"
-                      mb={3}
-                      onClick={() => {
-                        onClose();
-                      }}
-                      borderColor={useColorModeValue(
-                        customColors.blue,
-                        customColors.purple
-                      )}
-                      color={useColorModeValue(
-                        customColors.blue,
-                        customColors.purple
-                      )}
-                      _hover={{
-                        bg: useColorModeValue(
+                    <Route to="/admin">
+                      <Button
+                        variant="outline"
+                        size="md"
+                        rounded="full"
+                        fontWeight="medium"
+                        width="full"
+                        mb={3}
+                        onClick={() => {
+                          onClose();
+                        }}
+                        borderColor={useColorModeValue(
                           customColors.blue,
                           customColors.purple
-                        ),
-                        color: "white",
-                      }}
-                    >
-                      Admin Login
-                    </Button>
+                        )}
+                        color={useColorModeValue(
+                          customColors.blue,
+                          customColors.purple
+                        )}
+                        _hover={{
+                          bg: useColorModeValue(
+                            customColors.blue,
+                            customColors.purple
+                          ),
+                          color: "white",
+                        }}
+                      >
+                        Admin Login
+                      </Button>
+                    </Route>
                   </Box>
                 )}
 

@@ -146,7 +146,7 @@ export function FilterDrawer({
               {selectedProvince && setSelectedProvince && (
                 <Box>
                   <Heading size="sm" mb={3} color={textColor}>
-                    Province Filter
+                    Filter Provinsi
                   </Heading>{" "}
                   <ButtonGroup
                     size="sm"
@@ -211,12 +211,12 @@ export function FilterDrawer({
               <Box>
                 {" "}
                 <Heading size="sm" mb={3} color={textColor}>
-                  Transportation Filters
+                  Filter Transportasi
                 </Heading>
                 <Stack gap={2}>
                   <FilterButton
                     type="AIRPORT"
-                    label="Airports"
+                    label="Bandara"
                     isActive={activeFilters.AIRPORT}
                     borderColor={borderColor}
                     subtleTextColor={subtleTextColor}
@@ -225,7 +225,7 @@ export function FilterDrawer({
                   />
                   <FilterButton
                     type="BUS_STATION"
-                    label="Bus Stations"
+                    label="Terminal Bus"
                     isActive={activeFilters.BUS_STATION}
                     borderColor={borderColor}
                     subtleTextColor={subtleTextColor}
@@ -234,7 +234,7 @@ export function FilterDrawer({
                   />
                   <FilterButton
                     type="TRAIN_STATION"
-                    label="Railway Stations"
+                    label="Stasiun Kereta"
                     isActive={activeFilters.TRAIN_STATION}
                     borderColor={borderColor}
                     subtleTextColor={subtleTextColor}
@@ -243,7 +243,7 @@ export function FilterDrawer({
                   />
                   <FilterButton
                     type="HARBOR"
-                    label="Harbors"
+                    label="Pelabuhan"
                     isActive={activeFilters.HARBOR}
                     borderColor={borderColor}
                     subtleTextColor={subtleTextColor}
