@@ -463,7 +463,7 @@ export const bufferAnalysisTableColumns: TableColumn[] = [
           case "bus_station":
             return "Terminal Bus";
           case "train_station":
-            return "Kereta";
+            return "Stasiun Kereta";
           case "harbor":
           case "port":
             return "Pelabuhan";

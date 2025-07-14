@@ -34,7 +34,7 @@ function MapPage() {
   const [selectedProvince, setSelectedProvince] = useState<string | null>(
     "JAWA TENGAH"
   );
-  const [bufferRadius, setBufferRadius] = useState<number>(1000);
+  const [bufferRadius, setBufferRadius] = useState<number>(3000);
 
   const [activeFilters, setActiveFilters] = useState({
     AIRPORT: true,
@@ -273,12 +273,12 @@ function MapPage() {
                       <Heading size="xs">{hub.name}</Heading>
                       <Text fontSize="xs" mt={1}>
                         {hub.type === "HARBOR"
-                          ? "Harbor"
+                          ? "Pelabuhan"
                           : hub.type === "AIRPORT"
-                            ? "Airport"
+                            ? "Bandara"
                             : hub.type === "TRAIN_STATION"
-                              ? "Train Station"
-                              : "Bus Station"}
+                              ? "Stasiun Kereta"
+                              : "Terminal Bus"}
                       </Text>
                     </Box>
                   </Popup>
@@ -377,7 +377,7 @@ function MapPage() {
                           {attraction.properties.transportation_count > 0 && (
                             <Badge colorScheme="green" mt={1} size="xs">
                               {attraction.properties.transportation_count}{" "}
-                              transport options
+                              opsi transportasi
                             </Badge>
                           )}
                         </Box>

@@ -66,7 +66,8 @@ const bufferRadius = ["1000", "3000", "5000"];
 const bufferRadiusOptions = createListCollection({
   items: bufferRadius.map((radius) => ({
     value: radius,
-    label: `${radius} meter`,
+    // radius in kilometers
+    label: `${parseInt(radius, 10) / 1000} km`,
   })),
 });
 console.log("Buffer Radius Options:", bufferRadiusOptions);
