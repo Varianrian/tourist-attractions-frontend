@@ -50,16 +50,16 @@ export const AttractionImportExportDialog = ({
 
     try {
       const response = await ExportAllAttractions();
-      
+
       // Create blob and download
       const blob = new Blob([response.data as any], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
-      
+
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `attractions-data-${new Date().toISOString().split('T')[0]}.xlsx`;
+      link.download = `attractions-data-${new Date().toISOString().split("T")[0]}.xlsx`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -67,15 +67,15 @@ export const AttractionImportExportDialog = ({
 
       toaster.create({
         title: "Success",
-        description: "Attraction data exported successfully",
+        description: "Data Tempat Wisata berhasil di-export",
         type: "success",
         closable: true,
       });
     } catch (err: any) {
-      setError("Failed to export attraction data");
+      setError("Terjadi kesalahan saat export data");
       toaster.create({
         title: "Error",
-        description: "Failed to export attraction data",
+        description: err.data?.message || "Terjadi kesalahan saat export data",
         type: "error",
         closable: true,
       });
@@ -90,12 +90,12 @@ export const AttractionImportExportDialog = ({
 
     try {
       const response = await ImportExampleAttractions();
-      
+
       // Create blob and download
       const blob = new Blob([response.data as any], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
-      
+
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -107,15 +107,15 @@ export const AttractionImportExportDialog = ({
 
       toaster.create({
         title: "Success",
-        description: "Import template downloaded successfully",
+        description: "Template import berhasil di-download",
         type: "success",
         closable: true,
       });
     } catch (err: any) {
-      setError("Failed to download import template");
+      setError("Gagal mengunduh template import");
       toaster.create({
         title: "Error",
-        description: "Failed to download import template",
+        description: err.data?.message || "Gagal mengunduh template import",
         type: "error",
         closable: true,
       });
@@ -126,20 +126,20 @@ export const AttractionImportExportDialog = ({
 
   const handleImport = async () => {
     if (selectedFiles.length === 0) {
-      setError("Please select a file to import");
+      setError("Pilih file yang ingin di-import");
       return;
     }
 
     const file = selectedFiles[0];
-    
+
     // Validate file
     if (!file || file.size === 0) {
-      setError("Please select a valid Excel file");
+      setError("Pilih file Excel yang valid");
       return;
     }
 
-    if (!file.name.endsWith('.xlsx')) {
-      setError("Please select a valid Excel file (.xlsx)");
+    if (!file.name.endsWith(".xlsx")) {
+      setError("Pilih file Excel yang valid (.xlsx)");
       return;
     }
 
@@ -150,18 +150,12 @@ export const AttractionImportExportDialog = ({
       const formData = new FormData();
       formData.append("file", file);
 
-      console.log("FormData contents:", {
-        file: file,
-        fileName: file.name,
-        fileSize: file.size,
-        fileType: file.type
-      });
-
-      await ImportAttractions(formData);
+      const response: any = await ImportAttractions(formData);
 
       toaster.create({
         title: "Success",
-        description: "Attraction data imported successfully",
+        description:
+          response.data.message || "Data Tempat Wisata berhasil di-import",
         type: "success",
         closable: true,
       });
@@ -170,19 +164,23 @@ export const AttractionImportExportDialog = ({
       onImportSuccess?.();
       onClose();
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || "Failed to import attraction data";
+      const errorMessage =
+        err.response?.data?.message || "Gagal meng-import data tempat wisata";
       setError(errorMessage);
-      
+
       // Create a more detailed error message for the toaster
-      const lines = errorMessage.split('\n');
-      const toasterMessage = lines.length > 1 ? lines.join(' | ') : errorMessage;
-      
+      const lines = errorMessage.split("\n").slice(0, 5); // Limit to 5 lines
+      if (lines.length > 5) {
+        lines.push("...");
+      }
+      const toasterMessage = lines.length > 1 ? lines.join("\n") : errorMessage;
+
       toaster.create({
         title: "Import Error",
         description: toasterMessage,
         type: "error",
         closable: true,
-        duration: 10000, // Longer duration for error messages
+        duration: 10000,
       });
     } finally {
       setIsImporting(false);
@@ -222,10 +220,10 @@ export const AttractionImportExportDialog = ({
                   <Alert.Root status="error">
                     <Alert.Indicator />
                     <Alert.Description>
-                      {error.split('\n').map((line, index) => (
+                      {error.split("\n").map((line, index) => (
                         <div key={index}>
                           {line}
-                          {index < error.split('\n').length - 1 && <br />}
+                          {index < error.split("\n").length - 1 && <br />}
                         </div>
                       ))}
                     </Alert.Description>
@@ -234,7 +232,12 @@ export const AttractionImportExportDialog = ({
 
                 {/* Export Section */}
                 <Box>
-                  <Text fontSize="lg" fontWeight="semibold" mb={3} color={textColor}>
+                  <Text
+                    fontSize="lg"
+                    fontWeight="semibold"
+                    mb={3}
+                    color={textColor}
+                  >
                     Export Data
                   </Text>
                   <Text fontSize="sm" color="gray.600" mb={4}>
@@ -256,11 +259,17 @@ export const AttractionImportExportDialog = ({
 
                 {/* Import Section */}
                 <Box>
-                  <Text fontSize="lg" fontWeight="semibold" mb={3} color={textColor}>
+                  <Text
+                    fontSize="lg"
+                    fontWeight="semibold"
+                    mb={3}
+                    color={textColor}
+                  >
                     Import Data
                   </Text>
                   <Text fontSize="sm" color="gray.600" mb={4}>
-                    Import data tempat wisata dari file Excel. Unduh template terlebih dahulu untuk memastikan format yang benar.
+                    Import data tempat wisata dari file Excel. Unduh template
+                    terlebih dahulu untuk memastikan format yang benar.
                   </Text>
 
                   {/* Download Template Button */}
@@ -282,7 +291,9 @@ export const AttractionImportExportDialog = ({
                     alignItems="stretch"
                     maxFiles={1}
                     accept=".xlsx"
-                    onFileChange={(details) => handleFileChange(details.acceptedFiles)}
+                    onFileChange={(details) =>
+                      handleFileChange(details.acceptedFiles)
+                    }
                   >
                     <FileUpload.HiddenInput />
                     <FileUpload.Dropzone

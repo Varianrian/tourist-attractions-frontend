@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Box, Badge, Heading, Text, useDisclosure } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -17,6 +17,7 @@ import { SidebarFilters } from "../components/map/SidebarFilters";
 import { MobileControls } from "../components/map/MobileControls";
 import { FilterDrawer } from "../components/map/FilterDrawer";
 import { LocationInfoBox } from "../components/map/LocationInfoBox";
+import { MapLoadingState } from "../components/map/MapLoadingState";
 import NavBar from "../components/NavBar";
 import { GetAllTransportationWithFilter } from "@/api/transportation";
 import { GetProvinceByName } from "@/api/province";
@@ -49,18 +50,42 @@ function MapPage() {
     unreachableAttractions: true,
   });
 
-  const { data } = GetAllTransportationWithFilter(
+  const { data, isFetching } = GetAllTransportationWithFilter(
     selectedProvince || "JAWA TENGAH",
     activeFilters
   );
-  const { data: provinceData } = GetProvinceByName(
-    selectedProvince || "JAWA TENGAH"
-  );
-  const { data: bufferData } = GetBufferAnalysis(
+  const { data: provinceData, isFetching: isFetchingProvince } =
+    GetProvinceByName(selectedProvince || "JAWA TENGAH");
+  const { data: bufferData, isFetching: isFetchingBuffer } = GetBufferAnalysis(
     bufferRadius,
     selectedProvince || "JAWA TENGAH",
     activeFilters
   );
+
+  // Loading states
+  const isAnyLoading = isFetching || isFetchingProvince || isFetchingBuffer;
+  const loadingSteps = [
+    {
+      name: "Memuat data provinsi...",
+      isComplete: !!provinceData && !isFetchingProvince,
+      isCurrent: isFetchingProvince,
+    },
+    {
+      name: "Memuat data transportasi...",
+      isComplete: !!data && !isFetching,
+      isCurrent: isFetching && !!provinceData,
+    },
+    {
+      name: "Memuat analisis buffer...",
+      isComplete: !!bufferData && !isFetchingBuffer,
+      isCurrent: isFetchingBuffer && !!data,
+    },
+  ];
+
+  const completedSteps = loadingSteps.filter((step) => step.isComplete).length;
+  const loadingProgress = (completedSteps / loadingSteps.length) * 100;
+  const currentLoadingStep =
+    loadingSteps.find((step) => step.isCurrent)?.name || "Loading data...";
 
   const [selectedLocation, setSelectedLocation] = useState<{
     name: string;
@@ -93,6 +118,14 @@ function MapPage() {
     mapStyle,
     filterColors,
   } = useMapColors();
+
+  // Auto-close mobile drawers when loading starts
+  useEffect(() => {
+    if (isAnyLoading) {
+      onMobileFilterClose();
+      onMobileResultClose();
+    }
+  }, [isAnyLoading, onMobileFilterClose, onMobileResultClose]);
 
   // Toggle filter status
   const toggleFilter = (filterName: string) => {
@@ -359,6 +392,14 @@ function MapPage() {
             <SetMapView center={selectedLocation.position} />
           )}
         </MapContainer>
+
+        {/* Map Loading State */}
+        <MapLoadingState
+          isLoading={isAnyLoading}
+          loadingSteps={loadingSteps}
+          currentStep={currentLoadingStep}
+          progress={loadingProgress}
+        />
       </Box>
 
       {/* Sidebar Filters (Desktop) */}
@@ -389,7 +430,7 @@ function MapPage() {
 
       {/* Mobile Filter Drawer */}
       <FilterDrawer
-        open={mobileFilterOpen}
+        open={mobileFilterOpen && !isAnyLoading}
         onOpen={onMobileFilterOpen}
         onClose={onMobileFilterClose}
         activeFilters={activeFilters}
@@ -411,7 +452,7 @@ function MapPage() {
 
       {/* Mobile Filter Drawer */}
       <ResultDrawer
-        open={mobileResultOpen}
+        open={mobileResultOpen && !isAnyLoading}
         onOpen={onMobileResultOpen}
         onClose={onMobileResultClose}
         activeFilters={activeFilters}

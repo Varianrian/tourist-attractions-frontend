@@ -67,15 +67,15 @@ export const TransportationImportExportDialog = ({
 
       toaster.create({
         title: "Success",
-        description: "Transportation data exported successfully",
+        description: "Data Transportasi berhasil di-export",
         type: "success",
         closable: true,
       });
     } catch (err: any) {
-      setError("Failed to export transportation data");
+      setError("Terjadi kesalahan saat export data");
       toaster.create({
         title: "Error",
-        description: "Failed to export transportation data",
+        description: err.data?.message || "Terjadi kesalahan saat export data",
         type: "error",
         closable: true,
       });
@@ -107,15 +107,15 @@ export const TransportationImportExportDialog = ({
 
       toaster.create({
         title: "Success",
-        description: "Import template downloaded successfully",
+        description: "Template Import Berhasil di-download",
         type: "success",
         closable: true,
       });
     } catch (err: any) {
-      setError("Failed to download import template");
+      setError("Terjadi kesalahan saat mengunduh template import");
       toaster.create({
         title: "Error",
-        description: "Failed to download import template",
+        description: "Terjadi kesalahan saat mengunduh template import",
         type: "error",
         closable: true,
       });
@@ -126,7 +126,7 @@ export const TransportationImportExportDialog = ({
 
   const handleImport = async () => {
     if (selectedFiles.length === 0) {
-      setError("Please select a file to import");
+      setError("Pilih file Excel yang ingin di-import terlebih dahulu");
       return;
     }
 
@@ -134,12 +134,12 @@ export const TransportationImportExportDialog = ({
     
     // Validate file
     if (!file || file.size === 0) {
-      setError("Please select a valid Excel file");
+      setError("Pilih file Excel yang valid");
       return;
     }
 
     if (!file.name.endsWith('.xlsx')) {
-      setError("Please select a valid Excel file (.xlsx)");
+      setError("Pilih file Excel yang valid (.xlsx)");
       return;
     }
 
@@ -150,18 +150,11 @@ export const TransportationImportExportDialog = ({
       const formData = new FormData();
       formData.append("file", file);
 
-      console.log("FormData contents:", {
-        file: file,
-        fileName: file.name,
-        fileSize: file.size,
-        fileType: file.type
-      });
-
-      await ImportTransportations(formData);
+      const response: any = await ImportTransportations(formData);
 
       toaster.create({
         title: "Success",
-        description: "Transportation data imported successfully",
+        description: response.data.message || "Data Transportasi berhasil diimport",
         type: "success",
         closable: true,
       });
@@ -170,19 +163,23 @@ export const TransportationImportExportDialog = ({
       onImportSuccess?.();
       onClose();
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || "Failed to import transportation data";
+      const errorMessage = err.response?.data?.message || "Data Transportasi gagal diimport";
+      console.error("Import error:", errorMessage);
       setError(errorMessage);
       
       // Create a more detailed error message for the toaster
-      const lines = errorMessage.split('\n');
-      const toasterMessage = lines.length > 1 ? lines.join(' | ') : errorMessage;
+      const lines = errorMessage.split('\n').slice(0, 5); // Limit to first 5 lines
+      if (lines.length > 5) {
+        lines.push("...");
+      }
+      const toasterMessage = lines.length > 1 ? lines.join('\n') : errorMessage;
       
       toaster.create({
         title: "Import Error",
         description: toasterMessage,
         type: "error",
         closable: true,
-        duration: 10000, // Longer duration for error messages
+        duration: 10000,
       });
     } finally {
       setIsImporting(false);
@@ -303,10 +300,10 @@ export const TransportationImportExportDialog = ({
                       </Icon>
                       <FileUpload.DropzoneContent>
                         <Box fontSize="md" fontWeight="medium" mb={2}>
-                          Drag and drop Excel file here
+                          Tarik dan lepas file Excel di sini, atau klik untuk memilih file
                         </Box>
                         <Box color="gray.500" fontSize="sm">
-                          Only .xlsx files are accepted
+                          Hanya file .xlsx yang diterima
                         </Box>
                       </FileUpload.DropzoneContent>
                     </FileUpload.Dropzone>

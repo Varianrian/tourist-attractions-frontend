@@ -315,7 +315,7 @@ export function SidebarFilters({
                 >
                   <Select.Trigger px={3} py={2} color={textColor}>
                     <Select.ValueText
-                      placeholder="Select Province"
+                      placeholder="Pilih Provinsi"
                       fontWeight="medium"
                     />
                   </Select.Trigger>
@@ -487,10 +487,10 @@ export function SidebarFilters({
         gap={6}
         position="absolute"
         top="80px"
-        right={isSidebarRightOpen ? "16px" : "-350px"}
+        right={isSidebarRightOpen ? "0px" : "-360px"}
         transition="right 0.3s ease"
         maxH="calc(100vh - 80px)"
-        overflowY="auto"
+        overflowY="scroll"
         paddingBottom="16px"
       >
         <Box

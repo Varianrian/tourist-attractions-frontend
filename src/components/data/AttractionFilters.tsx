@@ -106,7 +106,7 @@ export const AttractionFilters = ({
                     boxShadow: `0 0 0 1px ${customShades.purple[500]}`,
                   }}
                 >
-                  <Select.ValueText placeholder="Select province" />
+                  <Select.ValueText placeholder="Pilih Provinsi" />
                 </Select.Trigger>
                 <Select.IndicatorGroup>
                   <Select.Indicator />
