@@ -16,7 +16,7 @@ export function MobileControls({
       {/* Mobile Controls */}
       <HStack
         position="absolute"
-        bottom="24px"
+        bottom="100px"
         left="50%"
         transform="translateX(-50%)"
         zIndex="2"
