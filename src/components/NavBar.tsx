@@ -402,6 +402,28 @@ export default function NavBar() {
                       </Link>
                     </Route>
 
+                    <Route to="/data-management">
+                      <Link
+                        color={textColor}
+                        fontWeight="medium"
+                        onClick={onClose}
+                        px={4}
+                        py={2}
+                        borderRadius="md"
+                        _hover={{
+                          bg: useColorModeValue("gray.50", "gray.700"),
+                          color: useColorModeValue(
+                            customColors.blue,
+                            customColors.purple
+                          ),
+                        }}
+                        transition="all 0.2s"
+                      >
+                        Data Management
+                      </Link>
+                    </Route>
+                        
+
                     <Box px={4} py={2}>
                       <Flex align="center" gap={3} mb={3}>
                         <Avatar.Root size="sm">
