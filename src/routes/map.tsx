@@ -45,9 +45,9 @@ function MapPage() {
 
   const [activeLayers, setActiveLayers] = useState({
     province: true,
-    transportationHubs: true,
+    transportationHubs: false,
     reachableAttractions: true,
-    unreachableAttractions: true,
+    unreachableAttractions: false,
   });
 
   const { data, isFetching } = GetAllTransportationWithFilter(
