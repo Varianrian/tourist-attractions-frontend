@@ -45,6 +45,9 @@ export const GetAllTransportationWithFilter = (
     },
     {
       enabled: true,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
     }
   );
 };

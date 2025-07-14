@@ -40,6 +40,9 @@ export const GetProvinceByName = (
     undefined,
     {
       enabled: !!name,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
     }
   );
 };
