@@ -2,6 +2,8 @@ import {
   VStack,
   HStack,
   Button,
+  Box,
+  Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { Icon } from "@iconify/react";
@@ -143,74 +145,110 @@ const AttractionTable = () => {
   };
 
   return (
-    <VStack gap={4} width="100%" align="stretch">
+    <VStack 
+      gap={{ base: 2, md: 4 }} 
+      width="100%" 
+      align="stretch"
+      px={{ base: 2, md: 0 }}
+    >
       {isDataManagement && (
-        <HStack justify="flex-end" width="100%" px={4} pt={4} gap={2}>
-          <Button
-            colorPalette="purple"
-            onClick={handleImportExport}
+        <VStack 
+          width="100%" 
+          px={{ base: 2, md: 4 }} 
+          pt={{ base: 2, md: 4 }} 
+          gap={{ base: 2, md: 2 }}
+          align={{ base: "stretch", md: "flex-end" }}
+        >
+          <HStack 
+            justify={{ base: "center", md: "flex-end" }} 
+            width="100%" 
+            gap={2}
+            flexDirection={{ base: "column", sm: "row" }}
           >
-            <Icon icon="mdi:file-import" />
-            Bulk Import/Export
-          </Button>
-          <Button
-            colorPalette="purple"
-            onClick={handleCreate}
-          >
-            <Icon icon="mdi:plus" />
-            Tambah Tempat Wisata
-          </Button>
-        </HStack>
+            <Button
+              size={{ base: "sm", md: "md" }}
+              colorPalette="purple"
+              onClick={handleImportExport}
+              width={{ base: "100%", sm: "auto" }}
+              fontSize={{ base: "sm", md: "md" }}
+            >
+              <Icon icon="mdi:file-import" />
+              <Text as="span" display={{ base: "none", sm: "inline" }}>Bulk </Text>
+              Import/Export
+            </Button>
+            <Button
+              size={{ base: "sm", md: "md" }}
+              colorPalette="purple"
+              onClick={handleCreate}
+              width={{ base: "100%", sm: "auto" }}
+              fontSize={{ base: "sm", md: "md" }}
+            >
+              <Icon icon="mdi:plus" />
+              <Text as="span" display={{ base: "none", sm: "inline" }}>Tambah </Text>
+              Tempat Wisata
+            </Button>
+          </HStack>
+        </VStack>
       )}
 
       {/* Filters */}
-      <AttractionFilters
-        searchTerm={searchTerm}
-        selectedProvince={selectedProvince}
-        onSearchChange={handleSearchChange}
-        onProvinceChange={handleProvinceChange}
-      />
+      <Box px={{ base: 0, md: 4 }} width="100%">
+        <AttractionFilters
+          searchTerm={searchTerm}
+          selectedProvince={selectedProvince}
+          onSearchChange={handleSearchChange}
+          onProvinceChange={handleProvinceChange}
+        />
+      </Box>
 
       {/* Table */}
-      <ReusableTable
-        columns={isDataManagement ? createAttractionTableColumns(
-          // Edit
-          (attraction) => {
-            console.log("Edit attraction:", attraction);
-            setSelectedAttraction(attraction);
-            setDialogMode("edit");
-            setIsDialogOpen(true);
-          },
-          // Delete
-          (attraction) => {
-            console.log("Delete attraction:", attraction);
-            setSelectedAttraction(attraction);
-            setIsConfirmationDialogOpen(true);
-          },
-          isDataManagement
-        ) : attractionTableColumns}
-        data={attractionsData}
-        isLoading={isLoading || isRefetching}
-        loadingText="Loading attraction data..."
-        emptyText="No attraction data found"
-        headerBgColor={headerBgColor}
-        sortBy={sortBy}
-        sortOrder={sortOrder}
-        currentPage={currentPage}
-        itemsPerPage={itemsPerPage}
-        onSortChange={handleSortChange}
-      />
+      <Box 
+        width="100%" 
+        overflowX={{ base: "auto", lg: "visible" }}
+        px={{ base: 0, md: 4 }}
+      >
+        <ReusableTable
+          columns={isDataManagement ? createAttractionTableColumns(
+            // Edit
+            (attraction) => {
+              console.log("Edit attraction:", attraction);
+              setSelectedAttraction(attraction);
+              setDialogMode("edit");
+              setIsDialogOpen(true);
+            },
+            // Delete
+            (attraction) => {
+              console.log("Delete attraction:", attraction);
+              setSelectedAttraction(attraction);
+              setIsConfirmationDialogOpen(true);
+            },
+            isDataManagement
+          ) : attractionTableColumns}
+          data={attractionsData}
+          isLoading={isLoading || isRefetching}
+          loadingText="Loading attraction data..."
+          emptyText="No attraction data found"
+          headerBgColor={headerBgColor}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+          onSortChange={handleSortChange}
+        />
+      </Box>
 
       {/* Pagination */}
-      <AttractionPagination
-        currentPage={currentPage}
-        setCurrentPage={handlePageChange}
-        itemsPerPage={itemsPerPage}
-        setItemsPerPage={handleItemsPerPageChange}
-        metaData={metaData}
-        itemsCount={attractionsData.length}
-        isLoading={isLoading}
-      />
+      <Box px={{ base: 0, md: 4 }} width="100%">
+        <AttractionPagination
+          currentPage={currentPage}
+          setCurrentPage={handlePageChange}
+          itemsPerPage={itemsPerPage}
+          setItemsPerPage={handleItemsPerPageChange}
+          metaData={metaData}
+          itemsCount={attractionsData.length}
+          isLoading={isLoading}
+        />
+      </Box>
 
       {/* Dialog */}
       {isDataManagement && (

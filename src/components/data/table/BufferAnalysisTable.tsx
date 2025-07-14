@@ -1,5 +1,6 @@
 import {
   VStack,
+  Box,
 } from "@chakra-ui/react";
 import { useColorModeValue } from "../../ui/color-mode";
 import { customShades } from "../../../theme/custom-color";
@@ -47,48 +48,65 @@ const BufferAnalysisTable = () => {
   );
 
   return (
-    <VStack gap={4} width="100%" align="stretch">
+    <VStack 
+      gap={{ base: 2, md: 4 }} 
+      width="100%" 
+      align="stretch"
+      px={{ base: 2, md: 0 }}
+    >
       {/* Filters */}
-      <BufferAnalysisFilters
-        searchTerm={searchTerm}
-        selectedProvince={selectedProvince}
-        selectedTypes={selectedTypes}
-        bufferRadius={bufferRadius}
-        onSearchChange={handleSearchChange}
-        onProvinceChange={handleProvinceChange}
-        onTypesChange={handleTypesChange}
-        onBufferRadiusChange={handleBufferRadiusChange}
-      />
+      <Box px={{ base: 0, md: 4 }} width="100%">
+        <BufferAnalysisFilters
+          searchTerm={searchTerm}
+          selectedProvince={selectedProvince}
+          selectedTypes={selectedTypes}
+          bufferRadius={bufferRadius}
+          onSearchChange={handleSearchChange}
+          onProvinceChange={handleProvinceChange}
+          onTypesChange={handleTypesChange}
+          onBufferRadiusChange={handleBufferRadiusChange}
+        />
+      </Box>
 
       {/* Summary Statistics */}
-      <BufferAnalysisSummary metadata={apiData?.data?.data?.metadata} />
+      <Box px={{ base: 0, md: 4 }} width="100%">
+        <BufferAnalysisSummary metadata={apiData?.data?.data?.metadata} />
+      </Box>
 
       {/* Table */}
-      <ReusableTable
-        columns={bufferAnalysisTableColumns}
-        data={paginatedData}
-        isLoading={isLoading}
-        loadingText="Loading buffer analysis data..."
-        emptyText="No buffer analysis data found"
-        headerBgColor={headerBgColor}
-        sortBy={sortBy}
-        sortOrder={sortOrder}
-        currentPage={currentPage}
-        itemsPerPage={itemsPerPage}
-        onSortChange={handleSortChange}
-      />
+      <Box 
+        width="100%" 
+        overflowX={{ base: "auto", lg: "visible" }}
+        px={{ base: 0, md: 4 }}
+      >
+        <ReusableTable
+          columns={bufferAnalysisTableColumns}
+          data={paginatedData}
+          isLoading={isLoading}
+          loadingText="Loading buffer analysis data..."
+          emptyText="No buffer analysis data found"
+          headerBgColor={headerBgColor}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+          onSortChange={handleSortChange}
+        />
+      </Box>
 
       {/* Pagination and Results Summary */}
-      <BufferAnalysisPagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        itemsPerPage={itemsPerPage}
-        totalItems={processedData.length}
-        currentPageItems={paginatedData.length}
-        isLoading={isLoading}
-        onPageChange={handlePageChange}
-        onItemsPerPageChange={handleItemsPerPageChange}
-      />
+      <Box px={{ base: 0, md: 4 }} width="100%">
+        <BufferAnalysisPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          totalItems={processedData.length}
+          currentPageItems={paginatedData.length}
+          isLoading={isLoading}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
+      </Box>
     </VStack>
   );
 };

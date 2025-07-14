@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { VStack, HStack, Button } from "@chakra-ui/react";
+import { VStack, HStack, Button, Box, Text } from "@chakra-ui/react";
 import { Icon } from "@iconify/react";
 import { useColorModeValue } from "../../ui/color-mode";
 import { customShades, customColors } from "../../../theme/custom-color";
@@ -154,93 +154,127 @@ const TransportationTable = () => {
   };
 
   return (
-    <VStack gap={4} width="100%" align="stretch">
+    <VStack 
+      gap={{ base: 2, md: 4 }} 
+      width="100%" 
+      align="stretch"
+      px={{ base: 2, md: 0 }}
+    >
       {isDataManagement && (
-        <HStack justify="flex-end" width="100%" px={4} pt={4} gap={2}>
-          <Button
-            size="md"
-            colorScheme="blue"
-            onClick={handleImportExport}
-            bg={highlightColor}
-            color="white"
-            _hover={{
-              bg: useColorModeValue(customColors.blue, customShades.blue[400]),
-              transform: "translateY(-1px)",
-            }}
-            shadow="md"
-            transition="all 0.2s"
+        <VStack 
+          width="100%" 
+          px={{ base: 2, md: 4 }} 
+          pt={{ base: 2, md: 4 }} 
+          gap={{ base: 2, md: 2 }}
+          align={{ base: "stretch", md: "flex-end" }}
+        >
+          <HStack 
+            justify={{ base: "center", md: "flex-end" }} 
+            width="100%" 
+            gap={2}
+            flexDirection={{ base: "column", sm: "row" }}
           >
-            <Icon icon="mdi:file-import" width="16" height="16" />
-            Bulk Import/Export
-          </Button>
-          <Button
-            size="md"
-            colorScheme="blue"
-            onClick={handleCreate}
-            bg={highlightColor}
-            color="white"
-            _hover={{
-              bg: useColorModeValue(customColors.blue, customShades.blue[400]),
-              transform: "translateY(-1px)",
-            }}
-            shadow="md"
-            transition="all 0.2s"
-          >
-            <Icon icon="mdi:plus" width="16" height="16" />
-            Tambah Sarana Transportasi
-          </Button>
-        </HStack>
+            <Button
+              size={{ base: "sm", md: "md" }}
+              colorScheme="blue"
+              onClick={handleImportExport}
+              bg={highlightColor}
+              color="white"
+              _hover={{
+                bg: useColorModeValue(customColors.blue, customShades.blue[400]),
+                transform: "translateY(-1px)",
+              }}
+              shadow="md"
+              transition="all 0.2s"
+              width={{ base: "100%", sm: "auto" }}
+              fontSize={{ base: "sm", md: "md" }}
+            >
+              <Icon icon="mdi:file-import" width="16" height="16" />
+              <Text as="span" display={{ base: "none", sm: "inline" }}>Bulk </Text>
+              Import/Export
+            </Button>
+            <Button
+              size={{ base: "sm", md: "md" }}
+              colorScheme="blue"
+              onClick={handleCreate}
+              bg={highlightColor}
+              color="white"
+              _hover={{
+                bg: useColorModeValue(customColors.blue, customShades.blue[400]),
+                transform: "translateY(-1px)",
+              }}
+              shadow="md"
+              transition="all 0.2s"
+              width={{ base: "100%", sm: "auto" }}
+              fontSize={{ base: "sm", md: "md" }}
+            >
+              <Icon icon="mdi:plus" width="16" height="16" />
+              <Text as="span" display={{ base: "none", sm: "inline" }}>Tambah </Text>
+              Transportasi
+            </Button>
+          </HStack>
+        </VStack>
       )}
 
       {/* Filters */}
-      <TransportationFilters
-        searchTerm={searchTerm}
-        selectedProvince={selectedProvince}
-        selectedTypes={selectedTypes}
-        onSearchChange={handleSearchChange}
-        onProvinceChange={handleProvinceChange}
-        onTypesChange={handleTypesChange}
-      />
+      <Box px={{ base: 0, md: 4 }} width="100%">
+        <TransportationFilters
+          searchTerm={searchTerm}
+          selectedProvince={selectedProvince}
+          selectedTypes={selectedTypes}
+          onSearchChange={handleSearchChange}
+          onProvinceChange={handleProvinceChange}
+          onTypesChange={handleTypesChange}
+        />
+      </Box>
 
       {/* Table */}
-      <ReusableTable
-        columns={createTransportationTableColumns(
-          // Edit
-          (transportation) => {
-            setSelectedTransport(transportation);
-            setDialogMode("edit");
-            setIsDialogOpen(true);
-          },
-          // Delete
-          (transportation) => {
-            setSelectedTransport(transportation);
-            setIsConfirmationDialogOpen(true);
-          },
-          isDataManagement
-        )}
-        data={transportationsData}
-        isLoading={isLoading || isRefetching}
-        loadingText="Loading transportation data..."
-        emptyText="No transportation data found"
-        headerBgColor={headerBgColor}
-        sortBy={sortBy}
-        sortOrder={sortOrder}
-        currentPage={currentPage}
-        itemsPerPage={itemsPerPage}
-        onSortChange={handleSortChange}
-      />
+      <Box 
+        width="100%" 
+        overflowX={{ base: "auto", lg: "visible" }}
+        px={{ base: 0, md: 4 }}
+      >
+        <ReusableTable
+          columns={createTransportationTableColumns(
+            // Edit
+            (transportation) => {
+              setSelectedTransport(transportation);
+              setDialogMode("edit");
+              setIsDialogOpen(true);
+            },
+            // Delete
+            (transportation) => {
+              setSelectedTransport(transportation);
+              setIsConfirmationDialogOpen(true);
+            },
+            isDataManagement
+          )}
+          data={transportationsData}
+          isLoading={isLoading || isRefetching}
+          loadingText="Loading transportation data..."
+          emptyText="No transportation data found"
+          headerBgColor={headerBgColor}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+          onSortChange={handleSortChange}
+        />
+      </Box>
 
       {/* Pagination and Results Summary */}
-      <TransportationPagination
-        currentPage={currentPage}
-        itemsPerPage={itemsPerPage}
-        totalItems={metaData?.total || 0}
-        currentPageItems={transportationsData.length}
-        isLoading={isLoading}
-        onPageChange={handlePageChange}
-        onItemsPerPageChange={handleItemsPerPageChange}
-        metaData={metaData}
-      />
+      <Box px={{ base: 0, md: 4 }} width="100%">
+        <TransportationPagination
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+          totalItems={metaData?.total || 0}
+          currentPageItems={transportationsData.length}
+          isLoading={isLoading}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+          metaData={metaData}
+        />
+      </Box>
 
       {/* Dialog */}
       {isDataManagement && (
