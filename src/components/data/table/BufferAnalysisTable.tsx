@@ -83,7 +83,7 @@ const BufferAnalysisTable = () => {
           columns={bufferAnalysisTableColumns}
           data={paginatedData}
           isLoading={isLoading}
-          loadingText="Loading buffer analysis data..."
+          loadingText="Loading Data Analisis Buffer..."
           emptyText="No buffer analysis data found"
           headerBgColor={headerBgColor}
           sortBy={sortBy}

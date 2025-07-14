@@ -226,7 +226,7 @@ const AttractionTable = () => {
           ) : attractionTableColumns}
           data={attractionsData}
           isLoading={isLoading || isRefetching}
-          loadingText="Loading attraction data..."
+          loadingText="Loading Data Tempat Wisata..."
           emptyText="No attraction data found"
           headerBgColor={headerBgColor}
           sortBy={sortBy}

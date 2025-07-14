@@ -251,7 +251,7 @@ const TransportationTable = () => {
           )}
           data={transportationsData}
           isLoading={isLoading || isRefetching}
-          loadingText="Loading transportation data..."
+          loadingText="Loading Data Transportasi..."
           emptyText="No transportation data found"
           headerBgColor={headerBgColor}
           sortBy={sortBy}
