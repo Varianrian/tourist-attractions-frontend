@@ -14,6 +14,7 @@ import { useState } from "react";
 import { useAuth } from "@/provider/AuthProvider";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { customShades } from "@/theme/custom-color";
+import { Link } from "@tanstack/react-router";
 
 export const Login = () => {
   const [username, setUsername] = useState("");
@@ -198,6 +199,12 @@ export const Login = () => {
             textAlign="center"
             bg={useColorModeValue("gray.50", "gray.750")}
           >
+            {/* Back to Homepage Link or any other footer content can go here */}
+            <Link to="/">
+              <Text fontSize="sm" color={useColorModeValue("gray.500", "gray.400")} style={{ cursor: "pointer" }}>
+                Kembali ke Beranda
+              </Text>
+            </Link>
           </Box>
         </Card.Root>
       </Container>

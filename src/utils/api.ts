@@ -30,7 +30,8 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
 
     // Check if the error is due to an expired token
-    if (error?.response?.status === 401 && !originalRequest?._retry) {
+    // Skip interceptor for login requests to allow proper error handling
+    if (error?.response?.status === 401 && !originalRequest?._retry && !originalRequest?.url?.includes('/auth/login')) {
       originalRequest._retry = true;
       try {
         const refreshToken = Cookies.get('refreshToken');
