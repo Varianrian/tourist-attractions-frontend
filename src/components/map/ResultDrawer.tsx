@@ -87,11 +87,7 @@ export function ResultDrawer({
       <Drawer.Trigger />
       <Drawer.Positioner>
         {" "}
-        <Drawer.Content
-          position="absolute"
-          right={0}
-          height="100%"
-        >
+        <Drawer.Content position="absolute" right={0} height="100%">
           <Drawer.Header p={{ base: 2, md: 4 }}>
             <Drawer.Title fontSize={{ base: "sm", md: "md" }}>
               Buffer Analysis Result
@@ -279,8 +275,20 @@ export function ResultDrawer({
                         fontSize={{ base: "xs", md: "sm" }}
                         color={textColor}
                       >
-                        {type.charAt(0).toUpperCase() +
-                          type.slice(1).replace(/_/g, " ")}{" "}
+                        {type === "ATTRACTION_REACHABLE"
+                          ? "Tempat Wisata Terjangkau"
+                          : type === "ATTRACTION_UNREACHABLE"
+                            ? "Tempat Wisata Tidak Terjangkau"
+                            : type === "HARBOR"
+                              ? "Pelabuhan"
+                              : type === "AIRPORT"
+                                ? "Bandara"
+                                : type === "TRAIN_STATION"
+                                  ? "Stasiun Kereta"
+                                  : type === "BUS_STATION"
+                                    ? "Stasiun Bus"
+                                    : type.charAt(0).toUpperCase() +
+                                      type.slice(1).replace(/_/g, " ")}{" "}
                         {" ("}
                         {type === "ATTRACTION_REACHABLE" ||
                         type === "ATTRACTION_UNREACHABLE"

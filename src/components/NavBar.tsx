@@ -18,18 +18,21 @@ import { Icon } from "@iconify/react";
 import { customColors, customGradients } from "../theme/custom-color";
 import { Link as Route, useRouter } from "@tanstack/react-router";
 import { useAuth } from "@/provider/AuthProvider";
+import { useLocation } from "@tanstack/react-router";
 
 export default function NavBar() {
   const router = useRouter();
   const { open, onOpen, onClose } = useDisclosure();
   const { user, logout, isAuthenticated } = useAuth();
+  const location = useLocation();
+  const currentPath = location.pathname;
 
   const bgColor = useColorModeValue(
     "rgba(255, 255, 255, 0.9)",
     "rgba(23, 23, 23, 0.9)"
   );
   const textColor = useColorModeValue("gray.800", "white");
-  const borderColor = useColorModeValue("gray.200", "gray.700");
+  const borderColor = useColorModeValue("gray.400", "gray.700");
 
   // Apple-inspired colors and gradients
   const gradientBg = useColorModeValue(
@@ -53,8 +56,9 @@ export default function NavBar() {
       position="fixed"
       width="full"
       zIndex="10"
-      borderBottom="1px"
-      borderBottomColor={borderColor}
+      borderStyle={"solid"}
+      borderBottom="10px"
+      borderColor={borderColor}
     >
       <Flex
         h="64px"
@@ -71,7 +75,7 @@ export default function NavBar() {
             bgClip="text"
             bgGradient={logoGradient}
           >
-            Buffer Analysis GIS
+            <Route to="/">Buffer Analysis GIS</Route>
           </Text>
         </Box>
 
@@ -93,6 +97,19 @@ export default function NavBar() {
                   bgGradient: gradientBg,
                 },
               }}
+              {...(currentPath === "/"
+                ? {
+                    _after: {
+                      content: '""',
+                      position: "absolute",
+                      bottom: "-4px",
+                      left: "0",
+                      width: "100%",
+                      height: "2px",
+                      bgGradient: gradientBg,
+                    },
+                  }
+                : {})}
             >
               Home
             </Link>
@@ -114,31 +131,131 @@ export default function NavBar() {
                   bgGradient: gradientBg,
                 },
               }}
+              {...(currentPath === "/map"
+                ? {
+                    _after: {
+                      content: '""',
+                      position: "absolute",
+                      bottom: "-4px",
+                      left: "0",
+                      width: "100%",
+                      height: "2px",
+                      bgGradient: gradientBg,
+                    },
+                  }
+                : {})}
             >
               Map
             </Link>
           </Route>
-          <Route to="/data">
-            <Link
-              color={textColor}
-              fontWeight="medium"
-              position="relative"
-              _hover={{
-                textDecoration: "none",
-                _after: {
-                  content: '""',
-                  position: "absolute",
-                  bottom: "-4px",
-                  left: "0",
-                  width: "100%",
-                  height: "2px",
-                  bgGradient: gradientBg,
-                },
-              }}
-            >
-              Data
-            </Link>
-          </Route>
+
+          {isAuthenticated ? (
+            <>
+              <Route to="/dashboard">
+                <Link
+                  color={textColor}
+                  fontWeight="medium"
+                  position="relative"
+                  _hover={{
+                    textDecoration: "none",
+                    _after: {
+                      content: '""',
+                      position: "absolute",
+                      bottom: "-4px",
+                      left: "0",
+                      width: "100%",
+                      height: "2px",
+                      bgGradient: gradientBg,
+                    },
+                  }}
+                  {...(currentPath === "/dashboard"
+                    ? {
+                        _after: {
+                          content: '""',
+                          position: "absolute",
+                          bottom: "-4px",
+                          left: "0",
+                          width: "100%",
+                          height: "2px",
+                          bgGradient: gradientBg,
+                        },
+                      }
+                    : {})}
+                >
+                  Dashboard
+                </Link>
+              </Route>
+              <Route to="/data-management">
+                <Link
+                  color={textColor}
+                  fontWeight="medium"
+                  position="relative"
+                  _hover={{
+                    textDecoration: "none",
+                    _after: {
+                      content: '""',
+                      position: "absolute",
+                      bottom: "-4px",
+                      left: "0",
+                      width: "100%",
+                      height: "2px",
+                      bgGradient: gradientBg,
+                    },
+                  }}
+                  {...(currentPath === "/data-management"
+                    ? {
+                        _after: {
+                          content: '""',
+                          position: "absolute",
+                          bottom: "-4px",
+                          left: "0",
+                          width: "100%",
+                          height: "2px",
+                          bgGradient: gradientBg,
+                        },
+                      }
+                    : {})}
+                >
+                  Data Management
+                </Link>
+              </Route>
+            </>
+          ) : (
+            <Route to="/data">
+              <Link
+                color={textColor}
+                fontWeight="medium"
+                position="relative"
+                _hover={{
+                  textDecoration: "none",
+                  _after: {
+                    content: '""',
+                    position: "absolute",
+                    bottom: "-4px",
+                    left: "0",
+                    width: "100%",
+                    height: "2px",
+                    bgGradient: gradientBg,
+                  },
+                }}
+                {...(currentPath === "/data"
+                  ? {
+                      _after: {
+                        content: '""',
+                        position: "absolute",
+                        bottom: "-4px",
+                        left: "0",
+                        width: "100%",
+                        height: "2px",
+                        bgGradient: gradientBg,
+                      },
+                    }
+                  : {})}
+              >
+                Data
+              </Link>
+            </Route>
+          )}
         </HStack>
 
         <HStack gap={3}>
@@ -173,36 +290,6 @@ export default function NavBar() {
                     </Popover.Arrow>
                     <Popover.Body>
                       <Stack gap={2}>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => router.navigate({ to: "/dashboard" })}
-                          justifyContent="flex-start"
-                          width="full"
-                        >
-                          <Icon
-                            icon="mdi:view-dashboard"
-                            width="16"
-                            height="16"
-                          />
-                          <Text ml={2}>Dashboard</Text>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() =>
-                            router.navigate({ to: "/data-management" })
-                          }
-                          justifyContent="flex-start"
-                          width="full"
-                        >
-                          <Icon
-                            icon="mdi:database-edit"
-                            width="16"
-                            height="16"
-                          />
-                          <Text ml={2}>Data Management</Text>
-                        </Button>
                         <Button
                           variant="ghost"
                           size="sm"
@@ -309,7 +396,7 @@ export default function NavBar() {
                 bgClip="text"
                 bgGradient={logoGradient}
               >
-                Buffer Analysis GIS
+                <Route to="/">Buffer Analysis GIS</Route>
               </Drawer.Title>
               <Drawer.CloseTrigger
                 _hover={{
@@ -361,26 +448,6 @@ export default function NavBar() {
                     transition="all 0.2s"
                   >
                     Map
-                  </Link>
-                </Route>
-                <Route to="/data">
-                  <Link
-                    color={textColor}
-                    fontWeight="medium"
-                    onClick={onClose}
-                    px={4}
-                    py={2}
-                    borderRadius="md"
-                    _hover={{
-                      bg: useColorModeValue("gray.50", "gray.700"),
-                      color: useColorModeValue(
-                        customColors.blue,
-                        customColors.purple
-                      ),
-                    }}
-                    transition="all 0.2s"
-                  >
-                    Data
                   </Link>
                 </Route>
 
@@ -456,6 +523,26 @@ export default function NavBar() {
                   </>
                 ) : (
                   <Box pt={2}>
+                    <Route to="/data">
+                      <Link
+                        color={textColor}
+                        fontWeight="medium"
+                        onClick={onClose}
+                        px={4}
+                        py={2}
+                        borderRadius="md"
+                        _hover={{
+                          bg: useColorModeValue("gray.50", "gray.700"),
+                          color: useColorModeValue(
+                            customColors.blue,
+                            customColors.purple
+                          ),
+                        }}
+                        transition="all 0.2s"
+                      >
+                        Data
+                      </Link>
+                    </Route>
                     <Route to="/admin">
                       <Button
                         variant="outline"

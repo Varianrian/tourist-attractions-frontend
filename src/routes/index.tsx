@@ -72,15 +72,15 @@ function LandingPage() {
         >
           <Heading
             as="h1"
-            size="2xl"
+            size={{ base: "2xl", md: "4xl" }}
             mb={4}
             fontWeight="bold"
             letterSpacing="tight"
           >
             Platform GIS Pariwisata Jawa
           </Heading>
-          <Text
-            fontSize={{ base: "xl", md: "2xl" }}
+          <Text 
+            fontSize={{ base: "md", md: "lg" }}
             mb={8}
             maxWidth="800px"
             fontWeight="medium"

@@ -116,7 +116,7 @@ export function SidebarFilters({
   const [isSidebarLeftOpen, setIsSidebarLeftOpen] = useState(true);
   const [isSidebarRightOpen, setIsSidebarRightOpen] = useState(true);
 
-  const checkboxBorderColor = useColorModeValue("gray.300", "gray.600");
+  const checkboxBorderColor = useColorModeValue("gray.800", "gray.600");
 
   return (
     <>
@@ -130,7 +130,7 @@ export function SidebarFilters({
         bg={cardBgColor}
         color={textColor}
         borderWidth="1px"
-        borderColor={borderColor}
+        borderColor={useColorModeValue("gray.400", "gray.600")}
         borderRadius="md"
         boxShadow="md"
         size="md"
@@ -150,7 +150,7 @@ export function SidebarFilters({
         bg={cardBgColor}
         color={textColor}
         borderWidth="1px"
-        borderColor={borderColor}
+        borderColor={useColorModeValue("gray.400", "gray.600")}
         borderRadius="md"
         boxShadow="md"
         size="md"
@@ -179,47 +179,12 @@ export function SidebarFilters({
           boxShadow="lg"
           p={4}
           borderWidth="1px"
-          borderColor={borderColor}
+          borderColor={useColorModeValue("gray.400", "gray.600")}
           display={{ base: "none", md: "block" }}
           transition="left 0.3s ease"
           width="340px"
         >
           <Stack gap={6}>
-            {/* <Stack gap={3}>
-            <Heading size="sm" mb={0} color={textColor}>
-              Map Controls
-            </Heading>
-            <HStack gap={2} flexWrap={"wrap"}>
-              <FilterButton
-                type="attraction"
-                label="Attractions"
-                isActive={activeFilters.ATTRACTION}
-                borderColor={borderColor}
-                subtleTextColor={subtleTextColor}
-                filterColors={filterColors}
-                onToggle={toggleFilter}
-              />
-              <FilterButton
-                type="transportation"
-                label="Transportation Hubs"
-                isActive={activeFilters.TRANSPORTATION}
-                borderColor={borderColor}
-                subtleTextColor={subtleTextColor}
-                filterColors={filterColors}
-                onToggle={toggleFilter}
-              />
-              <FilterButton
-                type="attraction_buffer"
-                label="Attraction Buffer"
-                isActive={activeFilters.ATTRACTION_BUFFER}
-                borderColor={borderColor}
-                subtleTextColor={subtleTextColor}
-                filterColors={filterColors}
-                onToggle={toggleFilter}
-              />
-            </HStack>
-          </Stack> */}
-
             <Stack gap={3}>
               <Heading size="sm" mb={0} color={textColor}>
                 Buffer Radius
@@ -506,7 +471,7 @@ export function SidebarFilters({
           boxShadow="lg"
           p={4}
           borderWidth="1px"
-          borderColor={borderColor}
+          borderColor={useColorModeValue("gray.400", "gray.600")}
           display={{ base: "none", md: "block" }}
           transition="right 0.3s ease"
           width="340px"
