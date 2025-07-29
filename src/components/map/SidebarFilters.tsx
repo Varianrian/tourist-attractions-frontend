@@ -17,7 +17,11 @@ import {
 } from "@chakra-ui/react";
 import { useColorModeValue } from "../../components/ui/color-mode";
 import { FilterButton } from "./FilterButton";
-import { bufferRadiusOptions, provinces } from "../../data/sampleData";
+import {
+  bufferRadiusOptions,
+  provinces,
+  attractionTypes,
+} from "../../data/sampleData";
 import {
   type Transportation,
   type TransportationType,
@@ -40,6 +44,8 @@ interface SidebarFiltersProps {
   filterColors: Record<TransportationType | string, string>;
   subtleTextColor: string;
   toggleFilter: (type: TransportationType) => void;
+  selectedAttractionType: string;
+  setSelectedAttractionType: (type: string) => void;
   selectedProvince: string;
   setSelectedProvince: (province: string) => void;
   selectedBufferRadius: number;
@@ -64,6 +70,7 @@ interface SidebarFiltersProps {
       name: string;
       description?: string;
       type: string;
+      attractionType?: string;
       nearbyTransport?: {
         name: string;
         type: string;
@@ -85,6 +92,8 @@ export function SidebarFilters({
   toggleFilter,
   selectedProvince,
   setSelectedProvince,
+  selectedAttractionType,
+  setSelectedAttractionType,
   selectedBufferRadius,
   setSelectedBufferRadius,
   data,
@@ -101,6 +110,7 @@ export function SidebarFilters({
     reachableAttractions,
     unreachableAttractions,
     bufferRadiusMeters,
+    filters,
   } = data.data.metadata;
 
   const reachablePercentage = Math.round(
@@ -329,6 +339,81 @@ export function SidebarFilters({
               </Select.Root>
             </Stack>
 
+            {/* Filter Jenis Tempat Wisata */}
+            <Stack gap={3}>
+              <Heading size="sm" mb={0} color={textColor}>
+                Filter Jenis Tempat Wisata
+              </Heading>
+              <Select.Root
+                collection={attractionTypes}
+                size="sm"
+                width="100%"
+                onValueChange={(value) =>
+                  setSelectedAttractionType(value.value[0])
+                }
+                value={[selectedAttractionType]}
+              >
+                <Select.HiddenSelect />
+                <Select.Control
+                  bg={cardBgColor}
+                  borderColor={borderColor}
+                  borderWidth="1px"
+                  borderRadius="md"
+                  _hover={{ borderColor: filterColors.ATTRACTION }}
+                  _focus={{ boxShadow: `0 0 0 1px ${filterColors.ATTRACTION}` }}
+                >
+                  <Select.Trigger px={3} py={2} color={textColor}>
+                    <Select.ValueText
+                      placeholder="Pilih Jenis Tempat Wisata"
+                      fontWeight="medium"
+                    />
+                  </Select.Trigger>
+                  <Select.IndicatorGroup>
+                    <Select.Indicator color={filterColors.ATTRACTION} />
+                    <Select.ClearTrigger />
+                  </Select.IndicatorGroup>
+                </Select.Control>
+                <Portal>
+                  <Select.Positioner>
+                    <Select.Content
+                      bg={cardBgColor}
+                      borderColor={borderColor}
+                      borderWidth="1px"
+                      borderRadius="md"
+                      boxShadow="lg"
+                      py={1}
+                      maxH="300px"
+                      overflow="auto"
+                    >
+                      {attractionTypes.items.map((type) => (
+                        <Select.Item
+                          item={type}
+                          key={type.value}
+                          px={3}
+                          py={2}
+                          borderRadius="sm"
+                          _hover={{
+                            bg: useColorModeValue("gray.100", "gray.700"),
+                          }}
+                          _selected={{
+                            bg: useColorModeValue("gray.200", "gray.600"),
+                          }}
+                          _focus={{
+                            bg: useColorModeValue("gray.100", "gray.700"),
+                          }}
+                        >
+                          {type.label}
+                          <Select.ItemIndicator
+                            color={filterColors.ATTRACTION}
+                          />
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select.Positioner>
+                </Portal>
+              </Select.Root>
+            </Stack>
+
             <Stack gap={3}>
               <Heading size="sm" mb={1} color={textColor}>
                 Filter Transportasi Umum
@@ -519,6 +604,16 @@ export function SidebarFilters({
             <Text fontSize="sm" color={subtleTextColor}>
               Tempat Wisata
             </Text>
+            <Text fontSize="sm" color={subtleTextColor}>
+              Tipe:{" "}
+              {filters.attractionType === "NATURAL"
+                ? "Wisata Alam"
+                : filters.attractionType === "CULTURAL"
+                  ? "Wisata Budaya"
+                  : filters.attractionType === "ARTIFICIAL"
+                    ? "Wisata Buatan"
+                    : "Semua"}
+            </Text>
             <StatGroup>
               <Stat.Root>
                 <Stat.Label color={textColor} fontSize="xs">
@@ -580,6 +675,7 @@ export function SidebarFilters({
                       setSelectedLocation({
                         name: feature.properties.attraction_name,
                         description: feature.properties.province,
+                        attractionType: feature.properties.attraction_type,
                         type: "attraction",
                         nearbyTransport: feature.properties.transportations,
                         isHub: false,

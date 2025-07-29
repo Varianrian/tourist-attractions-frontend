@@ -21,6 +21,7 @@ export const GetAllAttractionsPaginated = (
   sortBy: string = "createdAt",
   sortOrder: "ASC" | "DESC" = "DESC",
   province: string = "",
+  type: string = "",
   search?: string
 ) => {
   return useFetch<
@@ -41,6 +42,7 @@ export const GetAllAttractionsPaginated = (
       sortBy,
       sortOrder,
       province,
+      ...(type === "" ? {} : { type }),
       search,
     },
     {
@@ -54,10 +56,7 @@ export const GetAllAttractionsPaginated = (
 
 // Attraction CRUD operations
 export const CreateAttraction = (data: Partial<Attraction>) => {
-  return api.post<Response<Attraction>>(
-    apiRoutes.createAttraction,
-    data
-  );
+  return api.post<Response<Attraction>>(apiRoutes.createAttraction, data);
 };
 
 export const GetAttractionById = (id: string) => {
@@ -70,14 +69,8 @@ export const GetAttractionById = (id: string) => {
   );
 };
 
-export const UpdateAttraction = (
-  id: string,
-  data: Partial<Attraction>
-) => {
-  return api.patch<Response<Attraction>>(
-    apiRoutes.updateAttraction(id),
-    data
-  );
+export const UpdateAttraction = (id: string, data: Partial<Attraction>) => {
+  return api.patch<Response<Attraction>>(apiRoutes.updateAttraction(id), data);
 };
 
 export const DeleteAttraction = (id: string) => {
@@ -86,21 +79,29 @@ export const DeleteAttraction = (id: string) => {
 
 // Import/Export operations
 export const ExportAllAttractions = () => {
-  return api.get(apiRoutes.exportAllAttractions, {}, {
-    responseType: "blob",
-  });
+  return api.get(
+    apiRoutes.exportAllAttractions,
+    {},
+    {
+      responseType: "blob",
+    }
+  );
 };
 
 export const ImportExampleAttractions = () => {
-  return api.get(apiRoutes.importExampleAttractions, {}, {
-    responseType: "blob",
-  });
+  return api.get(
+    apiRoutes.importExampleAttractions,
+    {},
+    {
+      responseType: "blob",
+    }
+  );
 };
 
 export const ImportAttractions = (formData: FormData) => {
   return api.post(apiRoutes.importAttractions, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };

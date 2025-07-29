@@ -1,22 +1,23 @@
-import {
-  VStack,
-  HStack,
-  Button,
-  Box,
-  Text,
-} from "@chakra-ui/react";
+import { VStack, HStack, Button, Box, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import { customShades } from "@/theme/custom-color";
 import { useAttraction } from "@/hooks/useAttraction";
 import { useAuth } from "@/provider/AuthProvider";
-import { CreateAttraction, UpdateAttraction, DeleteAttraction } from "@/api/attraction";
+import {
+  CreateAttraction,
+  UpdateAttraction,
+  DeleteAttraction,
+} from "@/api/attraction";
 import { toaster } from "@/components/ui/toaster";
 import { AttractionFilters } from "../AttractionFilters";
 import AttractionPagination from "../AttractionPagination";
 import ReusableTable from "../../common/ReusableTable";
-import { attractionTableColumns, createAttractionTableColumns } from "../../config/tableConfigs";
+import {
+  attractionTableColumns,
+  createAttractionTableColumns,
+} from "../../config/tableConfigs";
 import { AttractionDialog } from "../../data-management/AttractionDialog";
 import { AttractionImportExportDialog } from "../../data-management/AttractionImportExportDialog";
 import { ConfirmationDialog } from "../../common/ConfirmationDialog";
@@ -24,7 +25,8 @@ import type { Attraction } from "@/types/attraction";
 
 const AttractionTable = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isImportExportDialogOpen, setIsImportExportDialogOpen] = useState(false);
+  const [isImportExportDialogOpen, setIsImportExportDialogOpen] =
+    useState(false);
   const [selectedAttraction, setSelectedAttraction] =
     useState<Attraction | null>(null);
   const [dialogMode, setDialogMode] = useState<"create" | "edit">("create");
@@ -43,6 +45,7 @@ const AttractionTable = () => {
     sortOrder,
     itemsPerPage,
     attractionsData,
+    attractionType,
     metaData,
     isLoading,
     refetchAttractions,
@@ -52,6 +55,7 @@ const AttractionTable = () => {
     handleSortChange,
     handlePageChange,
     handleItemsPerPageChange,
+    handleAttractionTypeChange,
   } = useAttraction();
 
   const headerBgColor = useColorModeValue(
@@ -89,7 +93,8 @@ const AttractionTable = () => {
         });
       } else {
         try {
-          if (!selectedAttraction?.id) throw new Error("No attraction ID found");
+          if (!selectedAttraction?.id)
+            throw new Error("No attraction ID found");
           await UpdateAttraction(selectedAttraction.id, data);
         } catch (error: any) {
           console.error("Error updating attraction:", error);
@@ -145,23 +150,23 @@ const AttractionTable = () => {
   };
 
   return (
-    <VStack 
-      gap={{ base: 2, md: 4 }} 
-      width="100%" 
+    <VStack
+      gap={{ base: 2, md: 4 }}
+      width="100%"
       align="stretch"
       px={{ base: 2, md: 0 }}
     >
       {isDataManagement && (
-        <VStack 
-          width="100%" 
-          px={{ base: 2, md: 4 }} 
-          pt={{ base: 2, md: 4 }} 
+        <VStack
+          width="100%"
+          px={{ base: 2, md: 4 }}
+          pt={{ base: 2, md: 4 }}
           gap={{ base: 2, md: 2 }}
           align={{ base: "stretch", md: "flex-end" }}
         >
-          <HStack 
-            justify={{ base: "center", md: "flex-end" }} 
-            width="100%" 
+          <HStack
+            justify={{ base: "center", md: "flex-end" }}
+            width="100%"
             gap={2}
             flexDirection={{ base: "column", sm: "row" }}
           >
@@ -173,7 +178,9 @@ const AttractionTable = () => {
               fontSize={{ base: "sm", md: "md" }}
             >
               <Icon icon="mdi:file-import" />
-              <Text as="span" display={{ base: "none", sm: "inline" }}>Bulk </Text>
+              <Text as="span" display={{ base: "none", sm: "inline" }}>
+                Bulk{" "}
+              </Text>
               Import/Export
             </Button>
             <Button
@@ -184,7 +191,9 @@ const AttractionTable = () => {
               fontSize={{ base: "sm", md: "md" }}
             >
               <Icon icon="mdi:plus" />
-              <Text as="span" display={{ base: "none", sm: "inline" }}>Tambah </Text>
+              <Text as="span" display={{ base: "none", sm: "inline" }}>
+                Tambah{" "}
+              </Text>
               Tempat Wisata
             </Button>
           </HStack>
@@ -198,32 +207,38 @@ const AttractionTable = () => {
           selectedProvince={selectedProvince}
           onSearchChange={handleSearchChange}
           onProvinceChange={handleProvinceChange}
+          selectedAttractionType={attractionType}
+          onAttractionTypeChange={handleAttractionTypeChange}
         />
       </Box>
 
       {/* Table */}
-      <Box 
-        width="100%" 
+      <Box
+        width="100%"
         overflowX={{ base: "auto", lg: "visible" }}
         px={{ base: 0, md: 4 }}
       >
         <ReusableTable
-          columns={isDataManagement ? createAttractionTableColumns(
-            // Edit
-            (attraction) => {
-              console.log("Edit attraction:", attraction);
-              setSelectedAttraction(attraction);
-              setDialogMode("edit");
-              setIsDialogOpen(true);
-            },
-            // Delete
-            (attraction) => {
-              console.log("Delete attraction:", attraction);
-              setSelectedAttraction(attraction);
-              setIsConfirmationDialogOpen(true);
-            },
+          columns={
             isDataManagement
-          ) : attractionTableColumns}
+              ? createAttractionTableColumns(
+                  // Edit
+                  (attraction) => {
+                    console.log("Edit attraction:", attraction);
+                    setSelectedAttraction(attraction);
+                    setDialogMode("edit");
+                    setIsDialogOpen(true);
+                  },
+                  // Delete
+                  (attraction) => {
+                    console.log("Delete attraction:", attraction);
+                    setSelectedAttraction(attraction);
+                    setIsConfirmationDialogOpen(true);
+                  },
+                  isDataManagement
+                )
+              : attractionTableColumns
+          }
           data={attractionsData}
           isLoading={isLoading || isRefetching}
           loadingText="Loading Data Tempat Wisata..."

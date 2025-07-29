@@ -116,6 +116,38 @@ export const createAttractionTableColumns = (
       ),
     },
     {
+      key: "type",
+      label: "Tipe",
+      sortable: true,
+      minWidth: { base: "80px", md: "120px" },
+      render: (item: Attraction) => {
+        const getTypeLabel = (type: string) => {
+          switch (type) {
+            case "NATURAL":
+              return "Wisata Alam";
+            case "CULTURAL":
+              return "Wisata Budaya";
+            case "ARTIFICIAL":
+              return "Wisata Buatan";
+            default:
+              return type;
+          }
+        };
+
+        return (
+          <Badge
+            variant={"surface"}
+            borderRadius="md"
+            px={{ base: 1, md: 2 }}
+            py={{ base: 0.5, md: 1 }}
+            fontSize={{ base: "2xs", md: "xs" }}
+          >
+            {getTypeLabel(item.type)}
+          </Badge>
+        );
+      },
+    },
+    {
       key: "province",
       label: "Provinsi",
       sortable: true,

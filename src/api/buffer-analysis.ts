@@ -23,6 +23,7 @@ export const apiRoutes = {
 export const GetBufferAnalysis = (
   bufferRadius: number = 3000,
   provinceName: string = "",
+  attractionType: string = "",
   transportationType: {
     AIRPORT: boolean;
     BUS_STATION: boolean;
@@ -47,6 +48,7 @@ export const GetBufferAnalysis = (
       provinceName,
       transportationType: typeCommaSeparated,
       withGeometry,
+      ...(attractionType === "" ? {} : { attractionType }),
     },
     {
       refetchOnWindowFocus: false,
@@ -54,4 +56,4 @@ export const GetBufferAnalysis = (
       refetchOnMount: false,
     }
   );
-}
+};

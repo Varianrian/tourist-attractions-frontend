@@ -12,6 +12,7 @@ import {
 import { useColorModeValue } from "../ui/color-mode";
 import { customShades } from "../../theme/custom-color";
 import { useMapColors } from "@/hooks/useMapColors";
+import { attractionTypes as attractionOptions } from "@/data/sampleData";
 
 export const transportationTypeColors = {
   AIRPORT: {
@@ -75,6 +76,7 @@ console.log("Buffer Radius Options:", bufferRadiusOptions);
 interface BufferAnalysisFiltersProps {
   searchTerm: string;
   selectedProvince: string;
+  selectedAttractionType: string;
   selectedTypes: {
     AIRPORT: boolean;
     BUS_STATION: boolean;
@@ -91,17 +93,20 @@ interface BufferAnalysisFiltersProps {
     HARBOR: boolean;
   }) => void;
   onBufferRadiusChange: (radius: number) => void;
+  onAttractionTypeChange: (type: string) => void;
 }
 
 export const BufferAnalysisFilters = ({
   searchTerm,
   selectedProvince,
+  selectedAttractionType,
   selectedTypes,
   bufferRadius,
   onSearchChange,
   onProvinceChange,
   onTypesChange,
   onBufferRadiusChange,
+  onAttractionTypeChange,
 }: BufferAnalysisFiltersProps) => {
   const { filterColors } = useMapColors();
   const filterBgColor = useColorModeValue("gray.50", "gray.700");
@@ -127,7 +132,7 @@ export const BufferAnalysisFilters = ({
           Buffer Analysis Settings
         </Text>
 
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={6}>
+        <SimpleGrid columns={{ base: 1, md: 2, lg: 5 }} gap={6}>
           <Box>
             <Text
               fontSize="sm"
@@ -197,6 +202,56 @@ export const BufferAnalysisFilters = ({
                   <Select.Content>
                     {provincesOptions.items.map((item) => (
                       <Select.Item key={item.value} item={item.label}>
+                        {item.label}
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Positioner>
+              </Portal>
+            </Select.Root>
+          </Box>
+
+          <Box>
+            <Text
+              fontSize="sm"
+              fontWeight="semibold"
+              mb={3}
+              color={useColorModeValue("gray.700", "gray.200")}
+            >
+              Jenis Tempat Wisata
+            </Text>
+            <Select.Root
+              collection={attractionOptions}
+              size="md"
+              value={[selectedAttractionType]}
+              onValueChange={(value) => onAttractionTypeChange(value.value[0])}
+            >
+              <Select.Control>
+                <Select.Trigger
+                  borderWidth="2px"
+                  borderColor={inputBorderColor}
+                  bg={useColorModeValue("white", "gray.700")}
+                  _hover={{
+                    borderColor: customShades.green[400],
+                  }}
+                  _focus={{
+                    borderColor: customShades.green[500],
+                    boxShadow: `0 0 0 1px ${customShades.green[500]}`,
+                  }}
+                >
+                  <Select.ValueText placeholder="Pilih jenis tempat wisata" />
+                </Select.Trigger>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                  <Select.ClearTrigger />
+                </Select.IndicatorGroup>
+              </Select.Control>
+
+              <Portal>
+                <Select.Positioner>
+                  <Select.Content>
+                    {attractionOptions.items.map((item) => (
+                      <Select.Item key={item.value} item={item.value}>
                         {item.label}
                       </Select.Item>
                     ))}

@@ -21,6 +21,7 @@ export const useAttraction = () => {
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("DESC");
   const [itemsPerPage, setItemsPerPage] = useState(50);
+  const [attractionType, setAttractionType] = useState<string>("");
 
   // Fetch data using API
   const {
@@ -34,7 +35,8 @@ export const useAttraction = () => {
     sortBy,
     sortOrder,
     selectedProvince,
-    searchTerm || undefined
+    attractionType,
+    searchTerm || undefined,
   );
 
   // Use API data if available
@@ -49,6 +51,11 @@ export const useAttraction = () => {
 
   const handleProvinceChange = (province: string) => {
     setSelectedProvince(province);
+    setCurrentPage(1); // Reset to first page when filtering
+  };
+
+  const handleAttractionTypeChange = (type: string) => {
+    setAttractionType(type);
     setCurrentPage(1); // Reset to first page when filtering
   };
 
@@ -91,6 +98,7 @@ export const useAttraction = () => {
     // Filter states
     searchTerm,
     selectedProvince,
+    attractionType,
     sortBy,
     sortOrder,
     currentPage,
@@ -102,6 +110,7 @@ export const useAttraction = () => {
     handleSortChange,
     handlePageChange,
     handleItemsPerPageChange,
+    handleAttractionTypeChange,
     
     // Utilities
     formatDate,

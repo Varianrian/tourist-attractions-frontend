@@ -35,6 +35,7 @@ function MapPage() {
     "JAWA TENGAH"
   );
   const [bufferRadius, setBufferRadius] = useState<number>(3000);
+  const [attractionType, setAttractionType] = useState<string>("");
 
   const [activeFilters, setActiveFilters] = useState({
     AIRPORT: true,
@@ -59,6 +60,7 @@ function MapPage() {
   const { data: bufferData, isFetching: isFetchingBuffer } = GetBufferAnalysis(
     bufferRadius,
     selectedProvince || "JAWA TENGAH",
+    attractionType,
     activeFilters
   );
 
@@ -91,6 +93,7 @@ function MapPage() {
     name: string;
     description?: string;
     type: string;
+    attractionType?: string;
     nearbyTransport?: {
       name: string;
       type: string;
@@ -345,6 +348,8 @@ function MapPage() {
                             name: attraction.properties.attraction_name,
                             description: `${attraction.properties.province}`,
                             type: "attraction",
+                            attractionType:
+                              attraction.properties.attraction_type,
                             nearbyTransport:
                               attraction.properties.transportations || [],
                             isHub: false,
@@ -411,6 +416,8 @@ function MapPage() {
         filterColors={filterColors}
         subtleTextColor={subtleTextColor}
         toggleFilter={toggleFilter}
+        selectedAttractionType={attractionType}
+        setSelectedAttractionType={setAttractionType}
         selectedProvince={selectedProvince!}
         setSelectedProvince={setSelectedProvince}
         data={bufferData?.data}

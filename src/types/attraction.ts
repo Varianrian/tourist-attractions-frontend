@@ -1,7 +1,10 @@
+export type AttractionType = "NATURAL" | "CULTURAL" | "ARTIFICIAL";
+
 export type Attraction = {
   id: string;
   province: string;
   name: string;
+  type: AttractionType;
   latitude: number;
   longitude: number;
   createdAt: string;

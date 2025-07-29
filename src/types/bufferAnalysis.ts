@@ -7,6 +7,7 @@ export interface BufferAnalysis {
         properties: {
           id: string;
           attraction_name: string;
+          attraction_type: string;
           province: string;
           latitude: number;
           longitude: number;
@@ -31,6 +32,7 @@ export interface BufferAnalysis {
       filters: {
         transportationType: string;
         provinceName: string;
+        attractionType: string;
       };
     };
   };

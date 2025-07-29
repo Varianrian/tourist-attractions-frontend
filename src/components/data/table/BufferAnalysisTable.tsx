@@ -31,7 +31,8 @@ const BufferAnalysisTable = () => {
     totalPages,
     processedData,
     itemsPerPage,
-    
+    selectedAttractionType,
+
     // Handlers
     handleSearchChange,
     handleProvinceChange,
@@ -40,6 +41,7 @@ const BufferAnalysisTable = () => {
     handleBufferRadiusChange,
     handlePageChange,
     handleItemsPerPageChange,
+    handleAttractionTypeChange
   } = useBufferAnalysis();
   
   const headerBgColor = useColorModeValue(
@@ -65,6 +67,8 @@ const BufferAnalysisTable = () => {
           onProvinceChange={handleProvinceChange}
           onTypesChange={handleTypesChange}
           onBufferRadiusChange={handleBufferRadiusChange}
+          selectedAttractionType={selectedAttractionType}
+          onAttractionTypeChange={handleAttractionTypeChange}
         />
       </Box>
 

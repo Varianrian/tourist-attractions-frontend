@@ -9,6 +9,8 @@ import {
   Text,
   Tabs,
   Alert,
+  Select,
+  createListCollection
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useColorModeValue } from "@/components/ui/color-mode";
@@ -25,6 +27,19 @@ interface AttractionDialogProps {
   trigger?: React.ReactNode;
 }
 
+const attractionTypes = [
+  { value: "NATURAL", label: "Wisata Alam" },
+  { value: "CULTURAL", label: "Wisata Budaya" },
+  { value: "ARTIFICIAL", label: "Wisata Buatan" },
+];
+
+const attractionOptions = createListCollection({
+  items: attractionTypes.map((type) => ({
+    value: type.value,
+    label: type.label,
+  })),
+});
+
 export const AttractionDialog = ({
   isOpen,
   onClose,
@@ -35,6 +50,7 @@ export const AttractionDialog = ({
 }: AttractionDialogProps) => {
   const [formData, setFormData] = useState({
     name: initialData?.name || "",
+    type: initialData?.type || "NATURAL",
     latitude: initialData?.latitude?.toString() || "",
     longitude: initialData?.longitude?.toString() || "",
   });
@@ -43,6 +59,7 @@ export const AttractionDialog = ({
     if (initialData) {
       setFormData({
         name: initialData.name || "",
+        type: initialData.type || "NATURAL",
         latitude: initialData.latitude?.toString() || "",
         longitude: initialData.longitude?.toString() || "",
       });
@@ -99,6 +116,7 @@ export const AttractionDialog = ({
     try {
       const dataToSave: Partial<Attraction> = {
         ...formData,
+        type: formData.type as Attraction["type"], // Cast to correct type
         latitude: formData.latitude ? Number(formData.latitude) : undefined,
         longitude: formData.longitude ? Number(formData.longitude) : undefined,
       };
@@ -109,6 +127,7 @@ export const AttractionDialog = ({
       setFormData({
         name: "",
         latitude: "",
+        type: "NATURAL",
         longitude: "",
       });
 
@@ -116,10 +135,10 @@ export const AttractionDialog = ({
     } catch (err) {
       console.error("Error saving attraction data:", err);
       setError(
-              err instanceof AxiosError
-                ? err.response?.data.message
-                : "Failed to save attraction data"
-            );
+        err instanceof AxiosError
+          ? err.response?.data.message
+          : "Failed to save attraction data"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -128,6 +147,7 @@ export const AttractionDialog = ({
   const handleCancel = () => {
     setFormData({
       name: "",
+      type: "NATURAL",
       latitude: "",
       longitude: "",
     });
@@ -189,6 +209,43 @@ export const AttractionDialog = ({
                     mb={2}
                     color={textColor}
                   >
+                    Jenis Tempat Wisata *
+                  </Text>
+                  <Select.Root
+                    collection={attractionOptions}
+                    value={[formData.type as string]}
+                    onValueChange={(value) =>
+                      handleInputChange("type", value.value[0])
+                    }
+                  >
+                    <Select.Control>
+                      <Select.Trigger bg={inputBg} borderColor={borderColor}>
+                        <Select.ValueText placeholder="Pilih jenis tempat wisata" />
+                      </Select.Trigger>
+                      <Select.IndicatorGroup>
+                        <Select.Indicator />
+                      </Select.IndicatorGroup>
+                    </Select.Control>
+
+                    <Select.Positioner>
+                      <Select.Content>
+                        {attractionOptions.items.map((item) => (
+                          <Select.Item key={item.value} item={item.value}>
+                            {item.label}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Positioner>
+                  </Select.Root>
+                </Box>
+
+                <Box>
+                  <Text
+                    fontSize="sm"
+                    fontWeight="medium"
+                    mb={2}
+                    color={textColor}
+                  >
                     Koordinat Lokasi *
                   </Text>
                   <Tabs.Root defaultValue="map" size="sm">
@@ -196,7 +253,7 @@ export const AttractionDialog = ({
                       <Tabs.Trigger value="map">Pilih Peta</Tabs.Trigger>
                       <Tabs.Trigger value="manual">Input Manual</Tabs.Trigger>
                     </Tabs.List>
-                    
+
                     <Tabs.Content value="manual" pt={3}>
                       <VStack gap={3} align="stretch">
                         <Box>
@@ -244,12 +301,20 @@ export const AttractionDialog = ({
                         </Box>
                       </VStack>
                     </Tabs.Content>
-                    
+
                     <Tabs.Content value="map" pt={3}>
                       <Box>
                         <DraggableMarkerMap
-                          latitude={formData.latitude ? Number(formData.latitude) : undefined}
-                          longitude={formData.longitude ? Number(formData.longitude) : undefined}
+                          latitude={
+                            formData.latitude
+                              ? Number(formData.latitude)
+                              : undefined
+                          }
+                          longitude={
+                            formData.longitude
+                              ? Number(formData.longitude)
+                              : undefined
+                          }
                           onPositionChange={handleCoordinateChange}
                           height="250px"
                         />

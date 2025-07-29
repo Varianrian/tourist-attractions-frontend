@@ -24,6 +24,7 @@ export const useBufferAnalysis = () => {
   // State for filters
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedAttractionType, setSelectedAttractionType] = useState("");
   const [selectedTypes, setSelectedTypes] = useState<{
     AIRPORT: boolean;
     BUS_STATION: boolean;
@@ -47,6 +48,7 @@ export const useBufferAnalysis = () => {
   const { data: apiData, isLoading } = GetBufferAnalysis(
     bufferRadius,
     selectedProvince,
+    selectedAttractionType,
     selectedTypes,
     false
   );
@@ -130,6 +132,11 @@ export const useBufferAnalysis = () => {
     setCurrentPage(1); // Reset to first page when filtering
   };
 
+  const handleAttractionTypeChange = (type: string) => {
+    setSelectedAttractionType(type);
+    setCurrentPage(1); // Reset to first page when filtering
+  };
+
   const handleSortChange = (newSortBy: string) => {
     if (newSortBy === sortBy) {
       setSortOrder(sortOrder === "ASC" ? "DESC" : "ASC");
@@ -170,6 +177,7 @@ export const useBufferAnalysis = () => {
     searchTerm,
     selectedProvince,
     selectedTypes,
+    selectedAttractionType,
     bufferRadius,
     sortBy,
     sortOrder,
@@ -187,5 +195,6 @@ export const useBufferAnalysis = () => {
     handleBufferRadiusChange,
     handlePageChange,
     handleItemsPerPageChange,
+    handleAttractionTypeChange,
   };
 };

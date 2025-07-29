@@ -16,6 +16,7 @@ interface LocationDetailProps {
     name: string;
     description?: string;
     type: string;
+    attractionType?: string;
     nearbyTransport?: {
       name: string;
       type: string;
@@ -39,8 +40,6 @@ export function LocationInfoBox({
   borderColor,
 }: LocationDetailProps) {
   if (!location) return null;
-  console.log("Location Info Box", location);
-
   return (
     <Box
       position="absolute"
@@ -78,6 +77,18 @@ export function LocationInfoBox({
         {location.description && (
           <Text color={subtleTextColor} fontSize="sm">
             {location.description}
+          </Text>
+        )}
+        {location.attractionType && (
+          <Text fontSize="sm" color={subtleTextColor}>
+            Tipe:{" "}
+            {location.attractionType === "NATURAL"
+              ? "Wisata Alam"
+              : location.attractionType === "CULTURAL"
+              ? "Wisata Budaya"
+              : location.attractionType === "ARTIFICIAL"
+              ? "Wisata Buatan"
+              : "Lainnya"}
           </Text>
         )}
       </Box>

@@ -20,3 +20,11 @@ export const bufferRadiusOptions = createListCollection({
     { label: "5 km", value: 5000 },
   ],
 });
+
+export const attractionTypes = createListCollection({
+  items: [
+    { label: "Wisata Alam", value: "NATURAL" },
+    { label: "Wisata Budaya", value: "CULTURAL" },
+    { label: "Wisata Buatan", value: "ARTIFICIAL" },
+  ],
+});
