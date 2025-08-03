@@ -24,6 +24,7 @@ export const GetBufferAnalysis = (
   bufferRadius: number = 3000,
   provinceName: string = "",
   attractionType: string = "",
+  cityName: string | null = null,
   transportationType: {
     AIRPORT: boolean;
     BUS_STATION: boolean;
@@ -35,7 +36,7 @@ export const GetBufferAnalysis = (
     TRAIN_STATION: true,
     HARBOR: true,
   },
-  withGeometry: boolean = true
+  withGeometry: boolean = true,
 ) => {
   const typeCommaSeparated = Object.entries(transportationType)
     .filter(([_, value]) => value)
@@ -49,6 +50,7 @@ export const GetBufferAnalysis = (
       transportationType: typeCommaSeparated,
       withGeometry,
       ...(attractionType === "" ? {} : { attractionType }),
+      ...(cityName ? { cityName } : {}),
     },
     {
       refetchOnWindowFocus: false,

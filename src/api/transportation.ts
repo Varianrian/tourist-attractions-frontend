@@ -7,6 +7,7 @@ export const apiRoutes = {
   getListTransportations: "/transportation/filter",
   getAllTransportationsPaginated: "/transportation/paginated",
   createTransportation: "/transportation",
+  
   getTransportationById: (id: string) => `/transportation/${id}`,
   updateTransportation: (id: string) => `/transportation/${id}`,
   deleteTransportation: (id: string) => `/transportation/${id}`,
@@ -18,6 +19,7 @@ export const apiRoutes = {
 
 export const GetAllTransportationWithFilter = (
   province: string = "JAWA TENGAH",
+  city: string | null = null,
   type: {
     AIRPORT: boolean;
     BUS_STATION: boolean;
@@ -42,6 +44,7 @@ export const GetAllTransportationWithFilter = (
       sortOrder: "ASC",
       province,
       type: typeCommaSeparated,
+      ...(city ? { city } : {}),
     },
     {
       enabled: true,

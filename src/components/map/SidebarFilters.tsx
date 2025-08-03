@@ -14,12 +14,12 @@ import {
   ProgressCircle,
   AbsoluteCenter,
   Checkbox,
+  type ListCollection,
 } from "@chakra-ui/react";
 import { useColorModeValue } from "../../components/ui/color-mode";
 import { FilterButton } from "./FilterButton";
 import {
   bufferRadiusOptions,
-  provinces,
   attractionTypes,
 } from "../../data/sampleData";
 import {
@@ -48,6 +48,8 @@ interface SidebarFiltersProps {
   setSelectedAttractionType: (type: string) => void;
   selectedProvince: string;
   setSelectedProvince: (province: string) => void;
+  selectedCity: string | null;
+  setSelectedCity: (city: string | null) => void;
   selectedBufferRadius: number;
   setSelectedBufferRadius: (radius: number) => void;
   data: BufferAnalysis | undefined;
@@ -80,6 +82,8 @@ interface SidebarFiltersProps {
     } | null>
   >;
   transportations: Transportation[];
+  provinces: ListCollection<{ label: string; value: string }>;
+  cities: ListCollection<{ label: string; value: string }>;
 }
 
 export function SidebarFilters({
@@ -92,6 +96,8 @@ export function SidebarFilters({
   toggleFilter,
   selectedProvince,
   setSelectedProvince,
+  selectedCity,
+  setSelectedCity,
   selectedAttractionType,
   setSelectedAttractionType,
   selectedBufferRadius,
@@ -101,6 +107,8 @@ export function SidebarFilters({
   setActiveLayers,
   setSelectedLocation,
   transportations,
+  provinces,
+  cities,
 }: SidebarFiltersProps) {
   if (!data) {
     return null; // Return null if no data is available
@@ -276,7 +284,10 @@ export function SidebarFilters({
                 collection={provinces}
                 size="sm"
                 width="100%"
-                onValueChange={(value) => setSelectedProvince(value.value[0])}
+                onValueChange={(value) => {
+                  setSelectedProvince(value.value[0]);
+                  setSelectedCity(null);
+                }}
                 value={[selectedProvince]}
               >
                 <Select.HiddenSelect />
@@ -328,6 +339,78 @@ export function SidebarFilters({
                           }}
                         >
                           {province.label}
+                          <Select.ItemIndicator
+                            color={filterColors.ATTRACTION}
+                          />
+                        </Select.Item>
+                      ))}
+                    </Select.Content>
+                  </Select.Positioner>
+                </Portal>
+              </Select.Root>
+            </Stack>
+
+            <Stack gap={3}>
+              <Heading size="sm" mb={0} color={textColor}>
+                Filter Kota
+              </Heading>
+              <Select.Root
+                collection={cities}
+                size="sm"
+                width="100%"
+                onValueChange={(value) => setSelectedCity(value.value[0])}
+                value={selectedCity ? [selectedCity] : []}
+              >
+                <Select.HiddenSelect />
+                <Select.Control
+                  bg={cardBgColor}
+                  borderColor={borderColor}
+                  borderWidth="1px"
+                  borderRadius="md"
+                  _hover={{ borderColor: filterColors.ATTRACTION }}
+                  _focus={{ boxShadow: `0 0 0 1px ${filterColors.ATTRACTION}` }}
+                >
+                  <Select.Trigger px={3} py={2} color={textColor}>
+                    <Select.ValueText
+                      placeholder="Pilih Kota"
+                      fontWeight="medium"
+                    />
+                  </Select.Trigger>
+                  <Select.IndicatorGroup>
+                    <Select.Indicator color={filterColors.ATTRACTION} />
+                    <Select.ClearTrigger />
+                  </Select.IndicatorGroup>
+                </Select.Control>
+                <Portal>
+                  <Select.Positioner>
+                    <Select.Content
+                      bg={cardBgColor}
+                      borderColor={borderColor}
+                      borderWidth="1px"
+                      borderRadius="md"
+                      boxShadow="lg"
+                      py={1}
+                      maxH="300px"
+                      overflow="auto"
+                    >
+                      {cities.items.map((city) => (
+                        <Select.Item
+                          item={city}
+                          key={city.value}
+                          px={3}
+                          py={2}
+                          borderRadius="sm"
+                          _hover={{
+                            bg: useColorModeValue("gray.100", "gray.700"),
+                          }}
+                          _selected={{
+                            bg: useColorModeValue("gray.200", "gray.600"),
+                          }}
+                          _focus={{
+                            bg: useColorModeValue("gray.100", "gray.700"),
+                          }}
+                        >
+                          {city.label}
                           <Select.ItemIndicator
                             color={filterColors.ATTRACTION}
                           />

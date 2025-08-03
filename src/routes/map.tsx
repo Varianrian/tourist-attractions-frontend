@@ -20,10 +20,12 @@ import { LocationInfoBox } from "../components/map/LocationInfoBox";
 import { MapLoadingState } from "../components/map/MapLoadingState";
 import NavBar from "../components/NavBar";
 import { GetAllTransportationWithFilter } from "@/api/transportation";
-import { GetProvinceByName } from "@/api/province";
+import { GetAllProvinces, GetProvinceByName } from "@/api/province";
 import { GetBufferAnalysis } from "@/api/buffer-analysis";
 import { toaster } from "@/components/ui/toaster";
 import { ResultDrawer } from "@/components/map/ResultDrawer";
+import { createListCollection } from "@chakra-ui/react";
+import { GetCityById, GetCityByProvinceId } from "@/api/city";
 
 export const Route = createFileRoute("/map")({
   component: MapPage,
@@ -31,9 +33,72 @@ export const Route = createFileRoute("/map")({
 
 // Main Component
 function MapPage() {
+  const { data: allProvinces, isFetching: isFetchingProvinces } =
+    GetAllProvinces();
+
+  const provinceOptions =
+    allProvinces?.data?.map((province) => ({
+      value: String(province.name ?? ""),
+      label: String(province.name ?? ""),
+    })) || [];
+
+  const provinceCollection = createListCollection({
+    items: provinceOptions,
+  });
+
   const [selectedProvince, setSelectedProvince] = useState<string | null>(
     "JAWA TENGAH"
   );
+  const [selectedProvinceId, setSelectedProvinceId] = useState<string | null>(
+    null
+  );
+  useEffect(() => {
+    if (selectedProvince) {
+      const selected = allProvinces?.data?.find(
+        (province) => province.name === selectedProvince
+      );
+      if (selected) {
+        setSelectedProvinceId(selected.id!);
+      } else {
+        setSelectedProvinceId(null);
+      }
+    } else {
+      setSelectedProvinceId(null);
+    }
+  }, [selectedProvince, allProvinces]);
+
+  const { data: citiesByProvince, isFetching: isFetchingCities } =
+    GetCityByProvinceId(
+      selectedProvinceId || "0565566a-c155-4ca9-a586-60c4aa53a5cc",
+      ["type"]
+    );
+
+  const citiesOptions =
+    citiesByProvince?.data?.map((city) => ({
+      value: String(city.type ?? ""),
+      label: String(city.type ?? ""),
+    })) || [];
+  const cityCollection = createListCollection({
+    items: citiesOptions,
+  });
+
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
+  useEffect(() => {
+    if (selectedCity) {
+      const selected = citiesByProvince?.data?.find(
+        (city) => city.type === selectedCity
+      );
+      if (selected) {
+        setSelectedCityId(selected.id!);
+      } else {
+        setSelectedCityId(null);
+      }
+    } else {
+      setSelectedCityId(null);
+    }
+  }, [selectedCity, citiesByProvince]);
+
   const [bufferRadius, setBufferRadius] = useState<number>(3000);
   const [attractionType, setAttractionType] = useState<string>("");
 
@@ -53,20 +118,46 @@ function MapPage() {
 
   const { data, isFetching } = GetAllTransportationWithFilter(
     selectedProvince || "JAWA TENGAH",
+    selectedCity,
     activeFilters
   );
   const { data: provinceData, isFetching: isFetchingProvince } =
     GetProvinceByName(selectedProvince || "JAWA TENGAH");
+  const { data: cityData, isFetching: isFetchingCity } = GetCityById(
+    selectedCityId!
+  );
   const { data: bufferData, isFetching: isFetchingBuffer } = GetBufferAnalysis(
     bufferRadius,
     selectedProvince || "JAWA TENGAH",
     attractionType,
+    selectedCity,
     activeFilters
   );
 
   // Loading states
-  const isAnyLoading = isFetching || isFetchingProvince || isFetchingBuffer;
+  const isAnyLoading =
+    isFetching ||
+    isFetchingProvince ||
+    isFetchingBuffer ||
+    isFetchingProvinces ||
+    isFetchingCities ||
+    isFetchingCity;
   const loadingSteps = [
+    {
+      name: "Memuat Pilihan Provinsi...",
+      isComplete: !!allProvinces && !isFetchingProvinces,
+      isCurrent: isFetchingProvinces,
+    },
+    {
+      name: "Memuat data kota...",
+      isComplete: !!citiesByProvince && !isFetchingCities,
+      isCurrent: isFetchingCities && !!allProvinces,
+    },
+    {
+      name: "Memuat data kota terpilih...",
+      isComplete: !!cityData && !isFetchingCity,
+      isCurrent: isFetchingCity && !!citiesByProvince,
+    },
     {
       name: "Memuat data provinsi...",
       isComplete: !!provinceData && !isFetchingProvince,
@@ -195,11 +286,32 @@ function MapPage() {
           />
 
           {/* Province Layer */}
-          {activeLayers.province && provinceData && (
+          {activeLayers.province && provinceData && !cityData && (
             <LayerGroup>
               {provinceData.geometry.coordinates.map((polygon, index) => (
                 <Polygon
                   key={`province-polygon-${index}`}
+                  // @ts-expect-error
+                  positions={polygon[0].map((coord: number[]) => [
+                    coord[1],
+                    coord[0],
+                  ])}
+                  pathOptions={{
+                    fillOpacity: 0.05,
+                    color: filterColors.ATTRACTION,
+                    weight: 1,
+                  }}
+                />
+              ))}
+            </LayerGroup>
+          )}
+
+          {/* City Layer */}
+          {activeLayers.province && cityData && (
+            <LayerGroup>
+              {cityData?.data?.geometry.coordinates.map((polygon, index) => (
+                <Polygon
+                  key={`city-polygon-${index}`}
                   // @ts-expect-error
                   positions={polygon[0].map((coord: number[]) => [
                     coord[1],
@@ -303,7 +415,7 @@ function MapPage() {
                         (coord: number[]) => [coord[1], coord[0]]
                       )}
                       pathOptions={{
-                        fillOpacity: 0.01,
+                        fillOpacity: attraction.properties.is_reachable ? 0.01 : 0.01,
                         color: attraction.properties.is_reachable
                           ? filterColors.ATTRACTION_REACHABLE
                           : filterColors.ATTRACTION_UNREACHABLE,
@@ -381,8 +493,8 @@ function MapPage() {
                           </Text>
                           {attraction.properties.transportation_count > 0 && (
                             <Badge colorScheme="green" mt={1} size="xs">
-                              {attraction.properties.transportation_count}{" "}
-                              opsi transportasi
+                              {attraction.properties.transportation_count} opsi
+                              transportasi
                             </Badge>
                           )}
                         </Box>
@@ -420,6 +532,8 @@ function MapPage() {
         setSelectedAttractionType={setAttractionType}
         selectedProvince={selectedProvince!}
         setSelectedProvince={setSelectedProvince}
+        selectedCity={selectedCity}
+        setSelectedCity={setSelectedCity}
         data={bufferData?.data}
         selectedBufferRadius={bufferRadius}
         setSelectedBufferRadius={setBufferRadius}
@@ -427,6 +541,8 @@ function MapPage() {
         setActiveLayers={setActiveLayers}
         setSelectedLocation={setSelectedLocation}
         transportations={data?.data?.transportations || []}
+        provinces={provinceCollection}
+        cities={cityCollection}
       />
 
       {/* Mobile Controls */}
